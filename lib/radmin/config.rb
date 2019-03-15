@@ -2,6 +2,14 @@ require 'radmin/actions'
 
 module Radmin
   class Config
+    DEFAULT_AUTHENTICATION = proc {}
+
+    DEFAULT_AUTHORIZE = proc {}
+
+    DEFAULT_AUDIT = proc {}
+
+    DEFAULT_CURRENT_USER = proc {}
+
     class << self
       # set parent controller
       attr_accessor :parent_controller
@@ -28,6 +36,75 @@ module Radmin
       # Returns action configuration object
       def actions(&block)
         Radmin::Actions.instance_eval(&block) if block
+      end
+
+      # @see RailsAdmin::Config::DEFAULT_AUTHORIZE
+      def authorize_with(*args, &block)
+        # extension = args.shift
+        # if extension
+        #   klass = RailsAdmin::AUTHORIZATION_ADAPTERS[extension]
+        #   klass.setup if klass.respond_to? :setup
+        #   @authorize = proc do
+        #     @authorization_adapter = klass.new(*([self] + args).compact)
+        #   end
+        # elsif block
+        #   @authorize = block
+        # end
+        @authorize || DEFAULT_AUTHORIZE
+      end
+
+
+      # @see Radmin::Config::DEFAULT_AUTHENTICATION
+      def authenticate_with(&blk)
+        @authenticate = blk if blk
+        @authenticate || DEFAULT_AUTHENTICATION
+      end
+
+      # Setup auditing/history/versioning provider that observe objects lifecycle
+      def audit_with(*args, &block)
+        # extension = args.shift
+        # if extension
+        #   klass = RailsAdmin::AUDITING_ADAPTERS[extension]
+        #   klass.setup if klass.respond_to? :setup
+        #   @audit = proc do
+        #     @auditing_adapter = klass.new(*([self] + args).compact)
+        #   end
+        # elsif block
+        #   @audit = block
+        # end
+        @audit || DEFAULT_AUDIT
+      end
+
+      # Reset all configurations to defaults.
+      #
+      # @see Radmin::Config.registry
+      def reset
+        # @compact_show_view = true
+        # @browser_validations = true
+        # @yell_for_non_accessible_fields = true
+        # @authenticate = nil
+        # @authorize = nil
+        # @audit = nil
+        # @current_user = nil
+        # @default_hidden_fields = {}
+        # @default_hidden_fields[:base] = [:_type]
+        # @default_hidden_fields[:edit] = [:id, :_id, :created_at, :created_on, :deleted_at, :updated_at, :updated_on, :deleted_on]
+        # @default_hidden_fields[:show] = [:id, :_id, :created_at, :created_on, :deleted_at, :updated_at, :updated_on, :deleted_on]
+        # @default_items_per_page = 20
+        # @default_associated_collection_limit = 100
+        # @default_search_operator = 'default'
+        # @excluded_models = []
+        # @included_models = []
+        # @total_columns_width = 697
+        # @label_methods = [:name, :title]
+        # @main_app_name = proc { [Rails.application.engine_name.titleize.chomp(' Application'), 'Admin'] }
+        # @registry = {}
+        # @show_gravatar = true
+        # @navigation_static_links = {}
+        # @navigation_static_label = nil
+        # @parent_controller = '::ActionController::Base'
+        # @forgery_protection_settings = {with: :exception}
+        # RailsAdmin::Config::Actions.reset
       end
 
 
@@ -96,27 +173,6 @@ module Radmin
       # #     end
       # #   end
       # #
-      # # @see RailsAdmin::Config::DEFAULT_AUTHENTICATION
-      # def authenticate_with(&blk)
-      #   @authenticate = blk if blk
-      #   @authenticate || DEFAULT_AUTHENTICATION
-      # end
-      #
-      # # Setup auditing/history/versioning provider that observe objects lifecycle
-      # def audit_with(*args, &block)
-      #   extension = args.shift
-      #   if extension
-      #     klass = RailsAdmin::AUDITING_ADAPTERS[extension]
-      #     klass.setup if klass.respond_to? :setup
-      #     @audit = proc do
-      #       @auditing_adapter = klass.new(*([self] + args).compact)
-      #     end
-      #   elsif block
-      #     @audit = block
-      #   end
-      #   @audit || DEFAULT_AUDIT
-      # end
-      #
       # # Setup authorization to be run as a before filter
       # # This is run inside the controller instance so you can setup any authorization you need to.
       # #
@@ -139,21 +195,6 @@ module Radmin
       # #
       # # See the wiki[https://github.com/sferik/rails_admin/wiki] for more on authorization.
       # #
-      # # @see RailsAdmin::Config::DEFAULT_AUTHORIZE
-      # def authorize_with(*args, &block)
-      #   extension = args.shift
-      #   if extension
-      #     klass = RailsAdmin::AUTHORIZATION_ADAPTERS[extension]
-      #     klass.setup if klass.respond_to? :setup
-      #     @authorize = proc do
-      #       @authorization_adapter = klass.new(*([self] + args).compact)
-      #     end
-      #   elsif block
-      #     @authorize = block
-      #   end
-      #   @authorize || DEFAULT_AUTHORIZE
-      # end
-      #
       # # Setup configuration using an extension-provided ConfigurationAdapter
       # #
       # # @example Custom configuration for role-based setup.
@@ -249,38 +290,6 @@ module Radmin
       # # @see RailsAdmin::Config.registry
       # def models
       #   RailsAdmin::AbstractModel.all.collect { |m| model(m) }
-      # end
-      #
-      # # Reset all configurations to defaults.
-      # #
-      # # @see RailsAdmin::Config.registry
-      # def reset
-      #   @compact_show_view = true
-      #   @browser_validations = true
-      #   @yell_for_non_accessible_fields = true
-      #   @authenticate = nil
-      #   @authorize = nil
-      #   @audit = nil
-      #   @current_user = nil
-      #   @default_hidden_fields = {}
-      #   @default_hidden_fields[:base] = [:_type]
-      #   @default_hidden_fields[:edit] = [:id, :_id, :created_at, :created_on, :deleted_at, :updated_at, :updated_on, :deleted_on]
-      #   @default_hidden_fields[:show] = [:id, :_id, :created_at, :created_on, :deleted_at, :updated_at, :updated_on, :deleted_on]
-      #   @default_items_per_page = 20
-      #   @default_associated_collection_limit = 100
-      #   @default_search_operator = 'default'
-      #   @excluded_models = []
-      #   @included_models = []
-      #   @total_columns_width = 697
-      #   @label_methods = [:name, :title]
-      #   @main_app_name = proc { [Rails.application.engine_name.titleize.chomp(' Application'), 'Admin'] }
-      #   @registry = {}
-      #   @show_gravatar = true
-      #   @navigation_static_links = {}
-      #   @navigation_static_label = nil
-      #   @parent_controller = '::ActionController::Base'
-      #   @forgery_protection_settings = {with: :exception}
-      #   RailsAdmin::Config::Actions.reset
       # end
       #
       # # Reset a provided model's configuration.

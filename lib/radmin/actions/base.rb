@@ -13,7 +13,11 @@ module Radmin
       end
 
       def link_icon
-        'icon-question-sign'
+        nil
+      end
+
+      def link_text
+        nil
       end
 
       def enabled?
@@ -28,7 +32,7 @@ module Radmin
 
       # Should the action be visible
       def visible?
-        true
+        link_icon.present? || link_text.present?
 
         # authorized?
       end
@@ -58,6 +62,11 @@ module Radmin
 
       # Model scoped actions only. You will need to handle params[:bulk_ids] in controller
       def bulkable?
+        false
+      end
+
+      # Scoped by filters. You will need to handle params[:f] in controller
+      def scopeable?
         false
       end
 

@@ -18,6 +18,10 @@ module Radmin
       def with_bindings(**args)
         @bindings = args
       end
+
+      def append_bindings(**args)
+        @bindings = (@bindings || {}).merge(args)
+      end
     end
   end
 end
