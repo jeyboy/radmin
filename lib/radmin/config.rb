@@ -9,6 +9,18 @@ module Radmin
       attr_accessor :forgery_protection_settings
 
 
+      # Fields to be hidden in show, create and update views
+      attr_accessor :default_hidden_fields
+
+
+      # Default items per page value used if a model level option has not
+      # been configured
+      attr_accessor :default_items_per_page
+
+
+      # accepts a hash of static links to be shown below the main navigation
+      attr_accessor :navigation_static_links
+      attr_accessor :navigation_static_label
 
 
 
@@ -25,13 +37,6 @@ module Radmin
       # # If included_models is left empty ([]), then RailsAdmin will automatically use all the models
       # # in your application (less any excluded_models you may have specified).
       # attr_accessor :included_models
-      #
-      # # Fields to be hidden in show, create and update views
-      # attr_accessor :default_hidden_fields
-      #
-      # # Default items per page value used if a model level option has not
-      # # been configured
-      # attr_accessor :default_items_per_page
       #
       # # Default association limit
       # attr_accessor :default_associated_collection_limit
@@ -59,10 +64,6 @@ module Radmin
       #
       # # show Gravatar in Navigation bar
       # attr_accessor :show_gravatar
-      #
-      # # accepts a hash of static links to be shown below the main navigation
-      # attr_accessor :navigation_static_links
-      # attr_accessor :navigation_static_label
       #
       # # yell about fields that are not marked as accessible
       # attr_accessor :yell_for_non_accessible_fields

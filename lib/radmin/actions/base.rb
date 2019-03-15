@@ -1,9 +1,12 @@
+require 'radmin/actions'
 require 'radmin/bindable'
+require 'singleton'
 
 module Radmin
   module Actions
     class Base
       include Radmin::Bindable
+      include Singleton
 
       def link_icon
         'icon-question-sign'
