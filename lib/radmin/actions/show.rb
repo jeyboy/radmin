@@ -3,6 +3,7 @@ require 'radmin/actions/base'
 module Radmin
   module Actions
     class Show < Radmin::Actions::Base
+      Radmin::Actions::register_action(self)
 
       def member?
         true

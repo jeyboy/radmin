@@ -1,3 +1,5 @@
+require 'radmin/actions'
+
 module Radmin
   class Config
     class << self
@@ -23,6 +25,10 @@ module Radmin
       attr_accessor :navigation_static_label
 
 
+      # Returns action configuration object
+      def actions(&block)
+        Radmin::Actions.instance_eval(&block) if block
+      end
 
 
       # # Application title, can be an array of two elements
@@ -236,11 +242,6 @@ module Radmin
       #   else
       #     @default_hidden_fields = fields
       #   end
-      # end
-      #
-      # # Returns action configuration object
-      # def actions(&block)
-      #   RailsAdmin::Config::Actions.instance_eval(&block) if block
       # end
       #
       # # Returns all model configurations

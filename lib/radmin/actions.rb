@@ -1,13 +1,15 @@
-require 'radmin/actions/dashboard'
-require 'radmin/actions/index'
-require 'radmin/actions/show'
-
 module Radmin
   module Actions
     @@actions = {}
 
     def self.register_action(action)
-      @@actions[action.key] = action
+      instance_eval %{
+        def #{name}(&block)
+          action.instance.instance_eval(&block) if block
+        end
+      }
+
+      @@actions[action.instance.key] = action.instance
     end
 
     def self.all
@@ -21,15 +23,9 @@ module Radmin
 
       @@actions.values.select(&:"#{act}")
     end
-
-    private
-
-    def self.init
-      Radmin::Actions.register_action(Radmin::Actions::Dashboard.instance)
-      Radmin::Actions.register_action(Radmin::Actions::Index.instance)
-      Radmin::Actions.register_action(Radmin::Actions::Show.instance)
-    end
-
-    init
   end
 end
+
+require 'radmin/actions/dashboard'
+require 'radmin/actions/index'
+require 'radmin/actions/show'

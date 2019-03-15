@@ -3,6 +3,12 @@ require 'radmin/actions/base'
 module Radmin
   module Actions
     class Dashboard < Radmin::Actions::Base
+      Radmin::Actions::register_action(self)
+
+      def statistics
+        true
+      end
+
       def root?
         true
       end

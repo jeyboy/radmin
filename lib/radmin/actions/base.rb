@@ -8,6 +8,10 @@ module Radmin
       include Radmin::Bindable
       include Singleton
 
+      def statistics
+        false
+      end
+
       def link_icon
         'icon-question-sign'
       end
