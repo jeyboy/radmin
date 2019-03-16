@@ -5,19 +5,19 @@ module Radmin
     class Dashboard < Radmin::Actions::Base
       Radmin::Actions::register_action(self)
 
-      def statistics
+      register_property :statistics do
         true
       end
 
-      def root?
+      register_property :root? do
         true
       end
 
-      def breadcrumb_parent
+      register_property :breadcrumb_parent do
         nil
       end
 
-      def controller
+      register_property :controller do
         proc do
           # @history = @auditing_adapter && @auditing_adapter.latest(@action.auditing_versions_limit) || []
           # if @action.statistics?
@@ -39,11 +39,11 @@ module Radmin
         end
       end
 
-      def route_fragment
+      register_property :route_fragment do
         ''
       end
 
-      def link_icon
+      register_property :link_icon do
         'icon-home'
       end
     end

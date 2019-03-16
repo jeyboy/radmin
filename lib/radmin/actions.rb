@@ -2,14 +2,19 @@ module Radmin
   module Actions
     @@actions = {}
 
-    def self.register_action(action)
+    def self.register_action(name, action = nil)
+      if action.nil? && name.is_a?(Class)
+        action = name
+        name = action.to_s.demodulize.underscore.to_sym
+      end
+
+      return if @@actions[name].present?
+
       instance_eval %{
         def #{name}(&block)
-          action.instance.instance_eval(&block) if block
+          add_action_custom_key(#{action}.instance, &block)
         end
       }
-
-      @@actions[action.instance.key] = action.instance
     end
 
     def self.all
@@ -22,6 +27,15 @@ module Radmin
       act = "#{act_type}#{'?' unless act_type.to_s.end_with?('?')}"
 
       @@actions.values.select(&:"#{act}")
+    end
+
+    private
+
+    def self.add_action_custom_key(action, &block)
+      action.instance_eval(&block) if block
+
+      @@actions[action.custom_key] = action unless @@actions[action.custom_key]
+      # raise "Action #{action.custom_key} already exists. Please change its custom key."
     end
   end
 end

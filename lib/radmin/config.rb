@@ -82,9 +82,9 @@ module Radmin
         # @compact_show_view = true
         # @browser_validations = true
         # @yell_for_non_accessible_fields = true
-        # @authenticate = nil
-        # @authorize = nil
-        # @audit = nil
+        @authenticate = nil
+        @authorize = nil
+        @audit = nil
         # @current_user = nil
         # @default_hidden_fields = {}
         # @default_hidden_fields[:base] = [:_type]
@@ -100,10 +100,10 @@ module Radmin
         # @main_app_name = proc { [Rails.application.engine_name.titleize.chomp(' Application'), 'Admin'] }
         # @registry = {}
         # @show_gravatar = true
-        # @navigation_static_links = {}
-        # @navigation_static_label = nil
-        # @parent_controller = '::ActionController::Base'
-        # @forgery_protection_settings = {with: :exception}
+        @navigation_static_links = {}
+        @navigation_static_label = nil
+        @parent_controller = '::ActionController::Base'
+        @forgery_protection_settings = {with: :exception}
         # RailsAdmin::Config::Actions.reset
       end
 

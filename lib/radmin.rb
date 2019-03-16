@@ -8,7 +8,7 @@ module Radmin
     if entity
       Radmin::Config.model(entity, &block)
     elsif block_given?
-      block.call(RailsAdmin::Config)
+      block.call(Radmin::Config)
     else
       Radmin::Config
     end

@@ -5,19 +5,19 @@ module Radmin
     class Index < Radmin::Actions::Base
       Radmin::Actions::register_action(self)
 
-      def collection?
+      register_property :collection? do
         true
       end
 
-      def http_methods
+      register_property :http_methods do
         [:get, :post]
       end
 
-      def route_fragment
+      register_property :route_fragment do
         ''
       end
 
-      # register_instance_option :breadcrumb_parent do
+      # register_property :breadcrumb_parent do
       #   parent_model = bindings[:abstract_model].try(:config).try(:parent)
       #   if am = parent_model && RailsAdmin.config(parent_model).try(:abstract_model)
       #     [:index, am]
@@ -26,7 +26,7 @@ module Radmin
       #   end
       # end
 
-      def controller
+      register_property :controller do
         proc do
           # @objects ||= list_entries
           #
@@ -87,7 +87,7 @@ module Radmin
         end
       end
 
-      def link_icon
+      register_property :link_icon do
         'icon-th-list'
       end
     end

@@ -7,9 +7,9 @@ module Radmin
     included do
       # scope :disabled, -> { where(disabled: true) }
 
-      unless defined? :bindings
+      unless respond_to? :bindings
         define_method :bindings do
-          @bindings
+          @bindings || {}
         end
       end
     end

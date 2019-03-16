@@ -1,26 +1,28 @@
 require 'radmin/actions'
 require 'radmin/bindable'
+require 'radmin/configurable'
 require 'singleton'
 
 module Radmin
   module Actions
     class Base
       include Radmin::Bindable
+      include Radmin::Configurable
       include Singleton
 
-      def statistics
+      register_property :statistics do
         false
       end
 
-      def link_icon
+      register_property :link_icon do
         nil
       end
 
-      def link_text
+      register_property :link_text do
         nil
       end
 
-      def enabled?
+      register_property :enabled? do
         true
 
         # bindings[:abstract_model].nil? || (
@@ -31,13 +33,13 @@ module Radmin
       end
 
       # Should the action be visible
-      def visible?
+      register_property :visible? do
         link_icon.present? || link_text.present?
 
         # authorized?
       end
 
-      def authorized?
+      register_property :authorized? do
         true
 
         # enabled? && (
@@ -46,27 +48,27 @@ module Radmin
       end
 
       # Is the action acting on the root level (Example: /admin/contact)
-      def root?
+      register_property :root? do
         false
       end
 
       # Is the action on a model scope (Example: /admin/team/export)
-      def collection?
+      register_property :collection? do
         false
       end
 
       # Is the action on an object scope (Example: /admin/team/1/edit)
-      def member?
+      register_property :member? do
         false
       end
 
       # Model scoped actions only. You will need to handle params[:bulk_ids] in controller
-      def bulkable?
+      register_property :bulkable? do
         false
       end
 
       # Scoped by filters. You will need to handle params[:f] in controller
-      def scopeable?
+      register_property :scopeable? do
         false
       end
 
@@ -80,49 +82,49 @@ module Radmin
       # - @objects if you're on a model scope
       # - @abstract_model & @model_config if you're on a model or object scope
       # - @object if you're on an object scope
-      def controller
+      register_property :controller do
         proc do
           render action: @action.template_name
         end
       end
 
       # View partial name (called in default :controller block)
-      def template_name
+      register_property :template_name do
         key.to_sym
       end
 
       # For Cancan and the like
-      def authorization_key
+      register_property :authorization_key do
         key.to_sym
       end
 
       # List of methods allowed. Note that you are responsible for correctly handling them in :controller block
-      def http_methods
+      register_property :http_methods do
         [:get]
       end
 
       # Url fragment
-      def route_fragment
+      register_property :route_fragment do
         custom_key.to_s
       end
 
       # Controller action name
-      def action_name
+      register_property :action_name do
         custom_key.to_sym
       end
 
       # I18n key
-      def i18n_key
+      register_property :i18n_key do
         key
       end
 
       # User should override only custom_key (action name and route fragment change, allows for duplicate actions)
-      def custom_key
+      register_property :custom_key do
         key
       end
 
       # Breadcrumb parent
-      def breadcrumb_parent
+      register_property :breadcrumb_parent do
         if root?
           [:dashboard]
         elsif collection?
@@ -131,6 +133,7 @@ module Radmin
           [:show, bindings[:abstract_model], bindings[:object]]
         end
       end
+
 
       def key
         self.class.key
