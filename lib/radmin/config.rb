@@ -38,6 +38,36 @@ module Radmin
         Radmin::Actions.instance_eval(&block) if block
       end
 
+      # Loads a model configuration instance from the registry or registers
+      # a new one if one is yet to be added.
+      #
+      # First argument can be an instance of requested model, its class object,
+      # its class name as a string or symbol or a RailsAdmin::AbstractModel
+      # instance.
+      #
+      # If a block is given it is evaluated in the context of configuration instance.
+      #
+      # Returns given model's configuration
+      def model(entity, &block)
+        i = 0
+
+        # key = begin
+        #   if entity.is_a?(RailsAdmin::AbstractModel)
+        #     entity.model.try(:name).try :to_sym
+        #   elsif entity.is_a?(Class)
+        #     entity.name.to_sym
+        #   elsif entity.is_a?(String) || entity.is_a?(Symbol)
+        #     entity.to_sym
+        #   else
+        #     entity.class.name.to_sym
+        #   end
+        # end
+        #
+        # @registry[key] ||= RailsAdmin::Config::LazyModel.new(entity)
+        # @registry[key].add_deferred_block(&block) if block
+        # @registry[key]
+      end
+
       # @see RailsAdmin::Config::DEFAULT_AUTHORIZE
       def authorize_with(*args, &block)
         # extension = args.shift
@@ -90,7 +120,7 @@ module Radmin
         # @default_hidden_fields[:base] = [:_type]
         # @default_hidden_fields[:edit] = [:id, :_id, :created_at, :created_on, :deleted_at, :updated_at, :updated_on, :deleted_on]
         # @default_hidden_fields[:show] = [:id, :_id, :created_at, :created_on, :deleted_at, :updated_at, :updated_on, :deleted_on]
-        # @default_items_per_page = 20
+        @default_items_per_page = 20
         # @default_associated_collection_limit = 100
         # @default_search_operator = 'default'
         # @excluded_models = []
@@ -245,35 +275,6 @@ module Radmin
       #   (viable_models - excluded).uniq.sort
       # end
       #
-      # # Loads a model configuration instance from the registry or registers
-      # # a new one if one is yet to be added.
-      # #
-      # # First argument can be an instance of requested model, its class object,
-      # # its class name as a string or symbol or a RailsAdmin::AbstractModel
-      # # instance.
-      # #
-      # # If a block is given it is evaluated in the context of configuration instance.
-      # #
-      # # Returns given model's configuration
-      # #
-      # # @see RailsAdmin::Config.registry
-      # def model(entity, &block)
-      #   key = begin
-      #     if entity.is_a?(RailsAdmin::AbstractModel)
-      #       entity.model.try(:name).try :to_sym
-      #     elsif entity.is_a?(Class)
-      #       entity.name.to_sym
-      #     elsif entity.is_a?(String) || entity.is_a?(Symbol)
-      #       entity.to_sym
-      #     else
-      #       entity.class.name.to_sym
-      #     end
-      #   end
-      #
-      #   @registry[key] ||= RailsAdmin::Config::LazyModel.new(entity)
-      #   @registry[key].add_deferred_block(&block) if block
-      #   @registry[key]
-      # end
       #
       # def default_hidden_fields=(fields)
       #   if fields.is_a?(Array)

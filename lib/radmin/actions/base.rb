@@ -1,13 +1,13 @@
 require 'radmin/actions'
-require 'radmin/bindable'
-require 'radmin/configurable'
+require 'radmin/utils/bindable'
+require 'radmin/utils/configurable'
 require 'singleton'
 
 module Radmin
   module Actions
     class Base
-      include Radmin::Bindable
-      include Radmin::Configurable
+      include Radmin::Utils::Bindable
+      include Radmin::Utils::Configurable
       include Singleton
 
       register_property :statistics do

@@ -1,4 +1,5 @@
 require 'radmin/engine'
+require 'radmin/base'
 
 require 'radmin/config'
 require 'radmin/actions'
