@@ -1,4 +1,5 @@
 require 'radmin/actions'
+require 'radmin/models'
 
 module Radmin
   class Config
@@ -49,20 +50,24 @@ module Radmin
       #
       # Returns given model's configuration
       def model(entity, &block)
-        i = 0
+        key = begin
+          if entity.is_a?(RailsAdmin::AbstractModel)
+            entity.model.try(:name).try :to_sym
+          elsif entity.is_a?(Class)
+            entity.name.to_sym
+          elsif entity.is_a?(String) || entity.is_a?(Symbol)
+            entity.to_sym
+          else
+            entity.class.name.to_sym
+          end
+        end
 
-        # key = begin
-        #   if entity.is_a?(RailsAdmin::AbstractModel)
-        #     entity.model.try(:name).try :to_sym
-        #   elsif entity.is_a?(Class)
-        #     entity.name.to_sym
-        #   elsif entity.is_a?(String) || entity.is_a?(Symbol)
-        #     entity.to_sym
-        #   else
-        #     entity.class.name.to_sym
-        #   end
-        # end
-        #
+        res = Radmin::Models.get_model(key, entity)
+
+        res.instance_eval(&block) if block
+
+        res
+
         # @registry[key] ||= RailsAdmin::Config::LazyModel.new(entity)
         # @registry[key].add_deferred_block(&block) if block
         # @registry[key]
