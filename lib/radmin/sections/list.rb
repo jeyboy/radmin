@@ -3,12 +3,16 @@ require 'radmin/sections/base'
 module Radmin
   module Sections
     class List < Radmin::Sections::Base
-      register_property :bulkable? do
-        true
-      end
-
       register_property :filters do
         []
+      end
+
+      register_property :scopes do
+        []
+      end
+
+      register_property :bulkable? do
+        true
       end
 
       # Number of items listed per page
@@ -28,10 +32,6 @@ module Radmin
 
       register_property :sort_reverse? do
         true # By default show latest first
-      end
-
-      register_property :scopes do
-        []
       end
 
       register_property :row_css_class do

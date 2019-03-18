@@ -34,6 +34,15 @@ module Radmin
       attr_accessor :navigation_static_label
 
 
+      def default_search_operator=(operator)
+        if %w(default like starts_with ends_with is =).include? operator
+          @default_search_operator = operator
+        else
+          raise(ArgumentError.new("Search operator '#{operator}' not supported"))
+        end
+      end
+
+
       # Returns action configuration object
       def actions(&block)
         Radmin::Actions.instance_eval(&block) if block
@@ -263,14 +272,6 @@ module Radmin
       # def current_user_method(&block)
       #   @current_user = block if block
       #   @current_user || DEFAULT_CURRENT_USER
-      # end
-      #
-      # def default_search_operator=(operator)
-      #   if %w(default like starts_with ends_with is =).include? operator
-      #     @default_search_operator = operator
-      #   else
-      #     raise(ArgumentError.new("Search operator '#{operator}' not supported"))
-      #   end
       # end
       #
       # # pool of all found model names from the whole application

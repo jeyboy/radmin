@@ -2,7 +2,7 @@ require 'active_support/concern'
 
 module Radmin
   module Utils
-    module HasFileds
+    module HasFields
       def field(name, type = nil, add_to_section = true, &block)
         # field = _fields.detect { |f| name == f.name }
         #

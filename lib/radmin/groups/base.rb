@@ -1,8 +1,8 @@
 require 'radmin/utils/configurable'
 
 module Radmin
-  module Fields
-    class Group
+  module Groups
+    class Base
       include Radmin::Utils::Configurable
 
       # Configurable group label which by default is group's name humanized.
