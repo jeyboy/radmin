@@ -60,7 +60,7 @@ module Radmin
       # Returns given model's configuration
       def model(entity, &block)
         key = begin
-          if entity.is_a?(RailsAdmin::AbstractModel)
+          if entity < Radmin::Models::Base
             entity.model.try(:name).try :to_sym
           elsif entity.is_a?(Class)
             entity.name.to_sym

@@ -1,4 +1,5 @@
 require 'active_support/concern'
+require 'radmin/fields/types'
 
 module Radmin
   module Utils

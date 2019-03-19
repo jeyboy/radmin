@@ -1,6 +1,6 @@
 require 'radmin/config'
-require 'radmin/utils/configurable'
 require 'radmin/sections'
+require 'radmin/utils/configurable'
 
 module Radmin
   module Models

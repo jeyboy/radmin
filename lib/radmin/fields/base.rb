@@ -23,100 +23,100 @@ module Radmin
       end
 
 
-      register_instance_option :export_value do
+      register_property :export_value do
         value.inspect
       end
 
 
-      register_instance_option :view_helper do
+      register_property :view_helper do
         nil
         # :check_box
       end
 
-      register_instance_option :render do
+      register_property :render do
         nil
         # bindings[:view].render partial: "rails_admin/main/#{partial}", locals: {field: self, form: bindings[:form]}
       end
 
-      register_instance_option :partial do
+      register_property :partial do
         nil
         # nested_form ? :form_nested_one : :form_filtering_select
       end
 
-      register_instance_option :label do
+      register_property :label do
         'label'
         # label = ((@label ||= {})[::I18n.locale] ||= abstract_model.model.human_attribute_name name)
         # label = 'Id' if label == ''
         # label
       end
 
-      register_instance_option :enum do
+      register_property :enum do
         nil
         # abstract_model.model.defined_enums[name.to_s]
       end
 
 
       # Accessor for field's help text displayed below input field.
-      register_instance_option :help do
+      register_property :help do
         (@help ||= {})[::I18n.locale] ||= generic_field_help
       end
 
-      register_instance_option :hint do
+      register_property :hint do
         (@hint ||= '')
       end
 
-      register_instance_option :html_attributes do
+      register_property :html_attributes do
         {
             required: required?,
         }
       end
 
-      register_instance_option :css_class do
+      register_property :css_class do
         "#{self.name}_field"
       end
 
-      register_instance_option :default_value do
+      register_property :default_value do
         nil
       end
 
-      register_instance_option :formatted_value do
+      register_property :formatted_value do
         nil
         # (o = value) && o.send(associated_model_config.object_label_method)
         # bindings[:object].send(name).presence || ' - '
       end
 
-      register_instance_option :pretty_value do
+      register_property :pretty_value do
         formatted_value || ' - '
       end
 
-      register_instance_option :multiple? do
+      register_property :multiple? do
         false
       end
 
-      register_instance_option :queryable do
+      register_property :queryable do
         false
       end
 
-      register_instance_option :sortable do
+      register_property :sortable do
         false
         # @sortable ||= abstract_model.adapter_supports_joins? && associated_model_config.abstract_model.properties.collect(&:name).include?(associated_model_config.object_label_method) ? associated_model_config.object_label_method : {abstract_model.table_name => method_name}
       end
 
       # serials and dates are reversed in list, which is more natural (last modified items first).
-      register_instance_option :sort_reverse? do
+      register_property :sort_reverse? do
         false
       end
 
-      register_instance_option :searchable do
+      register_property :searchable do
         false
         # @searchable ||= associated_model_config.abstract_model.properties.collect(&:name).include?(associated_model_config.object_label_method) ? [associated_model_config.object_label_method, {abstract_model.model => method_name}] : {abstract_model.model => method_name}
       end
 
-      register_instance_option :search_operator do
+      register_property :search_operator do
         @search_operator ||= Radmin::Config.default_search_operator
       end
 
-      # register_instance_option :searchable_columns do
+      # register_property :searchable_columns do
       #   @searchable_columns ||= begin
       #     case searchable
       #       when true
@@ -153,7 +153,7 @@ module Radmin
       # Accessor for whether this is field is mandatory.
       #
       # @see RailsAdmin::AbstractModel.properties
-      register_instance_option :required? do
+      register_property :required? do
         false
 
         # context = begin
@@ -173,17 +173,17 @@ module Radmin
         # end
       end
 
-      register_instance_option :read_only? do
+      register_property :read_only? do
         false
         # !editable?
       end
 
       # init status in the view
-      register_instance_option :active? do
+      register_property :active? do
         false
       end
 
-      register_instance_option :visible? do
+      register_property :visible? do
         # returned = true
         # (RailsAdmin.config.default_hidden_fields || {}).each do |section, fields|
         #   next unless self.section.is_a?("RailsAdmin::Config::Sections::#{section.to_s.camelize}".constantize)
@@ -198,24 +198,24 @@ module Radmin
 
 
       # Reader for nested attributes
-      register_instance_option :nested_form do
+      register_property :nested_form do
         false
       end
 
       # # Allowed methods for the field in forms
-      # register_instance_option :allowed_methods do
+      # register_property :allowed_methods do
       #   [method_name]
       # end
 
-      register_instance_option :inline_add do
+      register_property :inline_add do
         false
       end
 
-      register_instance_option :inline_edit do
+      register_property :inline_edit do
         false
       end
 
-      register_instance_option :eager_load? do
+      register_property :eager_load? do
         false
       end
 

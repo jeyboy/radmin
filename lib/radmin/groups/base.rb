@@ -7,7 +7,7 @@ module Radmin
 
       def initialize(section, name) #, properties)
         @section = section
-        @name = name.to_sym
+        @name = name.to_s
       end
 
       # Configurable group label which by default is group's name humanized.
