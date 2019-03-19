@@ -3,14 +3,23 @@ require 'active_support/concern'
 module Radmin
   module Utils
     module HasFields
-      def field(name, type = nil, add_to_section = true, &block)
-        # field = _fields.detect { |f| name == f.name }
-        #
+      def field(name, type = nil, &block)
+        name = name.to_s
+
+        type ||= @model.columns_info[name].type || :string
+
+        field =
+          (
+            _fields[name] =
+              Radmin::Fields::Types.load(type).new(self, name)
+          )
+
         # # some fields are hidden by default (belongs_to keys, has_many associations in list views.)
         # # unhide them if config specifically defines them
         # if field
         #   field.show unless field.instance_variable_get("@#{field.name}_registered").is_a?(Proc)
         # end
+        #
         # # Specify field as virtual if type is not specifically set and field was not
         # # found in default stack
         # if field.nil? && type.nil?
@@ -34,9 +43,13 @@ module Radmin
         #   field.order = _fields.count(&:defined)
         # end
         #
-        # # If a block has been given evaluate it and sort fields after that
-        # field.instance_eval(&block) if block
-        # field
+        # If a block has been given evaluate it and sort fields after that
+        field.instance_eval(&block) if block
+
+        field.default_value ||=
+          field.default_value(@model.columns_info[name].default)
+
+        field
       end
 
       # include fields by name and apply an optionnal block to each (through a call to fields),

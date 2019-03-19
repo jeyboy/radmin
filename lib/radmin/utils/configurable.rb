@@ -21,11 +21,11 @@ module Radmin
         # option that stores its value within an instance variable and is
         # accessed by an instance method. Both go by the name of the option.
         def register_property(option_name, scope = self, &default)
-          options = scope.instance_variable_get('@config_options') ||
-              scope.instance_variable_set('@config_options', {})
+          # options = scope.instance_variable_get('@config_options') ||
+          #     scope.instance_variable_set('@config_options', {})
 
           option_name = option_name.to_s
-          options[option_name] = nil
+          # options[option_name] = nil
 
           # If it's a boolean create an alias for it and remove question mark
           if option_name.end_with?('?')

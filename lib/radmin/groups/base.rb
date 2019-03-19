@@ -5,8 +5,14 @@ module Radmin
     class Base
       include Radmin::Utils::Configurable
 
+      def initialize(section, name) #, properties)
+        @section = section
+        @name = name.to_sym
+      end
+
       # Configurable group label which by default is group's name humanized.
       register_property :label do
+        @name
         # (@label ||= {})[::I18n.locale] ||= (parent.fields.detect { |f| f.name == name }.try(:label) || name.to_s.humanize)
       end
 

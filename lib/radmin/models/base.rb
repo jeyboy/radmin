@@ -32,6 +32,20 @@ module Radmin
         Radmin::Config.model self
       end
 
+      def virtual?
+        @virtual ||= !model.respond_to?(:columns_hash)
+      end
+
+      def columns_info
+        @column_types ||= begin
+          if virtual?
+            {}
+          else
+            model.columns_hash
+          end
+        end
+      end
+
       def to_param
         @to_param ||= @model_name.gsub('::', '~').underscore
       end

@@ -1,12 +1,13 @@
 require 'radmin/utils/configurable'
+require 'radmin/utils/groupable'
 
 module Radmin
   module Fields
     class Base
       include Radmin::Utils::Configurable
 
-      def initialize(parent, name) #, properties)
-        @parent = parent
+      def initialize(section, name) #, properties)
+        @section = section
         # @root = parent.root
         #
         # @abstract_model = parent.abstract_model
@@ -14,12 +15,11 @@ module Radmin
         @name = name.to_sym
         # @order = 0
         # @properties = properties
-        # @section = parent
       end
 
       # Configurable group
       register_property :group do
-        nil
+        Radmin::Utils::Groupable::DEFAULT_GROUP
       end
 
 
@@ -43,6 +43,12 @@ module Radmin
         # nested_form ? :form_nested_one : :form_filtering_select
       end
 
+      register_instance_option :label do
+        'label'
+        # label = ((@label ||= {})[::I18n.locale] ||= abstract_model.model.human_attribute_name name)
+        # label = 'Id' if label == ''
+        # label
+      end
 
       register_instance_option :enum do
         nil
