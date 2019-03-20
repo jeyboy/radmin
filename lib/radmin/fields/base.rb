@@ -6,15 +6,17 @@ module Radmin
     class Base
       include Radmin::Utils::Configurable
 
-      def initialize(section, name) #, properties)
+      attr_reader :abstract_model
+
+      def initialize(section, name, properties)
         @section = section
         # @root = parent.root
         #
-        # @abstract_model = parent.abstract_model
+        @abstract_model = section.model
         # @defined = false
         @name = name.to_sym
         # @order = 0
-        # @properties = properties
+        @properties = properties
       end
 
       # Configurable group
@@ -29,13 +31,12 @@ module Radmin
 
 
       register_property :view_helper do
-        nil
-        # :check_box
+        :string
       end
 
       register_property :render do
-        nil
-        # bindings[:view].render partial: "rails_admin/main/#{partial}", locals: {field: self, form: bindings[:form]}
+        bindings[:view].
+          render partial: "radmin/main/#{partial}", locals: {field: self, form: bindings[:form]}
       end
 
       register_property :partial do
