@@ -1,5 +1,5 @@
 module Radmin
-  class Base
+  module Base
     def self.radmin(&block)
       Radmin.config(self, &block)
     end

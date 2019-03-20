@@ -47,8 +47,10 @@ module Radmin
         # If a block has been given evaluate it and sort fields after that
         field.instance_eval(&block) if block
 
-        field.default_value ||=
-          field.default_value(@model.columns_info[name].default)
+        field.default_value || begin
+          val = @model.columns_info[name].default
+          field.default_value(proc { val })
+        end
 
         field
       end
