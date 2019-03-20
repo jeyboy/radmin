@@ -1,6 +1,6 @@
 require 'radmin/fields/association'
 
-module RailsAdmin
+module Radmin
   module Fields
     module Types
       module Associations

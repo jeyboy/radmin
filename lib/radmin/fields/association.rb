@@ -1,12 +1,12 @@
 require 'radmin/config'
 require 'radmin/fields/base'
 
-module RailsAdmin
+module Radmin
   module Fields
     class Association < Radmin::Fields::Base
-      # def self.inherited(klass)
-      #   super(klass)
-      # end
+      def self.inherited(klass)
+        super(klass)
+      end
 
       # # Reader for the association information hash
       # def association

@@ -8,6 +8,18 @@ module Radmin
       include Radmin::Utils::Configurable
       include Radmin::Sections
 
+      register_property :navigation_label do
+        # @navigation_label ||= begin
+        #   if (parent_module = abstract_model.model.parent) != Object
+        #     parent_module.to_s
+        #   end
+        # end
+      end
+
+      register_property :navigation_icon do
+        nil
+      end
+
       def initialize(model_or_model_name)
         @model = model_or_model_name if model_or_model_name.is_a?(Class)
         @model_name = model_or_model_name.to_s
@@ -30,6 +42,10 @@ module Radmin
 
       def config
         Radmin::Config.model self
+      end
+
+      def properties
+        {}
       end
 
       def virtual?
@@ -56,18 +72,6 @@ module Radmin
 
       def pretty_name
         model.model_name.human
-      end
-
-      register_property :navigation_label do
-        # @navigation_label ||= begin
-        #   if (parent_module = abstract_model.model.parent) != Object
-        #     parent_module.to_s
-        #   end
-        # end
-      end
-
-      register_property :navigation_icon do
-        nil
       end
     end
   end

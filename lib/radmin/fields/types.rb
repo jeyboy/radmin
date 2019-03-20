@@ -14,8 +14,8 @@ module Radmin
         end
         @@field_types[type.to_sym] = klass
       end
-
-      require 'radmin/fields/types/all'
     end
   end
 end
+
+require 'radmin/fields/types/all'

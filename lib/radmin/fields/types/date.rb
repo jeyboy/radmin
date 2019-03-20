@@ -4,7 +4,7 @@ module Radmin
   module Fields
     module Types
       class Date < Radmin::Fields::Types::Datetime
-        Radmin::Config::Fields::Types.register(self)
+        Radmin::Fields::Types.register(self)
 
         # register_instance_option :date_format do
         #   :long

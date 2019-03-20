@@ -1,4 +1,4 @@
-require 'rails_admin/config/fields/types/text'
+require 'radmin/fields/types/text'
 
 module Radmin
   module Fields

@@ -1,6 +1,6 @@
 require 'radmin/fields/base'
 
-module RailsAdmin
+module Radmin
   module Fields
     module Types
       class FileUpload < Radmin::Fields::Base

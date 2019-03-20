@@ -11,6 +11,8 @@ module Radmin
       include Radmin::Utils::Scopeable
       include Radmin::Utils::HasFields
 
+      attr_reader :model
+
       def initialize(model)
         @model = model
 

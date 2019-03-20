@@ -6,7 +6,7 @@ module Radmin
     module Types
       module Gems
         class Carrierwave < Radmin::Fields::Types::FileUpload
-          Radmin::Config::Fields::Types.register(self)
+          Radmin::Fields::Types.register(self)
 
           # register_instance_option :thumb_method do
           #   @thumb_method ||= ((versions = bindings[:object].send(name).versions.keys).detect { |k| k.in?([:thumb, :thumbnail, 'thumb', 'thumbnail']) } || versions.first.to_s)

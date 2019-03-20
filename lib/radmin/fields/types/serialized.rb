@@ -1,6 +1,6 @@
 require 'radmin/fields/types/text'
 
-module RailsAdmin
+module Radmin
   module Fields
     module Types
       class Serialized < Radmin::Fields::Types::Text

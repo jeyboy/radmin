@@ -1,11 +1,11 @@
 require 'radmin/fields/association'
 
-module RailsAdmin
+module Radmin
   module Fields
     module Types
       module Associations
         class BelongsTo < Radmin::Fields::Association
-          RailsAdmin::Config::Fields::Types.register(self)
+          Radmin::Fields::Types.register(self)
 
           # register_instance_option :formatted_value do
           #   (o = value) && o.send(associated_model_config.object_label_method)

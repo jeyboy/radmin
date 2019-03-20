@@ -8,7 +8,7 @@ module Radmin
 
       attr_reader :abstract_model
 
-      def initialize(section, name, properties)
+      def initialize(section, name)
         @section = section
         # @root = parent.root
         #
@@ -16,7 +16,7 @@ module Radmin
         # @defined = false
         @name = name.to_sym
         # @order = 0
-        @properties = properties
+        @properties = abstract_model.properties
       end
 
       # Configurable group

@@ -1,4 +1,4 @@
-require 'radmin/config/fields/base'
+require 'radmin/fields/base'
 
 module Radmin
   module Fields
