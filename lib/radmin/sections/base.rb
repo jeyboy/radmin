@@ -11,10 +11,10 @@ module Radmin
       include Radmin::Utils::Scopeable
       include Radmin::Utils::HasFields
 
-      attr_reader :model
+      attr_reader :abstract_model
 
-      def initialize(model)
-        @model = model
+      def initialize(abstract_model)
+        @abstract_model = abstract_model
 
         group(DEFAULT_GROUP)
       end

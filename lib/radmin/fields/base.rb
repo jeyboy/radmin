@@ -12,7 +12,7 @@ module Radmin
         @section = section
         # @root = parent.root
         #
-        @abstract_model = section.model
+        @abstract_model = section.abstract_model
         # @defined = false
         @name = name.to_sym
         # @order = 0
@@ -95,6 +95,10 @@ module Radmin
       end
 
       register_property :queryable do
+        false
+      end
+
+      register_property :filterable do
         false
       end
 

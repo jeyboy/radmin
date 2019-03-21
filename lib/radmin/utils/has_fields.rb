@@ -7,7 +7,15 @@ module Radmin
       def field(name, type = nil, &block)
         name = name.to_s
 
-        type ||= @model.columns_info[name].type || :string
+        type ||= begin
+          column_info = abstract_model.columns_info[name]
+
+          if !column_info && !abstract_model.model.respond_to?(name)
+            raise "Unknown attribute '#{name}' in model '#{abstract_model.model}'"
+          end
+
+          column_info && column_info.type || :string
+        end
 
         field =
           (
@@ -48,7 +56,7 @@ module Radmin
         field.instance_eval(&block) if block
 
         field.default_value || begin
-          val = @model.columns_info[name].default
+          val = abstract_model.columns_info[name].default
           field.default_value(proc { val })
         end
 
