@@ -3,7 +3,7 @@ require 'radmin/actions/base'
 module Radmin
   module Actions
     class Index < Radmin::Actions::Base
-      Radmin::Actions::register_action(self)
+      Radmin::Actions::register(self)
 
       register_property :collection? do
         true
@@ -19,7 +19,7 @@ module Radmin
 
       register_property :controller do
         proc do
-          # @objects ||= list_entries
+          @objects ||= list_entries
           #
           # unless @model_config.list.scopes.empty?
           #   if params[:scope].blank?

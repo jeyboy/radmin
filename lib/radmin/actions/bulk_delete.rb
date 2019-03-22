@@ -3,7 +3,7 @@ require 'radmin/actions/base'
 module Radmin
   module Actions
     class BulkDelete < Radmin::Actions::Base
-      Radmin::Actions::register_action(self)
+      Radmin::Actions::register(self)
 
       register_property :collection? do
         true

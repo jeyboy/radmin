@@ -2,7 +2,7 @@ module Radmin
   module Actions
     @@actions = {}
 
-    def self.register_action(name, action = nil)
+    def self.register(name, action = nil)
       if action.nil? && name.is_a?(Class)
         action = name
         name = action.to_s.demodulize.underscore.to_sym
@@ -43,3 +43,8 @@ end
 require 'radmin/actions/dashboard'
 require 'radmin/actions/index'
 require 'radmin/actions/show'
+require 'radmin/actions/bulk_delete'
+require 'radmin/actions/delete'
+require 'radmin/actions/edit'
+require 'radmin/actions/export'
+require 'radmin/actions/new'

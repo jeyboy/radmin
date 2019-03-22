@@ -1,10 +1,11 @@
 require 'radmin/config'
 require 'radmin/sections'
 require 'radmin/utils/configurable'
+require 'radmin/models/interface'
 
 module Radmin
   module Models
-    class Base
+    class Base < Radmin::Models::Interface
       include Radmin::Utils::Configurable
       include Radmin::Sections
 
@@ -72,6 +73,22 @@ module Radmin
 
       def pretty_name
         model.model_name.human
+      end
+
+      def primary_key
+        model.primary_key
+      end
+
+      def scoped
+        model
+      end
+
+      def find(id)
+        model.find_by(primary_key => id)
+      end
+
+      def where(*conditions)
+        model.where(conditions)
       end
     end
   end

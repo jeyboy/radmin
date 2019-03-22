@@ -31,13 +31,19 @@ module Radmin
 
     def get_model
       @model_name = to_model_name(params[:model_name])
-      raise(Radmin::ModelNotFound) unless (@abstract_model = Radmin::AbstractModel.new(@model_name))
-      raise(Radmin::ModelNotFound) if (@model_config = @abstract_model.config).excluded?
+
+      raise(Radmin::ModelNotFound) unless
+        (@abstract_model = Radmin::Config::model(@model_name))
+
+      raise(Radmin::ModelNotFound) if
+        (@model_config = @abstract_model.config).excluded?
+
       @properties = @abstract_model.properties
     end
 
     def get_object
-      raise(Radmin::ObjectNotFound) unless (@object = @abstract_model.get(params[:id]))
+      raise(Radmin::ObjectNotFound) unless
+        (@object = @abstract_model.find(params[:id]))
     end
 
     private

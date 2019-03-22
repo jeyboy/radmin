@@ -30,6 +30,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'remotipart'
 
+  spec.add_dependency 'haml'
   spec.add_dependency 'coffee-rails'
   spec.add_dependency 'sass-rails'
 
