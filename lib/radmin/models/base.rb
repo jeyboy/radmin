@@ -1,12 +1,12 @@
 require 'radmin/config'
 require 'radmin/sections'
-require 'radmin/utils/configurable'
+require 'radmin/utils/base'
 require 'radmin/models/interface'
 
 module Radmin
   module Models
     class Base < Radmin::Models::Interface
-      include Radmin::Utils::Configurable
+      include Radmin::Utils::Base
       include Radmin::Sections
 
       register_property :navigation_label do
@@ -19,22 +19,6 @@ module Radmin
 
       register_property :navigation_icon do
         nil
-      end
-
-      def initialize(model_or_model_name)
-        @model = model_or_model_name if model_or_model_name.is_a?(Class)
-        @model_name = model_or_model_name.to_s
-
-        # ancestors = model.ancestors.collect(&:to_s)
-        # if ancestors.include?('ActiveRecord::Base') && !model.abstract_class?
-        #   initialize_active_record
-        # elsif ancestors.include?('Mongoid::Document')
-        #   initialize_mongoid
-        # end
-      end
-
-      def model
-        @model ||= @model_name.constantize
       end
 
       def to_s
@@ -64,11 +48,11 @@ module Radmin
       end
 
       def to_param
-        @to_param ||= @model_name.gsub('::', '~').underscore
+        @to_param ||= class_name_to_path_name(@model_name) #@model_name.gsub('::', '~').underscore
       end
 
       def param_key
-        @param_key ||= @model_name.gsub('::', '_').underscore
+        @param_key ||= class_name_to_param_name(@model_name) #@model_name.gsub('::', '_').underscore
       end
 
       def pretty_name

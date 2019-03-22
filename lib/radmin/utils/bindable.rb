@@ -15,14 +15,15 @@ module Radmin
         end
       end
 
-      class_methods do
-        def with_bindings(**args)
-          @bindings = args
-        end
 
-        def append_bindings(**args)
-          @bindings = (@bindings || {}).merge(args)
-        end
+      def with_bindings(**args)
+        @bindings = args
+        self
+      end
+
+      def append_bindings(**args)
+        @bindings = (@bindings || {}).merge(args)
+        self
       end
     end
   end

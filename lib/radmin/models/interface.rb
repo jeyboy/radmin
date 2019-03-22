@@ -1,11 +1,34 @@
+require 'radmin/utils/configurable'
+
 module Radmin
   module Models
     class Interface
-      def primary_key
-        raise 'Override me'
+      include Radmin::Utils::Configurable
+
+      attr_reader :model_name
+
+      #default scope for model
+      register_property :scoped do
+        where('1=1')
       end
 
-      def scoped
+      def initialize(model_or_model_name)
+        @model = model_or_model_name if model_or_model_name.is_a?(Class)
+        @model_name = model_or_model_name.to_s
+
+        # ancestors = model.ancestors.collect(&:to_s)
+        # if ancestors.include?('ActiveRecord::Base') && !model.abstract_class?
+        #   initialize_active_record
+        # elsif ancestors.include?('Mongoid::Document')
+        #   initialize_mongoid
+        # end
+      end
+
+      def model
+        @model ||= @model_name.constantize
+      end
+
+      def primary_key
         raise 'Override me'
       end
 

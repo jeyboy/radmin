@@ -1,8 +1,7 @@
 module Radmin
   class MainController < Radmin::ApplicationController
     include ActionView::Helpers::TextHelper
-    # include RailsAdmin::MainHelper
-    # include RailsAdmin::ApplicationHelper
+    include Radmin::MainHelper
 
     layout :get_layout
 

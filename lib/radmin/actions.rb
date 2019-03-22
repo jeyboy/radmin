@@ -17,6 +17,10 @@ module Radmin
       }
     end
 
+    def self.find(name)
+      @@actions[name.to_sym]
+    end
+
     def self.all
       @@actions
     end

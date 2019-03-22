@@ -9,6 +9,8 @@ module Radmin
   end
 
   class ApplicationController < (Config.parent_controller.constantize || ActionController::Base)
+    include Radmin::ApplicationHelper
+
     protect_from_forgery Config.forgery_protection_settings || { with: :exception }
 
     before_action :_authenticate!
@@ -30,13 +32,13 @@ module Radmin
     end
 
     def get_model
-      @model_name = to_model_name(params[:model_name])
+      @model_name = path_name_to_class_name(params[:model_name])
 
       raise(Radmin::ModelNotFound) unless
-        (@abstract_model = Radmin::Config::model(@model_name))
+        (@abstract_model = abstract_model(@model_name))
 
-      raise(Radmin::ModelNotFound) if
-        (@model_config = @abstract_model.config).excluded?
+      # raise(Radmin::ModelNotFound) if
+      #   (@model_config = @abstract_model.config).excluded?
 
       @properties = @abstract_model.properties
     end
@@ -47,6 +49,10 @@ module Radmin
     end
 
     private
+
+    # def _current_user
+    #   instance_eval(&RailsAdmin::Config.current_user_method)
+    # end
 
     def _authenticate!
       instance_eval(&Radmin::Config.authenticate_with)

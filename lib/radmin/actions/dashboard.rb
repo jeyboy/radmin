@@ -35,7 +35,8 @@ module Radmin
           #     @most_recent_created[t.model.name] = t.model.last.try(:created_at)
           #   end
           # end
-          # render @action.template_name, status: @status_code || :ok
+
+          render @action.template_name, status: @status_code || :ok
         end
       end
 

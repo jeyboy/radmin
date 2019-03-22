@@ -5,20 +5,28 @@
     %meta{content: "text/html; charset=utf-8", "http-equiv" => "Content-Type"}
     %meta{content: "width=device-width, initial-scale=1", name: "viewport; charset=utf-8"}
     %meta{content: "NONE,NOARCHIVE", name: "robots"}
+
     = csrf_meta_tag
-    = stylesheet_link_tag "rails_admin/rails_admin.css", media: :all
-    = javascript_include_tag "rails_admin/rails_admin.js"
+    = stylesheet_link_tag "radmin/radmin.css", media: :all
+    = javascript_include_tag "radmin/radmin.js"
+
   %body.rails_admin
     #admin-js{:'data-i18n-options' => I18n.t("admin.js").to_json}
+
     -# Initialize JS simple i18n
     :javascript
-      RailsAdmin.I18n.init('#{I18n.locale}', document.getElementById("admin-js").dataset.i18nOptions);
+      Radmin.I18n.init('#{I18n.locale}', document.getElementById("admin-js").dataset.i18nOptions);
+
     #loading.label.label-warning{style: 'display:none; position:fixed; right:20px; bottom:20px; z-index:100000'}= t('admin.loading')
+
     %nav.navbar.navbar-default.navbar-fixed-top
-      = render "layouts/rails_admin/navigation"
+      = render "layouts/radmin/navigation"
+
     .container-fluid
       .row
         .col-sm-3.col-md-2.sidebar-nav
-          = render "layouts/rails_admin/sidebar_navigation"
+          = render "layouts/radmin/sidebar_navigation"
+
         .col-sm-9.col-sm-offset-3.col-md-10.col-md-offset-2
-          .content{:'data-pjax-container' => true}= render template: 'layouts/rails_admin/pjax'
+          .content{:'data-pjax-container' => true}
+            = render template: 'layouts/radmin/pjax'
