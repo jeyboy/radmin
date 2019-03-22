@@ -2,9 +2,11 @@ begin
   ActiveSupport.on_load(:active_record) do
     module ActiveRecord
       class Base
-        def self.radmin(&block)
-          Radmin.config(self, &block)
-        end
+        include Radmin::Base
+
+        # def self.radmin(&block)
+        #   Radmin.config(self, &block)
+        # end
         #
         # def rails_admin_default_object_label_method
         #   new_record? ? "new #{self.class}" : "#{self.class} ##{id}"

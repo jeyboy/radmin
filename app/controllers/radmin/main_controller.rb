@@ -10,7 +10,7 @@ module Radmin
     before_action :get_object, only: Radmin::Actions.list(:member).collect(&:action_name)
     before_action :check_for_cancel
 
-    Radmin::Actions.all.each_pair do |name, action|
+    Radmin::Actions.all.each_pair do |name, _|
       class_eval <<-EOS, __FILE__, __LINE__ + 1
         def #{name}
           @authorization_adapter.try(:authorize, action.authorization_key, @abstract_model, @object)
