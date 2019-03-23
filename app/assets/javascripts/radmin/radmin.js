@@ -3,8 +3,10 @@
 //= require jquery_ujs
 //= require jquery.remotipart
 
+//= require rails-ujs
+// require activestorage
+
 //= require popper
 //= require bootstrap
 
-// require rails-ujs
-// require activestorage
+//= require radmin/custom

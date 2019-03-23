@@ -60,10 +60,12 @@ module Radmin
       # Returns given model's configuration
       def model(entity, &block)
         key = begin
-          if entity < Radmin::Models::Base
-            entity.model.try(:name).try :to_sym
-          elsif entity.is_a?(Class)
-            entity.name.to_sym
+          if entity.is_a?(Class)
+            if entity < Radmin::Models::Base
+              entity.model.name.to_sym
+            else
+              entity.name.to_sym
+            end
           elsif entity.is_a?(String) || entity.is_a?(Symbol)
             entity.to_sym
           else

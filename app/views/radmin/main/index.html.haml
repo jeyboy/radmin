@@ -1,16 +1,23 @@
 :ruby
   query = params[:query]
+
   params = request.params.except(:authenticity_token, :action, :controller, :utf8, :bulk_export, :_pjax)
+
   params.delete(:query) if params[:query].blank?
   params.delete(:sort_reverse) unless params[:sort_reverse] == 'true'
+
   sort_reverse = params[:sort_reverse]
   sort = params[:sort]
   params.delete(:sort) if params[:sort] == @model_config.list.sort_by.to_s
+
   export_action = RailsAdmin::Config::Actions.find(:export, { controller: self.controller, abstract_model: @abstract_model })
   export_action = nil unless export_action && authorized?(export_action.action_name, @abstract_model)
-  description = RailsAdmin.config(@abstract_model.model_name).description
+
+  description = Radmin.config(@abstract_model.model_name).description
+
   properties = @model_config.list.with(controller: self.controller, view: self, object: @abstract_model.model.new).visible_fields
   checkboxes = @model_config.list.checkboxes?
+
   # columns paginate
   sets = get_column_sets(properties)
   properties = sets[params[:set].to_i] || []
@@ -20,6 +27,7 @@
 - content_for :contextual_tabs do
   - if checkboxes
     = bulk_menu
+
   - if filterable_fields.present?
     %li.dropdown{style: 'float:right'}
       %a.dropdown-toggle{href: '#', :'data-toggle' => "dropdown"}

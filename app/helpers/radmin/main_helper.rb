@@ -52,7 +52,7 @@ module Radmin
       #       crumb = begin
       #         if !current_action?(a, am, o)
       #           if a.http_methods.include?(:get)
-      #             link_to rails_admin.url_for(action: a.action_name, controller: 'rails_admin/main', model_name: am.try(:to_param), id: (o.try(:persisted?) && o.try(:id) || nil)), class: 'pjax' do
+      #             link_to rails_admin.url_for(action: a.action_name, controller: 'rails_admin/main', model_name: am.try(:to_param), id: (o.try(:persisted?) && o.try(:id) || nil)), class: 'ajax' do
       #               wording_for(:breadcrumb, a, am, o)
       #             end
       #           else
