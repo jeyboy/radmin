@@ -16,10 +16,10 @@
   checkboxes = current_model.list.checkboxes?
 
   # columns paginate
-  sets = get_column_sets(properties)
-  properties = sets[params[:set].to_i] || []
-  other_left = ((params[:set].to_i - 1) >= 0) && sets[params[:set].to_i - 1].present?
-  other_right = sets[params[:set].to_i + 1].present?
+  #sets = get_column_sets(properties)
+  #properties = sets[params[:set].to_i] || []
+  other_left = false #((params[:set].to_i - 1) >= 0) && sets[params[:set].to_i - 1].present?
+  other_right = false #sets[params[:set].to_i + 1].present?
 
 - content_for :contextual_tabs do
   - if checkboxes
@@ -55,6 +55,7 @@
     .well
       %span#filters_box
       %hr.filters_box{style: "display:#{ordered_filters.empty? ? 'none' : 'block'}"}
+
       .input-group
         %input.form-control.input-small{name: "query", type: "search", value: query, placeholder: t("admin.misc.filter")}
         %span.input-group-btn
@@ -80,9 +81,9 @@
       - current_model.list.scopes.each_with_index do |scope, index|
         - scope = '_all' if scope.nil?
         %li{class: "#{'active' if scope.to_s == params[:scope] || (params[:scope].blank? && index == 0)}"}
-          %a{href: index_path(params.merge(scope: scope, page: nil)), class: 'pjax'}= I18n.t("admin.scopes.#{@abstract_model.to_param}.#{scope}", default: I18n.t("admin.scopes.#{scope}", default: scope.to_s.titleize))
+          %a{href: index_path(params.merge(scope: scope, page: nil)), class: 'pjax'}= I18n.t("admin.scopes.#{current_model.to_param}.#{scope}", default: I18n.t("admin.scopes.#{scope}", default: scope.to_s.titleize))
 
-  = form_tag bulk_action_path(model_name: @abstract_model.to_param), method: :post, id: "bulk_form", class: "form" do
+  = form_tag bulk_action_path(model_name: current_model.to_param), method: :post, id: "bulk_form", class: "form" do
     = hidden_field_tag :bulk_action
     - if description.present?
       %p
@@ -107,7 +108,7 @@
           %th.last.shrink
       %tbody
         - @objects.each do |object|
-          %tr{class: "#{@abstract_model.param_key}_row #{current_model.list.with_bindings(object: object).row_css_class}"}
+          %tr{class: "#{current_model.param_key}_row #{current_model.list.with_bindings(object: object).row_css_class}"}
             - if checkboxes
               %td= check_box_tag "bulk_ids[]", object.id, false
             - if @other_left_link ||= other_left && index_path(params.except('set').merge(params[:set].to_i != 1 ? {set: (params[:set].to_i - 1)} : {}))
@@ -118,7 +119,7 @@
             - if @other_right_link ||= other_right && index_path(params.merge(set: (params[:set].to_i + 1)))
               %td.other.right= link_to "...", @other_right_link, class: 'pjax'
             %td.last.links
-              %ul.inline.list-inline= menu_for :member, @abstract_model, object, true
+              %ul.inline.list-inline= menu_for :member, current_model, object, true
 
     - if current_model.list.limited_pagination
       .row

@@ -140,12 +140,12 @@ module Radmin
     #     end
     #   end
     #
-    #   # Get all fields defined as visible, in the correct order.
-    #   def visible_fields
-    #     i = 0
-    #     all_fields.collect { |f| f.with(bindings) }.select(&:visible?).sort_by { |f| [f.order, i += 1] } # stable sort, damn
-    #   end
-    #
+      # Get all fields defined as visible, in the correct order.
+      def visible_fields
+        i = 0
+        _fields.values.collect { |f| f.with_bindings(bindings) }.select(&:visible).sort_by { |f| [f.order, i += 1] }
+      end
+
   protected
     def _fields
       @_fields ||= {}

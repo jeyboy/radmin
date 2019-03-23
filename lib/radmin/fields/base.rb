@@ -1,12 +1,13 @@
 require 'radmin/utils/configurable'
-require 'radmin/utils/groupable'
+require 'radmin/utils/bindable'
+# require 'radmin/utils/groupable'
 
 module Radmin
   module Fields
     class Base
       include Radmin::Utils::Configurable
 
-      attr_reader :abstract_model
+      attr_reader :abstract_model, :name
 
       def initialize(section, name)
         @section = section
@@ -90,7 +91,7 @@ module Radmin
         formatted_value || ' - '
       end
 
-      register_property :multiple? do
+      register_property :multiple do
         false
       end
 
@@ -108,7 +109,7 @@ module Radmin
       end
 
       # serials and dates are reversed in list, which is more natural (last modified items first).
-      register_property :sort_reverse? do
+      register_property :sort_reverse do
         false
       end
 
@@ -158,7 +159,7 @@ module Radmin
       # Accessor for whether this is field is mandatory.
       #
       # @see RailsAdmin::AbstractModel.properties
-      register_property :required? do
+      register_property :required do
         false
 
         # context = begin
@@ -178,17 +179,17 @@ module Radmin
         # end
       end
 
-      register_property :read_only? do
+      register_property :read_only do
         false
         # !editable?
       end
 
       # init status in the view
-      register_property :active? do
+      register_property :active do
         false
       end
 
-      register_property :visible? do
+      register_property :visible do
         # returned = true
         # (RailsAdmin.config.default_hidden_fields || {}).each do |section, fields|
         #   next unless self.section.is_a?("RailsAdmin::Config::Sections::#{section.to_s.camelize}".constantize)
@@ -220,12 +221,19 @@ module Radmin
         false
       end
 
-      register_property :eager_load? do
+      register_property :eager_load do
         false
       end
 
 
+      def bindings
+        @section.bindings
+      end
 
+      def with_bindings(args)
+        @section.with_bindings(args)
+        self
+      end
 
       def type
         :unknown

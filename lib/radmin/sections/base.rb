@@ -29,6 +29,7 @@ module Radmin
 
       def with_bindings(args)
         abstract_model.append_bindings(args)
+        self
       end
     end
   end
