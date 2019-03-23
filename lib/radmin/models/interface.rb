@@ -14,6 +14,10 @@ module Radmin
         where('1=1')
       end
 
+      register_property :description do
+        to_s
+      end
+
       register_property :weight do
         0
       end
@@ -39,9 +43,29 @@ module Radmin
         (@label_plural ||= {})[::I18n.locale] ||= model.model_name.human(count: Float::INFINITY, default: label.pluralize(::I18n.locale))
       end
 
-      # def pluralize(count)
-      #   count == 1 ? label : label_plural
-      # end
+      register_property :table_name do
+        @table_name ||= model.respond_to?(:table_name) ? model.send(:table_name) : @model_name.underscore
+      end
+
+      register_property :object_label_method do
+        :to_s
+      end
+
+      register_property :navigation_label do
+        @navigation_label ||= begin
+          if (parent_module = model.parent) != Object
+            parent_module.to_s
+          end
+        end
+      end
+
+      register_property :navigation_icon do
+        nil
+      end
+
+
+
+
 
       def initialize(model_or_model_name)
         @model = model_or_model_name if model_or_model_name.is_a?(Class)
@@ -61,6 +85,10 @@ module Radmin
 
       def primary_key
         raise 'Override me'
+      end
+
+      def pluralize(count)
+        count == 1 ? label : label_plural
       end
 
       def find(id)
@@ -102,7 +130,9 @@ module Radmin
         Array.wrap(objects).each(&:destroy)
       end
 
-
+      def to_s
+        model.to_s
+      end
 
       # def query_scope(scope, query, fields = config.list.fields.select(&:queryable?))
       #   wb = WhereBuilder.new(scope)

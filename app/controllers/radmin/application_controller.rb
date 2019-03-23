@@ -13,6 +13,9 @@ module Radmin
 
     protect_from_forgery Config.forgery_protection_settings || { with: :exception }
 
+    attr_reader :current_model
+    helper_method :current_model
+
     before_action :_authenticate!
     before_action :_authorize!
     before_action :_audit!
@@ -35,17 +38,17 @@ module Radmin
       @model_name = path_name_to_class_name(params[:model_name])
 
       raise(Radmin::ModelNotFound) unless
-        (@abstract_model = abstract_model(@model_name))
+        (@current_model = abstract_model(@model_name))
 
-      # raise(Radmin::ModelNotFound) if
-      #   (@model_config = @abstract_model.config).excluded?
+      raise(Radmin::ModelNotFound) unless
+          current_model.visible?
 
-      @properties = @abstract_model.properties
+      # @properties = current_model.properties
     end
 
     def get_object
       raise(Radmin::ObjectNotFound) unless
-        (@object = @abstract_model.find(params[:id]))
+        (@object = current_model.find(params[:id]))
     end
 
     def _current_user

@@ -13,14 +13,22 @@ module Radmin
 
       attr_reader :abstract_model
 
+      register_property :links do
+        []
+      end
+      
       def initialize(abstract_model)
         @abstract_model = abstract_model
 
         group(DEFAULT_GROUP)
       end
+      
+      def bindings
+        abstract_model.bindings
+      end
 
-      register_property :links do
-        []
+      def with_bindings(args)
+        abstract_model.append_bindings(args)
       end
     end
   end

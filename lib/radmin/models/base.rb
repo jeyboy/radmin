@@ -9,25 +9,9 @@ module Radmin
       include Radmin::Utils::Base
       include Radmin::Sections
 
-      register_property :navigation_label do
-        @navigation_label ||= begin
-          if (parent_module = model.parent) != Object
-            parent_module.to_s
-          end
-        end
-      end
-
-      register_property :navigation_icon do
-        nil
-      end
-
-      def to_s
-        model.to_s
-      end
-
-      def config
-        Radmin::Config.model self
-      end
+      # def config
+      #   Radmin::Config.model self
+      # end
 
       def properties
         {}

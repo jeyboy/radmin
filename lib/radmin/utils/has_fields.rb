@@ -4,6 +4,14 @@ require 'radmin/fields/types'
 module Radmin
   module Utils
     module HasFields
+      def fields
+        _fields
+      end
+
+      def find_field(name)
+        _fields[name.to_s]
+      end
+
       def field(name, type = nil, &block)
         name = name.to_s
 

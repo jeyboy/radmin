@@ -3,20 +3,17 @@
 
   params = request.params.except(:authenticity_token, :action, :controller, :utf8, :bulk_export, :_pjax)
 
-  params.delete(:query) if params[:query].blank?
+  params.delete(:query) if query.blank?
   params.delete(:sort_reverse) unless params[:sort_reverse] == 'true'
 
   sort_reverse = params[:sort_reverse]
   sort = params[:sort]
-  params.delete(:sort) if params[:sort] == @model_config.list.sort_by.to_s
+  params.delete(:sort) if params[:sort] == current_model.list.sort_by.to_s
 
-  export_action = RailsAdmin::Config::Actions.find(:export, { controller: self.controller, abstract_model: @abstract_model })
-  export_action = nil unless export_action && authorized?(export_action.action_name, @abstract_model)
+  description = current_model.description
 
-  description = Radmin.config(@abstract_model.model_name).description
-
-  properties = @model_config.list.with(controller: self.controller, view: self, object: @abstract_model.model.new).visible_fields
-  checkboxes = @model_config.list.checkboxes?
+  properties = current_model.list.with_bindings(controller: self.controller, view: self, object: current_model.model.new).visible_fields
+  checkboxes = current_model.list.checkboxes?
 
   # columns paginate
   sets = get_column_sets(properties)
@@ -37,7 +34,7 @@
         - filterable_fields.each do |field|
           - field_options = case field.type
           - when :enum
-            - options_for_select(field.with(object: @abstract_model.model.new).enum)
+            - options_for_select(field.with(object: current_model.model.new).enum)
           - else
             - ''
           %li
@@ -66,12 +63,21 @@
             = t('admin.misc.refresh')
           %button#remove_filter.btn.btn-info{title: "Reset filters"}
             %i.icon-white.icon-remove
-      - if export_action
-        %span{style: 'float:right'}= link_to wording_for(:link, export_action), export_path(params.except('set').except('page')), class: 'btn btn-info'
 
-  - unless @model_config.list.scopes.empty?
+      - scoped_actions = Radmin::Actions.list(:scopeable)
+
+      - if scoped_actions.present?
+        %hr
+
+        .btn-group
+          - lnk_params = params.except('set').except('page')
+
+          - scoped_actions.each do |scope_action|
+            %span= link_to wording_for(:link, scope_action), send("#{scope_action.action_name}_path", lnk_params), class: 'btn btn-info', style: 'margin: 2px 0'
+
+  - unless current_model.list.scopes.empty?
     %ul.nav.nav-tabs#scope_selector
-      - @model_config.list.scopes.each_with_index do |scope, index|
+      - current_model.list.scopes.each_with_index do |scope, index|
         - scope = '_all' if scope.nil?
         %li{class: "#{'active' if scope.to_s == params[:scope] || (params[:scope].blank? && index == 0)}"}
           %a{href: index_path(params.merge(scope: scope, page: nil)), class: 'pjax'}= I18n.t("admin.scopes.#{@abstract_model.to_param}.#{scope}", default: I18n.t("admin.scopes.#{scope}", default: scope.to_s.titleize))
@@ -101,7 +107,7 @@
           %th.last.shrink
       %tbody
         - @objects.each do |object|
-          %tr{class: "#{@abstract_model.param_key}_row #{@model_config.list.with(object: object).row_css_class}"}
+          %tr{class: "#{@abstract_model.param_key}_row #{current_model.list.with_bindings(object: object).row_css_class}"}
             - if checkboxes
               %td= check_box_tag "bulk_ids[]", object.id, false
             - if @other_left_link ||= other_left && index_path(params.except('set').merge(params[:set].to_i != 1 ? {set: (params[:set].to_i - 1)} : {}))
@@ -114,7 +120,7 @@
             %td.last.links
               %ul.inline.list-inline= menu_for :member, @abstract_model, object, true
 
-    - if @model_config.list.limited_pagination
+    - if current_model.list.limited_pagination
       .row
         .col-md-6= paginate(@objects, theme: 'ra-twitter-bootstrap/without_count', total_pages: Float::INFINITY, remote: true)
 
@@ -124,7 +130,7 @@
         .col-md-6= paginate(@objects, theme: 'ra-twitter-bootstrap', remote: true)
       .row
         .col-md-6= link_to(t("admin.misc.show_all"), index_path(params.merge(all: true)), class: "show-all btn btn-default clearfix pjax") unless total_count > 100 || total_count <= @objects.to_a.size
-      .clearfix.total-count= "#{total_count} #{@model_config.pluralize(total_count).downcase}"
+      .clearfix.total-count= "#{total_count} #{current_model.pluralize(total_count).downcase}"
 
     - else
-      .clearfix.total-count= "#{@objects.size} #{@model_config.pluralize(@objects.size).downcase}"
+      .clearfix.total-count= "#{@objects.size} #{current_model.pluralize(@objects.size).downcase}"

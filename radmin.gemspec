@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.version     = Radmin::VERSION
   spec.authors     = ['JB']
   spec.email       = ['jeyboy@bigmir.net']
-  spec.homepage    = 'https://github.com/jeyboy'
+  spec.homepage    = 'https://github.com/jeyboy/radmin'
   spec.summary     = 'Admin panel'
   spec.description = 'Admin panel'
   spec.license     = 'MIT'
@@ -42,7 +42,7 @@ Gem::Specification.new do |spec|
   # spec.add_dependency 'rack-pjax'
   # spec.add_dependency 'nested_form'
 
-  spec.add_development_dependency "pg"
+  spec.add_development_dependency 'pg'
 
-  spec.required_ruby_version = '>= 2.0.0'
+  spec.required_ruby_version = '>= 2.3.0'
 end
