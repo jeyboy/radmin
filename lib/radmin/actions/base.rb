@@ -34,17 +34,18 @@ module Radmin
 
       # Should the action be visible
       register_property :visible? do
-        link_icon.present? || link_text.present?
-
-        # authorized?
+        authorized? && (link_icon.present? || link_text.present?)
       end
 
       register_property :authorized? do
-        true
-
-        # enabled? && (
-        # bindings[:controller].try(:authorization_adapter).nil? || bindings[:controller].authorization_adapter.authorized?(authorization_key, bindings[:abstract_model], bindings[:object])
-        # )
+        enabled? && (
+          bindings[:controller].try(:authorization_adapter).nil? ||
+            bindings[:controller].authorization_adapter.authorized?(
+              action_name,
+              bindings[:abstract_model],
+              bindings[:object]
+            )
+        )
       end
 
       # Is the action acting on the root level (Example: /admin/contact)
@@ -93,10 +94,10 @@ module Radmin
         key.to_sym
       end
 
-      # For Cancan and the like
-      register_property :authorization_key do
-        key.to_sym
-      end
+      # # For Cancan and the like
+      # register_property :authorization_key do
+      #   key.to_sym
+      # end
 
       # List of methods allowed. Note that you are responsible for correctly handling them in :controller block
       register_property :http_methods do

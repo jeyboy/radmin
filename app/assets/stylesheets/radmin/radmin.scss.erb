@@ -1,10 +1,10 @@
 @charset "UTF-8";
 
-<% theme = ENV['RADMIN_THEME'] || :cerulean %>
+<% theme = ENV['RADMIN_THEME'] || :material %>
 
 @import "bootstrap";
 
-<% if theme == :default %>
+<% if theme == :custom %>
   @import "radmin/custom/variables";
   @import "radmin/custom/mixins";
   @import "radmin/custom/theming";

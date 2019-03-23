@@ -1,9 +1,11 @@
 require 'radmin/utils/configurable'
+require 'radmin/utils/bindable'
 
 module Radmin
   module Models
     class Interface
       include Radmin::Utils::Configurable
+      include Radmin::Utils::Bindable
 
       attr_reader :model_name
 
@@ -11,6 +13,35 @@ module Radmin
       register_property :scoped do
         where('1=1')
       end
+
+      register_property :weight do
+        0
+      end
+
+      register_property :visible? do
+        true
+      end
+
+      # parent node in navigation/breadcrumb
+      register_property :parent do
+        @parent_model ||= begin
+          klass = model.superclass
+          klass = nil if klass.to_s.in?(%w(Object BasicObject ActiveRecord::Base))
+          klass
+        end
+      end
+
+      register_property :label do
+        (@label ||= {})[::I18n.locale] ||= model.model_name.human
+      end
+
+      register_property :label_plural do
+        (@label_plural ||= {})[::I18n.locale] ||= model.model_name.human(count: Float::INFINITY, default: label.pluralize(::I18n.locale))
+      end
+
+      # def pluralize(count)
+      #   count == 1 ? label : label_plural
+      # end
 
       def initialize(model_or_model_name)
         @model = model_or_model_name if model_or_model_name.is_a?(Class)

@@ -36,7 +36,7 @@ module Radmin
     def self.find(name, bindings = {})
       return unless (res_action = action(name))
 
-      bindings[:controller] ? res_action.with_bindings(bindings).visible? : res_action
+      bindings[:controller] ? res_action.with_bindings(bindings).visible? ? res_action : nil : res_action
     end
 
     private
