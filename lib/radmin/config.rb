@@ -335,5 +335,7 @@ module Radmin
       #   end
       # end
     end
+
+    reset
   end
 end

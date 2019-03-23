@@ -20,17 +20,21 @@ module Radmin
       register_property :controller do
         proc do
           @objects ||= list_entries
-          #
-          # unless @model_config.list.scopes.empty?
-          #   if params[:scope].blank?
-          #     unless @model_config.list.scopes.first.nil?
-          #       @objects = @objects.send(@model_config.list.scopes.first)
-          #     end
-          #   elsif @model_config.list.scopes.collect(&:to_s).include?(params[:scope])
-          #     @objects = @objects.send(params[:scope].to_sym)
-          #   end
-          # end
-          #
+
+          scopes_list = current_model.list.scopes
+
+          unless scopes_list.empty?
+            param_scope = params[:scope]
+
+            if param_scope.blank?
+              unless scopes_list.first.blank?
+                @objects = @objects.send(scopes_list.first)
+              end
+            elsif scopes_list.collect(&:to_s).include?(params[:scope])
+              @objects = @objects.send(params[:scope].to_sym)
+            end
+          end
+
           # respond_to do |format|
           #   format.html do
           #     render @action.template_name, status: @status_code || :ok
@@ -75,6 +79,8 @@ module Radmin
           #     end
           #   end
           # end
+
+          render @action.template_name, status: @status_code || :ok
         end
       end
 

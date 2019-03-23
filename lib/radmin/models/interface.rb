@@ -11,7 +11,7 @@ module Radmin
 
       #default scope for model
       register_property :scoped do
-        where('1=1')
+        model
       end
 
       register_property :description do
@@ -104,22 +104,7 @@ module Radmin
       end
 
       def all(options = {}, scope = nil)
-        scope ||= scoped
-
-        scope = scope.includes(options[:include]) if options[:include]
-        scope = scope.limit(options[:limit]) if options[:limit]
-        scope = scope.where(primary_key => options[:bulk_ids]) if options[:bulk_ids]
-
-        # scope = query_scope(scope, options[:query]) if options[:query]
-        # scope = filter_scope(scope, options[:filters]) if options[:filters]
-
-        if options[:page] && options[:per]
-          scope = scope.send(Kaminari.config.page_method_name, options[:page]).per(options[:per])
-        end
-
-        scope = scope.reorder("#{options[:sort]} #{options[:sort_reverse] ? 'asc' : 'desc'}") if options[:sort]
-
-        scope
+        raise 'Override me'
       end
 
       def count(options = {}, scope = nil)
