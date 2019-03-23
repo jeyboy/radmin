@@ -119,6 +119,28 @@ module Radmin
         @audit || DEFAULT_AUDIT
       end
 
+
+
+      # Setup a different method to determine the current user or admin logged in.
+      # This is run inside the controller instance and made available as a helper.
+      #
+      # By default, _request.env["warden"].user_ or _current_user_ will be used.
+      #
+      # @example Custom
+      #   Radmin.config do |config|
+      #     config.current_user_method do
+      #       current_admin
+      #     end
+      #   end
+      #
+      # @see Radmin::Config::DEFAULT_CURRENT_USER
+      def current_user_method(&block)
+        @current_user = block if block
+        @current_user || DEFAULT_CURRENT_USER
+      end
+
+
+
       # Reset all configurations to defaults.
       #
       # @see Radmin::Config.registry
@@ -254,24 +276,6 @@ module Radmin
       # def configure_with(extension)
       #   configuration = RailsAdmin::CONFIGURATION_ADAPTERS[extension].new
       #   yield(configuration) if block_given?
-      # end
-      #
-      # # Setup a different method to determine the current user or admin logged in.
-      # # This is run inside the controller instance and made available as a helper.
-      # #
-      # # By default, _request.env["warden"].user_ or _current_user_ will be used.
-      # #
-      # # @example Custom
-      # #   RailsAdmin.config do |config|
-      # #     config.current_user_method do
-      # #       current_admin
-      # #     end
-      # #   end
-      # #
-      # # @see RailsAdmin::Config::DEFAULT_CURRENT_USER
-      # def current_user_method(&block)
-      #   @current_user = block if block
-      #   @current_user || DEFAULT_CURRENT_USER
       # end
       #
       # # pool of all found model names from the whole application

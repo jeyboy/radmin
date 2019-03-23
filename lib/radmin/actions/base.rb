@@ -1,14 +1,14 @@
+require 'singleton'
 require 'radmin/actions'
 require 'radmin/utils/bindable'
 require 'radmin/utils/configurable'
-require 'singleton'
 
 module Radmin
   module Actions
     class Base
+      include Singleton
       include Radmin::Utils::Bindable
       include Radmin::Utils::Configurable
-      include Singleton
 
       register_property :statistics do
         false
@@ -72,10 +72,10 @@ module Radmin
         false
       end
 
-      # # Render via pjax?
-      # register_attribute  :pjax? do
-      #   true
-      # end
+      # Render via ajax?
+      register_property :remote? do
+        false
+      end
 
       # This block is evaluated in the context of the controller when action is called
       # You can access:
@@ -105,12 +105,14 @@ module Radmin
 
       # Url fragment
       register_property :route_fragment do
-        custom_key.to_s
+        key.to_s
+        # custom_key.to_s
       end
 
       # Controller action name
       register_property :action_name do
-        custom_key.to_sym
+        key
+        # custom_key.to_sym
       end
 
       # I18n key
@@ -118,10 +120,10 @@ module Radmin
         key
       end
 
-      # User should override only custom_key (action name and route fragment change, allows for duplicate actions)
-      register_property :custom_key do
-        key
-      end
+      # # User should override only custom_key (action name and route fragment change, allows for duplicate actions)
+      # register_property :custom_key do
+      #   key
+      # end
 
       # Breadcrumb parent
       register_property :breadcrumb_parent do

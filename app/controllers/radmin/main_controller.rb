@@ -9,9 +9,9 @@ module Radmin
     before_action :get_object, only: Radmin::Actions.list(:member).collect(&:action_name)
     before_action :check_for_cancel
 
-    Radmin::Actions.all.each_pair do |name, _|
+    Radmin::Actions.list.each do |act|
       class_eval <<-EOS, __FILE__, __LINE__ + 1
-        def #{name}
+        def #{act.action_name}
           @authorization_adapter.try(:authorize, action.authorization_key, @abstract_model, @object)
           @action = action.with_bindings({controller: self, abstract_model: @abstract_model, object: @object})
           fail(ActionNotAllowed) unless @action.enabled?
@@ -41,7 +41,7 @@ module Radmin
     private
 
     def get_layout
-      "radmin/#{request.headers['X-PJAX'] ? 'pjax' : 'application'}"
+      "radmin/#{request.xhr? ? 'content' : 'application'}"
     end
 
     def back_or_index

@@ -7,26 +7,26 @@
     %meta{content: "NONE,NOARCHIVE", name: "robots"}
 
     = csrf_meta_tag
-    = stylesheet_link_tag "radmin/radmin.css", media: :all
-    = javascript_include_tag "radmin/radmin.js"
+    = stylesheet_link_tag 'radmin/radmin', media: :all
+    = javascript_include_tag 'radmin/radmin'
 
   %body.rails_admin
-    #admin-js{:'data-i18n-options' => I18n.t("admin.js").to_json}
+    -##admin-js{:'data-i18n-options' => I18n.t("admin.js").to_json}
+    -#
+    -#-# Initialize JS simple i18n
+    -#:javascript
+    -#  Radmin.I18n.init('#{I18n.locale}', document.getElementById("admin-js").dataset.i18nOptions);
 
-    -# Initialize JS simple i18n
-    :javascript
-      Radmin.I18n.init('#{I18n.locale}', document.getElementById("admin-js").dataset.i18nOptions);
-
-    #loading.label.label-warning{style: 'display:none; position:fixed; right:20px; bottom:20px; z-index:100000'}= t('admin.loading')
+    -##loading.label.label-warning{style: 'display:none; position:fixed; right:20px; bottom:20px; z-index:100000'}= t('admin.loading')
 
     %nav.navbar.navbar-default.navbar-fixed-top
-      = render "layouts/radmin/navigation"
+      = render 'layouts/radmin/navigation'
 
     .container-fluid
       .row
         .col-sm-3.col-md-2.sidebar-nav
-          = render "layouts/radmin/sidebar_navigation"
+          = render 'layouts/radmin/sidebar_navigation'
 
         .col-sm-9.col-sm-offset-3.col-md-10.col-md-offset-2
-          .content{:'data-pjax-container' => true}
-            = render template: 'layouts/radmin/pjax'
+          .content
+            = render template: 'layouts/radmin/content'

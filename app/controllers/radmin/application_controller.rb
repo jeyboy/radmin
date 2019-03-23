@@ -48,11 +48,12 @@ module Radmin
         (@object = @abstract_model.find(params[:id]))
     end
 
-    private
+    def _current_user
+      instance_eval(&Radmin::Config.current_user_method)
+    end
+    helper_method :_current_user
 
-    # def _current_user
-    #   instance_eval(&RailsAdmin::Config.current_user_method)
-    # end
+    private
 
     def _authenticate!
       instance_eval(&Radmin::Config.authenticate_with)
