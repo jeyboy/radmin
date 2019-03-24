@@ -3,7 +3,7 @@ require 'radmin/sections/base'
 module Radmin
   module Sections
     class List < Radmin::Sections::Base
-      register_property :checkboxes? do
+      register_property :show_checkboxes do
         true
       end
 
@@ -15,7 +15,7 @@ module Radmin
         []
       end
 
-      register_property :bulkable? do
+      register_property :bulkable do
         true
       end
 
@@ -31,10 +31,10 @@ module Radmin
       end
 
       register_property :sort_by do
-        # parent.abstract_model.primary_key
+        abstract_model.primary_key
       end
 
-      register_property :sort_reverse? do
+      register_property :sort_reverse do
         true # By default show latest first
       end
 

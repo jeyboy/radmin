@@ -13,7 +13,7 @@
   description = current_model.description
 
   properties = current_model.list.with_bindings(controller: self.controller, view: self, object: current_model.model.new).visible_fields
-  checkboxes = current_model.list.checkboxes?
+  checkboxes = current_model.list.show_checkboxes
 
   # columns paginate
   #sets = get_column_sets(properties)
@@ -25,20 +25,20 @@
   - if checkboxes
     = bulk_menu
 
-  - if filterable_fields.present?
-    %li.dropdown{style: 'float:right'}
-      %a.dropdown-toggle{href: '#', :'data-toggle' => "dropdown"}
-        = t('admin.misc.add_filter')
-        %b.caret
-      %ul.dropdown-menu#filters{style: 'left:auto; right:0;'}
-        - filterable_fields.each do |field|
-          - field_options = case field.type
-          - when :enum
-            - options_for_select(field.with(object: current_model.model.new).enum)
-          - else
-            - ''
-          %li
-            %a{href: '#', :"data-field-label" => field.label, :"data-field-name" => field.name, :"data-field-options" => field_options.html_safe, :"data-field-type" => field.type, :"data-field-value" => "", :"data-field-datetimepicker-format" => (field.try(:parser) && field.parser.to_momentjs)}= capitalize_first_letter(field.label)
+  -#- if filterable_fields.present?
+  -#  %li.dropdown{style: 'float:right'}
+  -#    %a.dropdown-toggle{href: '#', :'data-toggle' => "dropdown"}
+  -#      = t('admin.misc.add_filter')
+  -#      %b.caret
+  -#    %ul.dropdown-menu#filters{style: 'left:auto; right:0;'}
+  -#      - filterable_fields.each do |field|
+  -#        - field_options = case field.type
+  -#        - when :enum
+  -#          - options_for_select(field.with(object: current_model.model.new).enum)
+  -#        - else
+  -#          - ''
+  -#        %li
+  -#          %a{href: '#', :"data-field-label" => field.label, :"data-field-name" => field.name, :"data-field-options" => field_options.html_safe, :"data-field-type" => field.type, :"data-field-value" => "", :"data-field-datetimepicker-format" => (field.try(:parser) && field.parser.to_momentjs)}= capitalize_first_letter(field.label)
 
 :javascript
   jQuery(function($) {
@@ -52,29 +52,43 @@
 
 #list
   = form_tag(index_path(params.except(*%w[page f query])), method: :get, class: "pjax-form form-inline") do
-    .well
+    .well.w-100.border-bottom.border-dark
       %span#filters_box
       %hr.filters_box{style: "display:#{ordered_filters.empty? ? 'none' : 'block'}"}
 
-      .input-group
-        %input.form-control.input-small{name: "query", type: "search", value: query, placeholder: t("admin.misc.filter")}
-        %span.input-group-btn
-          %button.btn.btn-primary{type: 'submit', :'data-disable-with' => '<i class="icon-white icon-refresh"></i> '.html_safe + t('admin.misc.refresh')}
-            %i.icon-white.icon-refresh
-            = t('admin.misc.refresh')
-          %button#remove_filter.btn.btn-info{title: "Reset filters"}
-            %i.icon-white.icon-remove
+      .btn-toolbar.mb-2{"aria-label" => "Toolbar with button groups", role: 'toolbar' }
+        - if filterable_fields.present?
+          .btn-group.mr-2{"aria-label" => "First group", role: 'group' }
+            %button#btn_filter_list.btn.btn-secondary.dropdown-toggle{ 'aria-expanded' => 'false', 'aria-haspopup' => 'true', 'data-toggle' => 'dropdown', type: 'button'}
+              = t('admin.misc.add_filter')
+            .dropdown-menu{ 'aria-labelledby' => 'btn_filter_list' }
+              - filterable_fields.each do |field|
+                - field_options = case field.type
+                - when :enum
+                  - options_for_select(field.with(object: current_model.model.new).enum)
+                - else
+                  - ''
 
-      - scoped_actions = Radmin::Actions.list(:scopeable)
+                %a.dropdown-item{href: '#', :"data-field-label" => field.label, :"data-field-name" => field.name, :"data-field-options" => field_options.html_safe, :"data-field-type" => field.type, :"data-field-value" => "", :"data-field-datetimepicker-format" => (field.try(:parser) && field.parser.to_momentjs)}= capitalize_first_letter(field.label)
 
-      - if scoped_actions.present?
-        %hr
+        .input-group
+          %input.form-control.input-small{name: "query", type: "search", value: query, placeholder: t("admin.misc.filter")}
+          %span.input-group-btn
+            %button.btn.btn-primary{type: 'submit', :'data-disable-with' => '<i class="icon-white icon-refresh"></i> '.html_safe + t('admin.misc.refresh')}
+              %i.icon-white.icon-refresh
+              = t('admin.misc.refresh')
+            %button#remove_filter.btn.btn-info{title: "Reset filters"}
+              %i.icon-white.icon-remove
 
-        .btn-group
-          - lnk_params = params.except('set').except('page')
+    - scoped_actions = Radmin::Actions.list(:scopeable)
 
-          - scoped_actions.each do |scope_action|
-            %span= link_to wording_for(:link, scope_action), send("#{scope_action.action_name}_path", lnk_params), class: 'btn btn-info', style: 'margin: 2px 0'
+    - if scoped_actions.present?
+      .well.mb-2.w-100.border-bottom.border-dark
+        - lnk_params = params.except('set').except('page')
+
+        - scoped_actions.each do |scope_action|
+          .btn-group{ role: 'group' }
+            %span= link_to wording_for(:filtered_link, scope_action), send("#{scope_action.action_name}_path", lnk_params), class: 'btn btn-info', style: 'margin: 2px 0'
 
   - unless current_model.list.scopes.empty?
     %ul.nav.nav-tabs#scope_selector
@@ -89,7 +103,7 @@
       %p
         %strong= description
 
-    %table.table.table-condensed.table-striped
+    %table.table.table-sm.table-striped
       %thead
         %tr
           - if checkboxes
@@ -121,14 +135,14 @@
             %td.last.links
               %ul.inline.list-inline= menu_for :member, current_model, object, true
 
-    - if current_model.list.limited_pagination
+    - if current_model.list.compact_pagination
       .row
-        .col-md-6= paginate(@objects, theme: 'ra-twitter-bootstrap/without_count', total_pages: Float::INFINITY, remote: true)
+        .col-md-6= paginate(@objects, theme: 'radmin_bootstrap/without_count', total_pages: Float::INFINITY, remote: true)
 
     - elsif @objects.respond_to?(:total_count)
       - total_count = @objects.total_count.to_i
       .row
-        .col-md-6= paginate(@objects, theme: 'ra-twitter-bootstrap', remote: true)
+        .col-md-6= paginate(@objects, theme: 'radmin_bootstrap', remote: true)
       .row
         .col-md-6= link_to(t("admin.misc.show_all"), index_path(params.merge(all: true)), class: "show-all btn btn-default clearfix pjax") unless total_count > 100 || total_count <= @objects.to_a.size
       .clearfix.total-count= "#{total_count} #{current_model.pluralize(total_count).downcase}"
