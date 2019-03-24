@@ -1,8 +1,8 @@
 :javascript
   $('.nav.nav-pills li.active').removeClass('active');
-  $('.nav.nav-pills li[data-model="#{@abstract_model.to_param}"]').addClass('active');
+  $('.nav.nav-pills li[data-model="#{current_model.to_param}"]').addClass('active');
 
-%title= "#{@abstract_model.try(:pretty_name) || @page_name} | RAdmin"
+%title= "#{current_model.try(:pretty_name) || @page_name} | RAdmin"
 
 .page-header
   %h1= @page_name
@@ -15,7 +15,7 @@
 = breadcrumb
 
 %ul.nav.nav-tabs
-  = menu_for((@abstract_model ? (@object.try(:persisted?) ? :member : :collection) : :root), @abstract_model, @object)
+  = menu_for((current_model ? (@object.try(:persisted?) ? :member : :collection) : :root), current_model, @object)
   = content_for :contextual_tabs
 
 = yield

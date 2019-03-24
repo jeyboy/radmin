@@ -1,1 +1,33 @@
+.navbar {
+  @extend .navbar-dark;
+  @extend .bg-dark;
+}
 
+.sidebar-nav {
+  @extend .bg-dark;
+
+  .dropdown-header {
+    @extend .text-light;
+    @extend .p-1;
+    @extend .w-100;
+  }
+
+  .nav-link {
+    @extend .pl-2;
+    @extend .pr-1;
+    @extend .w-100;
+
+    &.active {
+      @extend .bg-light;
+      @extend .rounded-0;
+    }
+
+    a {
+
+      @extend .pl-0;
+      @extend .pr-0;
+
+      @extend .text-info;
+    }
+  }
+}
