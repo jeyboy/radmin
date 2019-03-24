@@ -84,7 +84,7 @@ module Radmin
       # end.join.html_safe
     end
 
-    def bulk_menu(abstract_model = @abstract_model)
+    def bulk_menu(abstract_model = current_model)
       # actions = actions(:bulkable, abstract_model)
       # return '' if actions.empty?
       # content_tag :li, class: 'dropdown', style: 'float:right' do

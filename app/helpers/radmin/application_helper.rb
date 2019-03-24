@@ -14,17 +14,16 @@ module Radmin
       Radmin::Config::model(name)
     end
 
-    def wording_for(label, action = @action, abstract_model = @abstract_model, object = @object)
-      model_config = abstract_model.try(:config)
+    def wording_for(label, action = @action, abstract_model = current_model, object = @object)
       object = abstract_model && object.is_a?(abstract_model.model) ? object : nil
       action = Radmin::Actions.find(action.to_sym) if action.is_a?(Symbol) || action.is_a?(String)
 
       capitalize_first_letter(
         I18n.t(
           "admin.actions.#{action.i18n_key}.#{label}",
-          model_label: model_config && model_config.label,
-          model_label_plural: model_config && model_config.label_plural,
-          object_label: model_config && object.try(model_config.object_label_method),
+          model_label: abstract_model&.label,
+          model_label_plural: abstract_model&.label_plural,
+          object_label: object&.try(abstract_model&.object_label_method),
         )
       )
     end
