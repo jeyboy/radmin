@@ -31,6 +31,14 @@ module Radmin
         abstract_model.append_bindings(args)
         self
       end
+
+      def key
+        self.class.key
+      end
+
+      def self.key
+        name.demodulize.underscore
+      end
     end
   end
 end

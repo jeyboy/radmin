@@ -24,7 +24,7 @@ module Radmin
         children = Radmin::Sections::Base.descendants
 
         children.each_with_object({}) do |desc, res|
-          res[desc.name.demodulize.underscore] = desc
+          res[desc.key] = desc
         end
       end
       # ObjectSpace.each_object(Class).select { |klass| klass < Radmin::Sections::Base }
