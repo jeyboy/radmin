@@ -25,21 +25,6 @@
   - if checkboxes
     = bulk_menu
 
-  -#- if filterable_fields.present?
-  -#  %li.dropdown{style: 'float:right'}
-  -#    %a.dropdown-toggle{href: '#', :'data-toggle' => "dropdown"}
-  -#      = t('admin.misc.add_filter')
-  -#      %b.caret
-  -#    %ul.dropdown-menu#filters{style: 'left:auto; right:0;'}
-  -#      - filterable_fields.each do |field|
-  -#        - field_options = case field.type
-  -#        - when :enum
-  -#          - options_for_select(field.with(object: current_model.model.new).enum)
-  -#        - else
-  -#          - ''
-  -#        %li
-  -#          %a{href: '#', :"data-field-label" => field.label, :"data-field-name" => field.name, :"data-field-options" => field_options.html_safe, :"data-field-type" => field.type, :"data-field-value" => "", :"data-field-datetimepicker-format" => (field.try(:parser) && field.parser.to_momentjs)}= capitalize_first_letter(field.label)
-
 :javascript
   jQuery(function($) {
   #{ordered_filter_string}
@@ -60,25 +45,27 @@
         - if filterable_fields.present?
           .btn-group.mr-2{"aria-label" => "First group", role: 'group' }
             %button#btn_filter_list.btn.btn-secondary.dropdown-toggle{ 'aria-expanded' => 'false', 'aria-haspopup' => 'true', 'data-toggle' => 'dropdown', type: 'button'}
+              = fa_icon('filter', type: :solid)
               = t('admin.misc.add_filter')
             .dropdown-menu{ 'aria-labelledby' => 'btn_filter_list' }
               - filterable_fields.each do |field|
                 - field_options = case field.type
-                - when :enum
-                  - options_for_select(field.with(object: current_model.model.new).enum)
-                - else
-                  - ''
+                  - when :enum
+                    - options_for_select(field.with(object: current_model.model.new).enum)
+                  - else
+                    - ''
 
                 %a.dropdown-item{href: '#', :"data-field-label" => field.label, :"data-field-name" => field.name, :"data-field-options" => field_options.html_safe, :"data-field-type" => field.type, :"data-field-value" => "", :"data-field-datetimepicker-format" => (field.try(:parser) && field.parser.to_momentjs)}= capitalize_first_letter(field.label)
 
         .input-group
-          %input.form-control.input-small{name: "query", type: "search", value: query, placeholder: t("admin.misc.filter")}
+          %input.mr-1.form-control.input-small{name: "query", type: "search", value: query, placeholder: t("admin.misc.filter")}
           %span.input-group-btn
-            %button.btn.btn-primary{type: 'submit', :'data-disable-with' => '<i class="icon-white icon-refresh"></i> '.html_safe + t('admin.misc.refresh')}
-              %i.icon-white.icon-refresh
+            %button.btn.btn-success{type: 'submit', :'data-disable-with' => '<i class="icon-white icon-refresh"></i> '.html_safe + t('admin.misc.refresh')}
+              = fa_icon('sync-alt', type: :solid)
               = t('admin.misc.refresh')
-            %button#remove_filter.btn.btn-info{title: "Reset filters"}
-              %i.icon-white.icon-remove
+            %button#remove_filter.btn.btn-danger{title: "Reset filters"}
+              = fa_icon('trash', type: :solid)
+              = t('admin.misc.reset')
 
     - scoped_actions = Radmin::Actions.list(:scopeable)
 

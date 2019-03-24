@@ -30,6 +30,7 @@ en:
       search: "Search"
       filter: "Filter"
       refresh: "Refresh"
+      reset: "Reset"
       show_all: "Show all"
       add_filter: "Add filter"
       bulk_menu_title: "Selected items"

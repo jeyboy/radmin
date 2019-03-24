@@ -18,7 +18,7 @@ module Radmin
       end
 
       register_property :link_icon do
-        'icon-eye-open'
+        'link'
       end
     end
   end

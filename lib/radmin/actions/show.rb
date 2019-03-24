@@ -88,7 +88,7 @@ module Radmin
       end
 
       register_property :link_icon do
-        'icon-th-list'
+        'eye'
       end
     end
   end

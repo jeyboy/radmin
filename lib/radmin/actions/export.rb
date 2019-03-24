@@ -35,7 +35,7 @@ module Radmin
       end
 
       register_property :link_icon do
-        'icon-share'
+        'file-download'
       end
     end
   end

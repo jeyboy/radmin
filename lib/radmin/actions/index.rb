@@ -85,7 +85,7 @@ module Radmin
       end
 
       register_property :link_icon do
-        'icon-th-list'
+        'th-list'
       end
     end
   end

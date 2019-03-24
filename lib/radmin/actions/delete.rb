@@ -45,7 +45,7 @@ module Radmin
       end
 
       register_property :link_icon do
-        'icon-remove'
+        'times'
       end
     end
   end

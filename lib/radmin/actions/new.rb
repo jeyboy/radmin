@@ -56,7 +56,7 @@ module Radmin
       end
 
       register_property :link_icon do
-        'icon-plus'
+        'plus'
       end
     end
   end

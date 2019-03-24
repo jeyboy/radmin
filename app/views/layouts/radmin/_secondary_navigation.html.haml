@@ -17,11 +17,18 @@
 
   - actions(:root).each do |action|
     %li.nav-item{class: "#{action.action_name}_root_link"}
-      = link_to wording_for(:menu, action), { action: action.action_name, controller: 'radmin/main' }, class: "nav-link #{action.remote? ? 'ajax' : ''}"
+      = link_to({ action: action.action_name, controller: 'radmin/main' }, class: "nav-link #{action.remote? ? 'ajax' : ''}") do
+        - if action.link_icon.present?
+          = fa_icon(action.link_icon, type: :solid)
+        = wording_for(:menu, action)
+
 
   - if main_app_root_path = (main_app.root_path rescue false)
     %li.nav-item
-      = link_to t('admin.home.name'), main_app_root_path, class: 'nav-link'
+      = link_to main_app_root_path, class: 'nav-link' do
+        = fa_icon('home', type: :solid)
+        = t('admin.home.name')
+
 
   - if _current_user
     - if user_link = edit_user_link

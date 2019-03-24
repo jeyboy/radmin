@@ -45,7 +45,7 @@ module Radmin
       end
 
       register_property :link_icon do
-        'icon-home'
+        'chart-pie'
       end
     end
   end
