@@ -190,6 +190,13 @@ module Radmin
       end
 
       register_property :visible do
+        predefined_hiddens = (Radmin::Config.default_hidden_fields || {})
+        predefined_hiddens = predefined_hiddens[@section.name]
+
+        return true unless predefined_hiddens
+
+        predefined_hiddens.include?(name)
+        
         # returned = true
         # (RailsAdmin.config.default_hidden_fields || {}).each do |section, fields|
         #   next unless self.section.is_a?("RailsAdmin::Config::Sections::#{section.to_s.camelize}".constantize)
