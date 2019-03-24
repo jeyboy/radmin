@@ -12,6 +12,12 @@ module Radmin
     DEFAULT_CURRENT_USER = proc {}
 
     class << self
+      # set brand text
+      attr_accessor :brand_text
+
+      # set brand icon
+      attr_accessor :brand_icon_url
+
       # set parent controller
       attr_accessor :parent_controller
 
@@ -147,6 +153,10 @@ module Radmin
       #
       # @see Radmin::Config.registry
       def reset
+        @brand_text = 'RAdmin'
+        @brand_icon_url = nil
+
+
         # @compact_show_view = true
         # @browser_validations = true
         # @yell_for_non_accessible_fields = true

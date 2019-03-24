@@ -1,8 +1,26 @@
-/*
-  Customize Sass mixins from Twitter-Bootstrap/RailsAdmin theme or add new ones for your own use.
+.navbar {
+  @extend .navbar-dark;
+  @extend .bg-dark;
+}
 
-  Available mixins to use/override:
+.sidebar-nav {
+  @extend .bg-dark;
 
-  https://github.com/twbs/bootstrap-sass/tree/master/assets/stylesheets/bootstrap/mixins
-  https://github.com/sferik/rails_admin/blob/master/app/assets/stylesheets/rails_admin/base/mixins.scss
-*/
+  .dropdown-header {
+    @extend .text-light;
+    @extend .p-1;
+    @extend .w-100;
+  }
+
+  .nav-link {
+    @extend .pl-2;
+
+    a {
+
+      @extend .pl-0;
+      @extend .pr-0;
+
+      @extend .text-info;
+    }
+  }
+}
