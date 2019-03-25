@@ -87,7 +87,8 @@ module Radmin
       end
 
       register_property :formatted_value do
-        nil
+        value
+
         # (o = value) && o.send(associated_model_config.object_label_method)
         # bindings[:object].send(name).presence || ' - '
       end
@@ -265,10 +266,12 @@ module Radmin
       # Reader for field's value
       def value
         bindings[:object].safe_send(name)
+
+        # bindings[:object].safe_send(name)
       rescue NoMethodError => e
         raise e.exception <<-EOM.gsub(/^\s{10}/, '')
           #{e.message}
-          If you want to use a RailsAdmin virtual field(= a field without corresponding instance method),
+          If you want to use a Radmin virtual field(= a field without corresponding instance method),
           you should declare 'formatted_value' in the field definition.
             field :#{name} do
               formatted_value{ bindings[:object].call_some_method }
