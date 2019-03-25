@@ -30,12 +30,12 @@
   #{ordered_filter_string}
   });
 
-%style
-  - properties.each do |property|
-    - next unless property.column_width.present?
-
-    = "#list th.#{property.css_class} { width: #{property.column_width}px; min-width: #{property.column_width}px; }"
-    = "#list td.#{property.css_class} { max-width: #{property.column_width}px; }"
+-#%style
+-#  - properties.each do |property|
+-#    - next unless property.column_width.present?
+-#
+-#    = "#list th.#{property.css_class} { width: #{property.column_width}px; min-width: #{property.column_width}px; }"
+-#    = "#list td.#{property.css_class} { max-width: #{property.column_width}px; }"
 
 %hr.border-bottom.border-dark
 
@@ -96,7 +96,7 @@
       %p
         %strong= description
 
-    %table.table.table-sm.table-striped
+    %table.radmin.table.table-sm.table-striped
       %thead
         %tr
           - if checkboxes
@@ -120,7 +120,7 @@
               %td= check_box_tag "bulk_ids[]", object.id, false
             - if @other_left_link ||= other_left && index_path(params.except('set').merge(params[:set].to_i != 1 ? {set: (params[:set].to_i - 1)} : {}))
               %td.other.left= link_to "...", @other_left_link, class: 'pjax'
-            - properties.map{ |property| property.bind(:object, object) }.each do |property|
+            - properties.map{ |property| property.with_bindings(object: object) }.each do |property|
               - value = property.pretty_value
               %td{class: "#{property.css_class} #{property.type_css_class}", title: strip_tags(value.to_s)}= value
             - if @other_right_link ||= other_right && index_path(params.merge(set: (params[:set].to_i + 1)))

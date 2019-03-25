@@ -40,3 +40,9 @@
     }
   }
 }
+
+.radmin.table {
+  thead {
+    @extend .thead-dark;
+  }
+}

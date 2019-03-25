@@ -39,6 +39,9 @@ module Radmin
       attr_accessor :navigation_static_links
       attr_accessor :navigation_static_label
 
+      def default_hidden_fields=(hidden_fields)
+        @default_hidden_fields = hidden_fields.stringify_keys
+      end
 
       def default_search_operator=(operator)
         if %w(default like starts_with ends_with is =).include? operator

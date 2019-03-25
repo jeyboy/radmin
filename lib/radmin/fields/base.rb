@@ -46,7 +46,8 @@ module Radmin
       end
 
       register_property :label do
-        'label'
+        abstract_model.model.human_attribute_name(name).presence || 'Id'
+
         # label = ((@label ||= {})[::I18n.locale] ||= abstract_model.model.human_attribute_name name)
         # label = 'Id' if label == ''
         # label
@@ -71,6 +72,10 @@ module Radmin
         {
             required: required?,
         }
+      end
+
+      register_property :type_css_class do
+        "#{type}_type"
       end
 
       register_property :css_class do
@@ -191,11 +196,21 @@ module Radmin
 
       register_property :visible do
         predefined_hiddens = (Radmin::Config.default_hidden_fields || {})
-        predefined_hiddens = predefined_hiddens[@section.key]
 
-        return true unless predefined_hiddens
+        section_predefined = predefined_hiddens[@section.key]
+        basic_predefined = predefined_hiddens['base']
+        default_predefined = predefined_hiddens[nil]
 
-        predefined_hiddens.include?(name)
+
+        if (section_predefined || default_predefined || basic_predefined)
+          if section_predefined
+            !(section_predefined.include?(name) || basic_predefined&.include?(name))
+          else
+            !(basic_predefined&.include?(name) || default_predefined&.include?(name))
+          end
+        else
+          true
+        end
 
         # returned = true
         # (RailsAdmin.config.default_hidden_fields || {}).each do |section, fields|
@@ -242,8 +257,9 @@ module Radmin
         self
       end
 
+      # Reader for field's type
       def type
-        :unknown
+        @type ||= self.class.name.to_s.demodulize.underscore.to_sym
       end
 
       # Reader for field's value
