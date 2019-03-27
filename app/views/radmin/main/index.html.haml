@@ -15,15 +15,14 @@
   properties = current_model.list.with_bindings(controller: self.controller, view: self, object: current_model.model.new).visible_fields
   checkboxes = current_model.list.show_checkboxes
 
+  bulk_actions = checkboxes ? actions(:bulkable, current_model) : []
+  scoped_actions = Radmin::Actions.list(:scopeable)
+
   # columns paginate
   #sets = get_column_sets(properties)
   #properties = sets[params[:set].to_i] || []
   other_left = false #((params[:set].to_i - 1) >= 0) && sets[params[:set].to_i - 1].present?
   other_right = false #sets[params[:set].to_i + 1].present?
-
-- content_for :contextual_tabs do
-  - if checkboxes
-    = bulk_menu
 
 :javascript
   jQuery(function($) {
@@ -48,10 +47,10 @@
       .btn-toolbar.mb-2{ role: 'toolbar' }
         - if filterable_fields.present?
           .btn-group.mr-2.mt-2{ role: 'group' }
-            %button#btn_filter_list.btn.btn-secondary.dropdown-toggle{ 'aria-expanded' => 'false', 'aria-haspopup' => 'true', 'data-toggle' => 'dropdown', type: 'button'}
+            %button#btn_add_filter_list.btn.btn-secondary.dropdown-toggle{ 'aria-expanded' => 'false', 'aria-haspopup' => 'true', 'data-toggle' => 'dropdown', type: 'button'}
               = fa_icon('filter', type: :solid)
               = t('admin.misc.add_filter')
-            .dropdown-menu{ 'aria-labelledby' => 'btn_filter_list' }
+            .dropdown-menu{ 'aria-labelledby' => 'btn_add_filter_list' }
               - filterable_fields.each do |field|
                 - field_options = case field.type
                   - when :enum
@@ -59,12 +58,13 @@
                   - else
                     - ''
 
-                %a.dropdown-item{href: '#', :"data-field-label" => field.label, :"data-field-name" => field.name, :"data-field-options" => field_options.html_safe, :"data-field-type" => field.type, :"data-field-value" => "", :"data-field-datetimepicker-format" => (field.try(:parser) && field.parser.to_momentjs)}= capitalize_first_letter(field.label)
+                %a.dropdown-item{href: '#', :"data-field-label" => field.label, :"data-field-name" => field.name, :"data-field-options" => field_options.html_safe, :"data-field-type" => field.type, :"data-field-value" => "", :"data-field-datetimepicker-format" => (field.try(:parser) && field.parser.to_momentjs)}
+                  = capitalize_first_letter(field.label)
 
         .input-group.mr-2.mt-2
-          %input.form-control.input-small{name: "query", type: "search", value: query, placeholder: t("admin.misc.filter")}
+          %input.form-control.input-small{name: "query", type: "search", value: query, placeholder: t("admin.misc.search")}
 
-        %div.mt-2
+        %div.mt-2.mr-2
           .btn-group{ role: 'group' }
             %button.btn.btn-success{type: 'submit', :'data-disable-with' => '<i class="icon-white icon-refresh"></i> '.html_safe + t('admin.misc.refresh')}
               = fa_icon('sync-alt', type: :solid)
@@ -74,15 +74,29 @@
               = fa_icon('trash', type: :solid)
               = t('admin.misc.reset')
 
-    - scoped_actions = Radmin::Actions.list(:scopeable)
+
+    - if bulk_actions.present?
+      .btn-group.col-sm.p-1{ role: 'group' }
+        %button#btn_check_list.btn.btn-secondary.dropdown-toggle{ 'aria-expanded' => 'false', 'aria-haspopup' => 'true', 'data-toggle' => 'dropdown', type: 'button'}
+          = fa_icon('check-double', type: :solid)
+          = t('admin.misc.bulk_menu_title')
+        .dropdown-menu{ 'aria-labelledby' => 'btn_check_list' }
+          - bulk_actions.each do |bulk_act|
+            -#link_to wording_for(:bulk_link, action), '#', onclick: "jQuery('#bulk_action').val('#{action.action_name}'); jQuery('#bulk_form').submit(); return false;"
+            %a.dropdown-item{ href: '#', :"data-action-name" => bulk_act.action_name }
+              = wording_for(:bulk_link, bulk_act)
 
     - if scoped_actions.present?
-      .well.mb-2.w-100
-        - lnk_params = params.except('set').except('page')
+      - lnk_params = params.except('set').except('page')
 
-        - scoped_actions.each do |scope_action|
-          .btn-group{ role: 'group' }
-            %span= link_to wording_for(:filtered_link, scope_action), send("#{scope_action.action_name}_path", lnk_params), class: 'btn btn-info', style: 'margin: 2px 0'
+      .btn-group.col-sm.p-1{ role: 'group' }
+        %button#btn_filter_list.btn.btn-info.dropdown-toggle{ 'aria-expanded' => 'false', 'aria-haspopup' => 'true', 'data-toggle' => 'dropdown', type: 'button'}
+          = fa_icon('search', type: :solid)
+          = t('admin.misc.filter_menu_title')
+        .dropdown-menu{ 'aria-labelledby' => 'btn_filter_list' }
+          - scoped_actions.each do |scope_action|
+            = link_to wording_for(:filtered_link, scope_action), send("#{scope_action.action_name}_path", lnk_params), class: 'dropdown-item'
+
 
   %hr.border-bottom.border-dark
 
@@ -105,29 +119,38 @@
           - if checkboxes
             %th.shrink
               %input.toggle{type: "checkbox"}
+
           - if other_left
             %th.other.left.shrink= "..."
+
           - properties.each do |property|
             - selected = (sort == property.name.to_s)
             - if property.sortable
               - sort_location = index_path params.except('sort_reverse').except('page').merge(sort: property.name).merge(selected && sort_reverse != "true" ? {sort_reverse: "true"} : {})
               - sort_direction = (sort_reverse == 'true' ? "headerSortUp" : "headerSortDown" if selected)
             %th{class: "#{property.sortable && "header pjax" || nil} #{sort_direction if property.sortable && sort_direction} #{property.css_class} #{property.type_css_class}", :'data-href' => (property.sortable && sort_location), rel: "tooltip", title: "#{property.hint}"}= capitalize_first_letter(property.label)
+
           - if other_right
             %th.other.right.shrink= "..."
+
           %th.last.shrink
+
       %tbody
         - @objects.each do |object|
           %tr{class: "#{current_model.param_key}_row #{current_model.list.with_bindings(object: object).row_css_class}"}
             - if checkboxes
               %td= check_box_tag "bulk_ids[]", object.id, false
+
             - if @other_left_link ||= other_left && index_path(params.except('set').merge(params[:set].to_i != 1 ? {set: (params[:set].to_i - 1)} : {}))
               %td.other.left= link_to "...", @other_left_link, class: 'pjax'
+
             - properties.map{ |property| property.with_bindings(object: object) }.each do |property|
               - value = property.pretty_value
               %td{class: "#{property.css_class} #{property.type_css_class}"}= property.is_raw ? raw(value) : value
+
             - if @other_right_link ||= other_right && index_path(params.merge(set: (params[:set].to_i + 1)))
               %td.other.right= link_to "...", @other_right_link, class: 'pjax'
+
             %td.last.links
               %ul.inline.list-inline= menu_for :member, current_model, object, true
 

@@ -84,21 +84,21 @@ module Radmin
       # end.join.html_safe
     end
 
-    def bulk_menu(abstract_model = current_model)
-      bulk_actions = actions(:bulkable, abstract_model)
-      return nil if bulk_actions.empty?
-
-      # content_tag :li, class: 'dropdown', style: 'float:right' do
-      #   content_tag(:a, class: 'dropdown-toggle', data: {toggle: 'dropdown'}, href: '#') { t('admin.misc.bulk_menu_title').html_safe + ' ' + '<b class="caret"></b>'.html_safe } +
-      #       content_tag(:ul, class: 'dropdown-menu', style: 'left:auto; right:0;') do
-      #         actions.collect do |action|
-      #           content_tag :li do
-      #             link_to wording_for(:bulk_link, action), '#', onclick: "jQuery('#bulk_action').val('#{action.action_name}'); jQuery('#bulk_form').submit(); return false;"
-      #           end
-      #         end.join.html_safe
-      #       end
-      # end.html_safe
-    end
+    # def bulk_menu(abstract_model = current_model)
+    #   bulk_actions = actions(:bulkable, abstract_model)
+    #   return nil if bulk_actions.empty?
+    #
+    #   content_tag :li, class: 'dropdown', style: 'float:right' do
+    #     content_tag(:a, class: 'dropdown-toggle', data: {toggle: 'dropdown'}, href: '#') { t('admin.misc.bulk_menu_title').html_safe + ' ' + '<b class="caret"></b>'.html_safe } +
+    #         content_tag(:ul, class: 'dropdown-menu', style: 'left:auto; right:0;') do
+    #           actions.collect do |action|
+    #             content_tag :li do
+    #               link_to wording_for(:bulk_link, action), '#', onclick: "jQuery('#bulk_action').val('#{action.action_name}'); jQuery('#bulk_form').submit(); return false;"
+    #             end
+    #           end.join.html_safe
+    #         end
+    #   end.html_safe
+    # end
 
     def flash_alert_class(flash_key)
       case flash_key.to_s
