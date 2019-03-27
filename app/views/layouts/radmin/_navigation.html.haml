@@ -4,8 +4,8 @@
   - if Radmin::Config.brand_text.present?
     = Radmin::Config.brand_text
 
-%button.navbar-toggler{"aria-controls" => "secondary-navigation", "aria-expanded" => "false", "aria-label" => "Toggle navigation", "data-target" => "#navbarSupportedContent", "data-toggle" => "collapse", type: 'button' }
+%button.navbar-toggler{"aria-controls" => "secondary_navigation", "aria-expanded" => "false", "aria-label" => "Toggle navigation", "data-target" => "#secondary_navigation", "data-toggle" => "collapse", type: 'button' }
   %span.navbar-toggler-icon
 
-#secondary-navigation.collapse.navbar-collapse.justify-content-end
+#secondary_navigation.collapse.navbar-collapse.justify-content-end
   = render partial: 'layouts/radmin/secondary_navigation'

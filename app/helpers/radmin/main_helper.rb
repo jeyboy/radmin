@@ -85,8 +85,9 @@ module Radmin
     end
 
     def bulk_menu(abstract_model = current_model)
-      # actions = actions(:bulkable, abstract_model)
-      # return '' if actions.empty?
+      bulk_actions = actions(:bulkable, abstract_model)
+      return nil if bulk_actions.empty?
+
       # content_tag :li, class: 'dropdown', style: 'float:right' do
       #   content_tag(:a, class: 'dropdown-toggle', data: {toggle: 'dropdown'}, href: '#') { t('admin.misc.bulk_menu_title').html_safe + ' ' + '<b class="caret"></b>'.html_safe } +
       #       content_tag(:ul, class: 'dropdown-menu', style: 'left:auto; right:0;') do

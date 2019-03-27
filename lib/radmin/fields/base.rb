@@ -7,6 +7,8 @@ module Radmin
     class Base
       include Radmin::Utils::Configurable
 
+      VALIDATION_REQUIRE_RULES = [:presence, :numericality, :attachment_presence].freeze
+
       attr_reader :abstract_model, :name
 
       def initialize(section, name)
@@ -33,6 +35,10 @@ module Radmin
 
       register_property :view_helper do
         :string
+      end
+
+      register_property :is_raw do
+        false
       end
 
       register_property :render do
@@ -166,28 +172,35 @@ module Radmin
       #
       # @see RailsAdmin::AbstractModel.properties
       register_property :required do
-        false
+        context = begin
+          if bindings[:object]
+            bindings[:object].persisted? ? :update : :create
+          else
+            :nil
+          end
+        end
 
-        # context = begin
-        #   if bindings && bindings[:object]
-        #     bindings[:object].persisted? ? :update : :create
-        #   else
-        #     :nil
-        #   end
-        # end
-        # (@required ||= {})[context] ||= !!([name] + children_fields).uniq.detect do |column_name|
-        #   abstract_model.model.validators_on(column_name).detect do |v|
-        #     !(v.options[:allow_nil] || v.options[:allow_blank]) &&
-        #         [:presence, :numericality, :attachment_presence].include?(v.kind) &&
-        #         (v.options[:on] == context || v.options[:on].blank?) &&
-        #         (v.options[:if].blank? && v.options[:unless].blank?)
-        #   end
-        # end
+        (@required ||= {})[context] ||=
+          !!
+            abstract_model.model.validators_on(name).detect do |v|
+              !(v.options[:allow_nil] || v.options[:allow_blank]) &&
+                (v.options[:on] == context || v.options[:on].blank?) &&
+                (v.options[:if].blank? && v.options[:unless].blank?) &&
+                VALIDATION_REQUIRE_RULES.include?(v.kind)
+            end
+
+          # !!([name] + children_fields).uniq.detect do |column_name|
+          #   abstract_model.model.validators_on(column_name).detect do |v|
+          #     !(v.options[:allow_nil] || v.options[:allow_blank]) &&
+          #       [:presence, :numericality, :attachment_presence].include?(v.kind) &&
+          #       (v.options[:on] == context || v.options[:on].blank?) &&
+          #       (v.options[:if].blank? && v.options[:unless].blank?)
+          #   end
+          # end
       end
 
       register_property :read_only do
         false
-        # !editable?
       end
 
       # init status in the view
@@ -201,7 +214,6 @@ module Radmin
         section_predefined = predefined_hiddens[@section.key]
         basic_predefined = predefined_hiddens['base']
         default_predefined = predefined_hiddens[nil]
-
 
         if (section_predefined || default_predefined || basic_predefined)
           if section_predefined
@@ -220,10 +232,6 @@ module Radmin
         # end
         # returned
       end
-
-
-
-
 
 
       # Reader for nested attributes

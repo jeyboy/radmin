@@ -15,7 +15,7 @@ module Radmin
       end
 
       register_property :description do
-        to_s
+        nil
       end
 
       register_property :weight do

@@ -40,14 +40,14 @@
 %hr.border-bottom.border-dark
 
 #list
-  = form_tag(index_path(params.except(*%w[page f query])), method: :get, class: "pjax-form form-inline") do
+  = form_tag(index_path(params.except(:page, :f, :query)), method: :get, class: "pjax-form form-inline") do
     .well.w-100
       %span#filters_box
       %hr.filters_box{style: "display:#{ordered_filters.empty? ? 'none' : 'block'}"}
 
-      .btn-toolbar.mb-2{"aria-label" => "Toolbar with button groups", role: 'toolbar' }
+      .btn-toolbar.mb-2{ role: 'toolbar' }
         - if filterable_fields.present?
-          .btn-group.mr-2{"aria-label" => "First group", role: 'group' }
+          .btn-group.mr-2.mt-2{ role: 'group' }
             %button#btn_filter_list.btn.btn-secondary.dropdown-toggle{ 'aria-expanded' => 'false', 'aria-haspopup' => 'true', 'data-toggle' => 'dropdown', type: 'button'}
               = fa_icon('filter', type: :solid)
               = t('admin.misc.add_filter')
@@ -61,12 +61,15 @@
 
                 %a.dropdown-item{href: '#', :"data-field-label" => field.label, :"data-field-name" => field.name, :"data-field-options" => field_options.html_safe, :"data-field-type" => field.type, :"data-field-value" => "", :"data-field-datetimepicker-format" => (field.try(:parser) && field.parser.to_momentjs)}= capitalize_first_letter(field.label)
 
-        .input-group
-          %input.mr-1.form-control.input-small{name: "query", type: "search", value: query, placeholder: t("admin.misc.filter")}
-          %span.input-group-btn
+        .input-group.mr-2.mt-2
+          %input.form-control.input-small{name: "query", type: "search", value: query, placeholder: t("admin.misc.filter")}
+
+        %div.mt-2
+          .btn-group{ role: 'group' }
             %button.btn.btn-success{type: 'submit', :'data-disable-with' => '<i class="icon-white icon-refresh"></i> '.html_safe + t('admin.misc.refresh')}
               = fa_icon('sync-alt', type: :solid)
               = t('admin.misc.refresh')
+          .btn-group{ role: 'group' }
             %button#remove_filter.btn.btn-danger{title: "Reset filters"}
               = fa_icon('trash', type: :solid)
               = t('admin.misc.reset')
@@ -122,7 +125,7 @@
               %td.other.left= link_to "...", @other_left_link, class: 'pjax'
             - properties.map{ |property| property.with_bindings(object: object) }.each do |property|
               - value = property.pretty_value
-              %td{class: "#{property.css_class} #{property.type_css_class}", title: strip_tags(value.to_s)}= value
+              %td{class: "#{property.css_class} #{property.type_css_class}"}= property.is_raw ? raw(value) : value
             - if @other_right_link ||= other_right && index_path(params.merge(set: (params[:set].to_i + 1)))
               %td.other.right= link_to "...", @other_right_link, class: 'pjax'
             %td.last.links
@@ -130,12 +133,12 @@
 
     - if current_model.list.compact_pagination
       .row
-        .col-md-6= paginate(@objects, theme: 'radmin_bootstrap/without_count', total_pages: Float::INFINITY, remote: true)
+        .col-md-6= paginate(@objects, theme: 'radmin_bootstrap/without_count', total_pages: Float::INFINITY, remote: false)
 
     - elsif @objects.respond_to?(:total_count)
       - total_count = @objects.total_count.to_i
       .row
-        .col-md-6= paginate(@objects, theme: 'radmin_bootstrap', remote: true)
+        .col-md-6= paginate(@objects, theme: 'radmin_bootstrap', remote: false)
       .row
         .col-md-6= link_to(t("admin.misc.show_all"), index_path(params.merge(all: true)), class: "show-all btn btn-default clearfix pjax") unless total_count > 100 || total_count <= @objects.to_a.size
       .clearfix.total-count= "#{total_count} #{current_model.pluralize(total_count).downcase}"
