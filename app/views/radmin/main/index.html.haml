@@ -166,7 +166,7 @@
       .row
         .col-md-6= link_to(t("admin.misc.show_all"), index_path(params.merge(all: true)), class: "show-all btn btn-default clearfix pjax") unless total_count > 100 || total_count <= @objects.to_a.size
 
-      .total-count.pl-3= "#{total_count} #{current_model.pluralize(total_count).downcase}"
+      .total-count= "#{total_count} #{current_model.pluralize(total_count).downcase}"
 
     - else
-      .total-count.pl-3= "#{@objects.size} #{current_model.pluralize(@objects.size).downcase}"
+      .total-count= "#{@objects.size} #{current_model.pluralize(@objects.size).downcase}"
