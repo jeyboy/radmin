@@ -16,6 +16,10 @@ module Radmin
     attr_reader :current_model
     helper_method :current_model
 
+    attr_reader :current_action
+    helper_method :current_action
+
+
     before_action :_authenticate!
     before_action :_authorize!
     before_action :_audit!

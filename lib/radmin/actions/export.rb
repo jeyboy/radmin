@@ -29,7 +29,7 @@ module Radmin
           #   @objects = list_entries(@model_config, :export)
           #   index
           # else
-          #   render @action.template_name
+          #   render current_action.template_name
           # end
         end
       end

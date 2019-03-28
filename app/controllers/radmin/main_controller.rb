@@ -12,11 +12,11 @@ module Radmin
     Radmin::Actions.list.each do |act|
       class_eval <<-EOS, __FILE__, __LINE__ + 1
         def #{act.action_name}
-          @authorization_adapter.try(:authorize, action.action_name, current_model, @object)
-          @action = action.with_bindings({controller: self, abstract_model: current_model, object: @object})
-          fail(ActionNotAllowed) unless @action.enabled?
+          @current_action = action(params[:action]).with_bindings({controller: self, abstract_model: current_model, object: @object})
+          fail(ActionNotAllowed) unless current_action || current_action.enabled?
+          @authorization_adapter.try(:authorize, current_action.action_name, current_model, @object)
           @page_name = wording_for(:title)
-          instance_eval &@action.controller
+          instance_eval &current_action.controller
         end
       EOS
     end
@@ -48,7 +48,7 @@ module Radmin
     end
 
     def redirect_to_on_success
-      notice = I18n.t('admin.flash.successful', name: @model_config.label, action: I18n.t("admin.actions.#{@action.key}.done"))
+      notice = I18n.t('admin.flash.successful', name: current_model.label, action: I18n.t("admin.actions.#{current_action.key}.done"))
       if params[:_add_another]
         redirect_to new_path(return_to: params[:return_to]), flash: {success: notice}
       elsif params[:_add_edit]
@@ -58,14 +58,14 @@ module Radmin
       end
     end
 
-    def visible_fields(action, model_config = @model_config)
-      model_config.send(action).with_bindings(controller: self, view: view_context, object: @object).visible_fields
+    def visible_fields(target_action, model_config = current_model)
+      model_config.send(target_action).with_bindings(controller: self, view: view_context, object: @object).visible_fields
     end
 
-    def sanitize_params_for!(action, model_config = @model_config, target_params = params[current_model.param_key])
+    def sanitize_params_for!(target_action, model_config = current_model, target_params = params[current_model.param_key])
       return unless target_params.present?
 
-      fields = visible_fields(action, model_config)
+      fields = visible_fields(target_action, model_config)
 
       allowed_methods = fields.collect(&:allowed_methods).flatten.uniq.collect(&:to_s) << 'id' << '_destroy'
 
@@ -84,7 +84,7 @@ module Radmin
     end
 
     # def handle_save_error(whereto = :new)
-    #   flash.now[:error] = I18n.t('admin.flash.error', name: @model_config.label, action: I18n.t("admin.actions.#{@action.key}.done").html_safe).html_safe
+    #   flash.now[:error] = I18n.t('admin.flash.error', name: current_model.label, action: I18n.t("admin.actions.#{current_action.key}.done").html_safe).html_safe
     #   flash.now[:error] += %(<br>- #{@object.errors.full_messages.join('<br>- ')}).html_safe
     #
     #   respond_to do |format|
@@ -119,9 +119,9 @@ module Radmin
 
       source_model_config = source_abstract_model.config
       source_object = source_abstract_model.get(params[:source_object_id])
-      action = params[:current_action].in?(%w(create update)) ? params[:current_action] : 'edit'
+      action_name = params[:current_action].in?(%w(create update)) ? params[:current_action] : 'edit'
 
-      @association = source_model_config.send(action).find_field(params[:associated_collection]).with_bindings(controller: self, object: source_object)
+      @association = source_model_config.send(action_name).find_field(params[:associated_collection]).with_bindings(controller: self, object: source_object)
 
       @association.associated_collection_scope
     end

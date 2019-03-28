@@ -26,8 +26,8 @@ module Radmin
           #     @object.set_attributes(@object.attributes.merge(object_params.to_h))
           #   end
           #   respond_to do |format|
-          #     format.html { render @action.template_name }
-          #     format.js   { render @action.template_name, layout: false }
+          #     format.html { render current_action.template_name }
+          #     format.js   { render current_action.template_name, layout: false }
           #   end
           #
           # elsif request.post? # CREATE

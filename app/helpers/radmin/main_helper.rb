@@ -27,7 +27,7 @@ module Radmin
     def navigation(nodes_stack, nodes, level = 0)
       nodes.collect do |node|
         model_param = node.to_param
-        url         = radmin.url_for(action: :index, controller: 'radmin/main', model_name: model_param)
+        url = radmin.url_for(action: :index, controller: 'radmin/main', model_name: model_param)
         level_class = " nav-level-#{level}" if level > 0
         nav_icon = node.navigation_icon ? %(<i class="#{node.navigation_icon}"></i>).html_safe : ''
 
@@ -39,20 +39,20 @@ module Radmin
       end.join.html_safe
     end
 
-    def breadcrumb(action = @action, _acc = [])
+    def breadcrumb(target_action = current_action, _acc = [])
       # begin
-      #   (parent_actions ||= []) << action
-      # end while action.breadcrumb_parent && (action = action(*action.breadcrumb_parent)) # rubocop:disable Loop
+      #   (parent_actions ||= []) << target_action
+      # end while target_action.breadcrumb_parent && (target_action = action(*target_action.breadcrumb_parent)) # rubocop:disable Loop
       #
       # content_tag(:ol, class: 'breadcrumb') do
       #   parent_actions.collect do |a|
       #     am = a.send(:eval, 'bindings[:abstract_model]')
       #     o = a.send(:eval, 'bindings[:object]')
-      #     content_tag(:li, class: current_action?(a, am, o) && 'active') do
+      #     content_tag(:li, class: target_action(a, am, o) && 'active') do
       #       crumb = begin
       #         if !current_action?(a, am, o)
       #           if a.http_methods.include?(:get)
-      #             link_to rails_admin.url_for(action: a.action_name, controller: 'rails_admin/main', model_name: am.try(:to_param), id: (o.try(:persisted?) && o.try(:id) || nil)), class: 'ajax' do
+      #             link_to rails_admin.url_for(action: a.action_name, controller: 'radmin/main', model_name: am.try(:to_param), id: (o.try(:persisted?) && o.try(:id) || nil)), class: 'ajax' do
       #               wording_for(:breadcrumb, a, am, o)
       #             end
       #           else

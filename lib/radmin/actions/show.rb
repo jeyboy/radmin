@@ -42,7 +42,7 @@ module Radmin
           #
           # respond_to do |format|
           #   format.html do
-          #     render @action.template_name, status: @status_code || :ok
+          #     render current_action.template_name, status: @status_code || :ok
           #   end
           #
           #   format.json do

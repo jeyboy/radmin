@@ -80,7 +80,7 @@ module Radmin
           #   end
           # end
 
-          render @action.template_name, status: @status_code || :ok
+          render current_action.template_name, status: @status_code || :ok
         end
       end
 
