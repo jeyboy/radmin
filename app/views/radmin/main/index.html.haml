@@ -107,6 +107,7 @@
         %li{class: "#{'active' if scope.to_s == params[:scope] || (params[:scope].blank? && index == 0)}"}
           %a{href: index_path(params.merge(scope: scope, page: nil)), class: 'pjax'}= I18n.t("admin.scopes.#{current_model.to_param}.#{scope}", default: I18n.t("admin.scopes.#{scope}", default: scope.to_s.titleize))
 
+
   = form_tag bulk_action_path(model_name: current_model.to_param), method: :post, id: "bulk_form", class: "form" do
     = hidden_field_tag :bulk_action
     - if description.present?
@@ -164,7 +165,8 @@
         .col-md-6= paginate(@objects, theme: 'radmin_bootstrap', remote: false)
       .row
         .col-md-6= link_to(t("admin.misc.show_all"), index_path(params.merge(all: true)), class: "show-all btn btn-default clearfix pjax") unless total_count > 100 || total_count <= @objects.to_a.size
-      .clearfix.total-count= "#{total_count} #{current_model.pluralize(total_count).downcase}"
+
+      .total-count.pl-3= "#{total_count} #{current_model.pluralize(total_count).downcase}"
 
     - else
-      .clearfix.total-count= "#{@objects.size} #{current_model.pluralize(@objects.size).downcase}"
+      .total-count.pl-3= "#{@objects.size} #{current_model.pluralize(@objects.size).downcase}"

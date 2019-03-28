@@ -46,3 +46,10 @@
     @extend .thead-dark;
   }
 }
+
+.total-count {
+  @extend .bg-dark;
+  @extend .text-light;
+  @extend .font-weight-bold;
+  @extend .row;
+}
