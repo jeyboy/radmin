@@ -52,5 +52,6 @@
   @extend .text-light;
   @extend .font-weight-bold;
   @extend .row;
-  @extend .pl-3;
+  @extend .pl-2;
+  margin-left: -8px;
 }

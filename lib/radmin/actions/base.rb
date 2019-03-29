@@ -81,7 +81,7 @@ module Radmin
       # This block is evaluated in the context of the controller when action is called
       # You can access:
       # - @objects if you're on a model scope
-      # - @abstract_model & @model_config if you're on a model or object scope
+      # - @abstract_model if you're on a model or object scope
       # - @object if you're on an object scope
       register_property :controller do
         proc do

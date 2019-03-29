@@ -17,6 +17,16 @@ module Radmin
         ''
       end
 
+      register_property :breadcrumb_parent do
+        parent_model = bindings[:abstract_model].try(:parent)
+
+        if am = parent_model && Radmin.config(parent_model).try(:abstract_model)
+          [:index, am]
+        else
+          nil
+        end
+      end
+
       register_property :controller do
         proc do
           @objects ||= list_entries
@@ -35,10 +45,10 @@ module Radmin
             end
           end
 
-          # respond_to do |format|
-          #   format.html do
-          #     render @action.template_name, status: @status_code || :ok
-          #   end
+          respond_to do |format|
+            format.html do
+              render current_action.template_name, status: @status_code || :ok
+            end
           #
           #   format.json do
           #     output = begin
@@ -78,9 +88,7 @@ module Radmin
           #       render text: output
           #     end
           #   end
-          # end
-
-          render current_action.template_name, status: @status_code || :ok
+          end
         end
       end
 

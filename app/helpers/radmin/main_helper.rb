@@ -16,7 +16,16 @@ module Radmin
 
     def static_navigation
       li_stack = Radmin::Config.navigation_static_links.collect do |title, url|
-        content_tag(:li, link_to(title.to_s, url, target: '_blank'), class: 'nav-link')
+        ico = nil
+
+        if url.is_a?(Array)
+          ico, url = url
+        elsif url.is_a?(Hash)
+          ico, url = url.values_at(:ico, :url)
+        end
+
+        nav_icon = ico ? fa_icon(ico, type: :solid).html_safe : ''
+        content_tag(:li, link_to(nav_icon + ' ' + title.to_s, url, target: '_blank'), class: 'nav-link')
       end.join
 
       label = Radmin::Config.navigation_static_label || t('admin.misc.navigation_static_label')
@@ -29,10 +38,10 @@ module Radmin
         model_param = node.to_param
         url = radmin.url_for(action: :index, controller: 'radmin/main', model_name: model_param)
         level_class = " nav-level-#{level}" if level > 0
-        nav_icon = node.navigation_icon ? %(<i class="#{node.navigation_icon}"></i>).html_safe : ''
+        nav_icon = node.navigation_icon ? fa_icon(node.navigation_icon, type: :solid).html_safe : ''
 
         li = content_tag :li, data: {model: model_param}, class: 'nav-link' do
-          link_to nav_icon + capitalize_first_letter(node.label_plural), url, class: "ajax #{level_class}"
+          link_to nav_icon + ' ' + capitalize_first_letter(node.label_plural), url, class: "ajax #{level_class}"
         end
 
         li + navigation(nodes_stack, nodes_stack.select { |n| n.parent.to_s == node.model_name }, level + 1)
@@ -40,32 +49,33 @@ module Radmin
     end
 
     def breadcrumb(target_action = current_action, _acc = [])
-      # begin
-      #   (parent_actions ||= []) << target_action
-      # end while target_action.breadcrumb_parent && (target_action = action(*target_action.breadcrumb_parent)) # rubocop:disable Loop
-      #
-      # content_tag(:ol, class: 'breadcrumb') do
-      #   parent_actions.collect do |a|
-      #     am = a.send(:eval, 'bindings[:abstract_model]')
-      #     o = a.send(:eval, 'bindings[:object]')
-      #     content_tag(:li, class: target_action(a, am, o) && 'active') do
-      #       crumb = begin
-      #         if !current_action?(a, am, o)
-      #           if a.http_methods.include?(:get)
-      #             link_to rails_admin.url_for(action: a.action_name, controller: 'radmin/main', model_name: am.try(:to_param), id: (o.try(:persisted?) && o.try(:id) || nil)), class: 'ajax' do
-      #               wording_for(:breadcrumb, a, am, o)
-      #             end
-      #           else
-      #             content_tag(:span, wording_for(:breadcrumb, a, am, o))
-      #           end
-      #         else
-      #           wording_for(:breadcrumb, a, am, o)
-      #         end
-      #       end
-      #       crumb
-      #     end
-      #   end.reverse.join.html_safe
-      # end
+      begin
+        (parent_actions ||= []) << target_action
+      end while target_action.breadcrumb_parent && (target_action = action(*target_action.breadcrumb_parent)) # rubocop:disable Loop
+
+      content_tag(:ol, class: 'breadcrumb') do
+        parent_actions.collect do |a|
+          am = a.bindings[:abstract_model]
+          o = a.bindings[:object]
+
+          content_tag(:li, class: 'active') do
+            crumb = begin
+              if !current_action?(a, am, o)
+                if a.http_methods.include?(:get)
+                  link_to radmin.url_for(action: a.action_name, controller: 'radmin/main', model_name: am.try(:to_param), id: (o.try(:persisted?) && o.try(:id) || nil)), class: 'ajax' do
+                    wording_for(:breadcrumb, a, am, o)
+                  end
+                else
+                  content_tag(:span, wording_for(:breadcrumb, a, am, o))
+                end
+              else
+                wording_for(:breadcrumb, a, am, o)
+              end
+            end
+            crumb
+          end
+        end.reverse.join.html_safe
+      end
     end
 
     # parent => :root, :collection, :member

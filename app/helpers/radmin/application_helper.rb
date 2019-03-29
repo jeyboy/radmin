@@ -8,7 +8,7 @@ module Radmin
     # end
 
     def current_action?(target_action, abstract_model = current_model, object = @object)
-      current_action.custom_key == target_action.custom_key &&
+      current_action.key == target_action.key &&
         abstract_model.try(:to_param) == current_model.try(:to_param) &&
         (@object.try(:persisted?) ? @object.id == object.try(:id) : !object.try(:persisted?))
     end
