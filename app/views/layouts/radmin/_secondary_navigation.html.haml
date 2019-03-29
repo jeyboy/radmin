@@ -15,12 +15,12 @@
   -#%li.nav-item
   -#  %a.nav-link.disabled{:href => "#"} Disabled
 
-  - actions(:root).each do |action|
-    %li.nav-item{class: "#{action.action_name}_root_link"}
-      = link_to({ action: action.action_name, controller: 'radmin/main' }, class: "nav-link #{action.remote? ? 'ajax' : ''}") do
-        - if action.link_icon.present?
-          = fa_icon(action.link_icon, type: :solid)
-        = wording_for(:menu, action)
+  - actions(:root).each do |root_action|
+    %li.nav-item{class: "#{root_action.action_name}_root_link"}
+      = link_to({ action: root_action.action_name, controller: 'radmin/main' }, class: "nav-link #{root_action.remote? ? 'ajax' : ''}") do
+        - if root_action.link_icon.present?
+          = fa_icon(root_action.link_icon, type: :solid)
+        = wording_for(:menu, root_action)
 
 
   - if main_app_root_path = (main_app.root_path rescue false)

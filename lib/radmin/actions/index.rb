@@ -23,7 +23,7 @@ module Radmin
         if am = parent_model && Radmin.config(parent_model).try(:abstract_model)
           [:index, am]
         else
-          nil
+          [:dashboard]
         end
       end
 

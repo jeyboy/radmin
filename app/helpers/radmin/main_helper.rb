@@ -48,7 +48,7 @@ module Radmin
       end.join.html_safe
     end
 
-    def breadcrumb(target_action = current_action, _acc = [])
+    def old_breadcrumb(target_action = current_action, _acc = [])
       begin
         (parent_actions ||= []) << target_action
       end while target_action.breadcrumb_parent && (target_action = action(*target_action.breadcrumb_parent)) # rubocop:disable Loop
@@ -58,7 +58,7 @@ module Radmin
           am = a.bindings[:abstract_model]
           o = a.bindings[:object]
 
-          content_tag(:li, class: 'active') do
+          content_tag(:li, class: 'breadcrumb-item active') do
             crumb = begin
               if !current_action?(a, am, o)
                 if a.http_methods.include?(:get)
@@ -75,6 +75,37 @@ module Radmin
             crumb
           end
         end.reverse.join.html_safe
+      end
+    end
+
+    def breadcrumb(target_action = current_action, _acc = [])
+      content_tag(:ol, class: 'breadcrumb') do
+        items = ''
+
+        begin
+          am = target_action.bindings[:abstract_model]
+          o = target_action.bindings[:object]
+
+          items.prepend(
+            content_tag(:li, class: 'breadcrumb-item active') do
+              begin
+                if !current_action?(target_action, am, o)
+                  if target_action.http_methods.include?(:get)
+                    link_to radmin.url_for(action: target_action.action_name, controller: 'radmin/main', model_name: am.try(:to_param), id: (o.try(:persisted?) && o.try(:id) || nil)), class: 'ajax' do
+                      wording_for(:breadcrumb, target_action, am, o)
+                    end
+                  else
+                    content_tag(:span, wording_for(:breadcrumb, target_action, am, o))
+                  end
+                else
+                  wording_for(:breadcrumb, target_action, am, o)
+                end
+              end
+            end
+          )
+        end while target_action.breadcrumb_parent && (target_action = action(*target_action.breadcrumb_parent)) # rubocop:disable Loop
+
+        items.html_safe
       end
     end
 
