@@ -1,0 +1,4 @@
+- if current_page.first?
+  %li.page-item.prev.disabled= link_to raw(t 'admin.pagination.previous'), '#'
+- else
+  %li.page-item.prev= link_to raw(t 'admin.pagination.previous'), url, :rel => 'prev', :remote => remote, :class => 'page-link'

@@ -1,0 +1,4 @@
+- if current_page.last?
+  %li.page-item.next.disabled= link_to raw(t 'admin.pagination.next'), '#'
+- else
+  %li.page-item.next= link_to raw(t 'admin.pagination.next'), url, :class => 'page-link', :rel => 'next', :remote => remote
