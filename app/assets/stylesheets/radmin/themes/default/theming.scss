@@ -60,3 +60,7 @@
   @extend .text-white;
   @extend .bg-info;
 }
+
+#list .links ul {
+  margin: 0;
+}
