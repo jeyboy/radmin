@@ -45,7 +45,7 @@ module Radmin
       end
 
       register_property :link_icon do
-        'pencil'
+        'pencil-alt'
       end
     end
   end
