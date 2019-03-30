@@ -12,7 +12,7 @@ module Radmin
     Radmin::Actions.list.each do |act|
       class_eval <<-EOS, __FILE__, __LINE__ + 1
         def #{act.action_name}
-          @current_action = action(params[:action]).with_bindings({controller: self, abstract_model: current_model, object: @object})
+          @current_action = action(params[:action]).with_bindings(bindings)
           fail(ActionNotAllowed) unless current_action || current_action.enabled?
           @authorization_adapter.try(:authorize, current_action.action_name, current_model, @object)
           @page_name = wording_for(:title)

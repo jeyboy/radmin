@@ -2,6 +2,22 @@ module Radmin
   module ApplicationHelper
     include Radmin::Utils::Base
 
+    def rbindings
+      @rbindings ||= {
+        controller: self,
+        view: view_context
+      }
+    end
+
+    def bindings
+      @bindings ||= {
+        abstract_model: current_model,
+        object: @object,
+        objects: @objects,
+        **rbindings
+      }
+    end
+
     # def authorized?(action_name, abstract_model = nil, object = nil)
     #   object = nil if object.try :new_record?
     #   action(action_name, abstract_model, object).try(:authorized?)
@@ -13,16 +29,12 @@ module Radmin
         (@object.try(:persisted?) ? @object.id == object.try(:id) : !object.try(:persisted?))
     end
 
-    def curr_controller
-      @curr_controller ||= (respond_to?(:controller) ? controller : self)
-    end
-
     def action(key, abstract_model = nil, object = nil)
-      Radmin::Actions.find(key, controller: curr_controller, abstract_model: abstract_model, object: object)
+      Radmin::Actions.find(key, abstract_model: abstract_model, object: object, **rbindings)
     end
 
     def actions(scope = :all, abstract_model = nil, object = nil)
-      Radmin::Actions.list(scope, controller: curr_controller, abstract_model: abstract_model, object: object)
+      Radmin::Actions.list(scope, abstract_model: abstract_model, object: object, **rbindings)
     end
 
     def abstract_model(name)
