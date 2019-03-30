@@ -21,6 +21,10 @@ module Radmin
       # set parent controller
       attr_accessor :parent_controller
 
+      # class names which stops chain of parents
+      attr_accessor :model_class_blockers;
+
+
       # set settings for `protect_from_forgery` method
       # By default, it raises exception upon invalid CSRF tokens
       attr_accessor :forgery_protection_settings
@@ -158,6 +162,13 @@ module Radmin
       def reset
         @brand_text = 'RAdmin'
         @brand_icon_url = nil
+
+        @model_class_blockers = {
+          'Object' => true,
+          'BasicObject' => true,
+          'ActiveRecord::Base' => true,
+          'ApplicationRecord' => true
+        }
 
 
         # @compact_show_view = true

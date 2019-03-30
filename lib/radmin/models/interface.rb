@@ -30,7 +30,7 @@ module Radmin
       register_property :parent do
         @parent_model ||= begin
           klass = model.superclass
-          klass = nil if klass.to_s.in?(%w(Object BasicObject ActiveRecord::Base))
+          klass = nil if Radmin::Config.model_class_blockers[klass.to_s]
           klass
         end
       end
