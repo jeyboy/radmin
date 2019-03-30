@@ -1,7 +1,7 @@
 module Radmin
   module MainHelper
     def main_navigation
-      nodes_stack = Radmin::Models.visible(controller: controller)
+      nodes_stack = Radmin::Models.visible(bindings)
       node_model_names = nodes_stack.collect { |c| c.model_name }
 
       nodes_stack.group_by(&:navigation_label).collect do |navigation_label, nodes|
@@ -48,36 +48,6 @@ module Radmin
       end.join.html_safe
     end
 
-    def old_breadcrumb(target_action = current_action, _acc = [])
-      begin
-        (parent_actions ||= []) << target_action
-      end while target_action.breadcrumb_parent && (target_action = action(*target_action.breadcrumb_parent)) # rubocop:disable Loop
-
-      content_tag(:ol, class: 'breadcrumb') do
-        parent_actions.collect do |a|
-          am = a.bindings[:abstract_model]
-          o = a.bindings[:object]
-
-          content_tag(:li, class: 'breadcrumb-item active') do
-            crumb = begin
-              if !current_action?(a, am, o)
-                if a.http_methods.include?(:get)
-                  link_to radmin.url_for(action: a.action_name, controller: 'radmin/main', model_name: am.try(:to_param), id: (o.try(:persisted?) && o.try(:id) || nil)), class: 'ajax' do
-                    wording_for(:breadcrumb, a, am, o)
-                  end
-                else
-                  content_tag(:span, wording_for(:breadcrumb, a, am, o))
-                end
-              else
-                wording_for(:breadcrumb, a, am, o)
-              end
-            end
-            crumb
-          end
-        end.reverse.join.html_safe
-      end
-    end
-
     def breadcrumb(target_action = current_action, _acc = [])
       content_tag(:ol, class: 'breadcrumb') do
         items = ''
@@ -111,9 +81,12 @@ module Radmin
 
     # scope => :root, :collection, :member
     def menu_for(scope, abstract_model = nil, object = nil, only_icon = false) # perf matters here (no action view trickery)
-      target_actions = actions(scope, abstract_model, object).select { |a| a.http_methods.include?(:get) }
+      target_actions =
+        (@menu_for ||= {})[scope] ||= actions(scope).select { |a| a.http_methods.include?(:get) }
 
       target_actions.collect do |target_action|
+        next unless target_action.with_bindings(abstract_model: abstract_model, object: object, **rbindings).visible?
+
         wording = wording_for(:menu, target_action)
         %(
             <li title="#{wording if only_icon}" rel="#{'tooltip' if only_icon}" class="icon nav-item #{target_action.key}_#{scope}_link">
