@@ -84,6 +84,7 @@
           - bulk_actions.each do |bulk_act|
             -#link_to wording_for(:bulk_link, action), '#', onclick: "jQuery('#bulk_action').val('#{action.action_name}'); jQuery('#bulk_form').submit(); return false;"
             %a.dropdown-item{ href: '#', :"data-action-name" => bulk_act.action_name }
+              = fa_icon(bulk_act.link_icon, type: :solid)
               = wording_for(:bulk_link, bulk_act)
 
     - if scoped_actions.present?
@@ -95,7 +96,9 @@
           = t('admin.misc.filter_menu_title')
         .dropdown-menu{ 'aria-labelledby' => 'btn_filter_list' }
           - scoped_actions.each do |scope_action|
-            = link_to wording_for(:filtered_link, scope_action), send("#{scope_action.action_name}_path", lnk_params), class: 'dropdown-item'
+            = link_to send("#{scope_action.action_name}_path", lnk_params), class: 'dropdown-item' do
+              = fa_icon(scope_action.link_icon, type: :solid)
+              = wording_for(:filtered_link, scope_action)
 
 
   %hr.border-bottom.border-dark
