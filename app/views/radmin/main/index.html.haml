@@ -25,6 +25,8 @@
   other_right = false #sets[params[:set].to_i + 1].present?
 
 :javascript
+  #{include_js_translations}
+
   jQuery(function($) {
   #{ordered_filter_string}
   });
@@ -58,7 +60,7 @@
                 -#  - else
                 -#    - ''
 
-                = link_to '#', class: 'dropdown-item list_filter', data: { field_name: field.name, field_type: field.type } do
+                = link_to '#', class: 'dropdown-item list_filter', data: { field_name: field.name, field_type: field.type, filterable: field.filterable_json } do
                   -#:"data-field-value" => "", :"data-field-datetimepicker-format" => (field.try(:parser) && field.parser.to_momentjs)}, field_options: field_options.html_safe
                   = capitalize_first_letter(field.label)
 

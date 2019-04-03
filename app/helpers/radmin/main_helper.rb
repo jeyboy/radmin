@@ -1,5 +1,9 @@
 module Radmin
   module MainHelper
+    def include_js_translations
+      "window.I18n = #{I18n.t('admin.js').to_json};".html_safe
+    end
+
     def main_navigation
       nodes_stack = Radmin::Models.visible(bindings)
       node_model_names = nodes_stack.collect { |c| c.model_name }

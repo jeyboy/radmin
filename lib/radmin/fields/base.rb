@@ -115,6 +115,10 @@ module Radmin
         false
       end
 
+      register_property :filterable_enum do
+        nil
+      end
+
       register_property :sortable do
         false
         # @sortable ||= abstract_model.adapter_supports_joins? && associated_model_config.abstract_model.properties.collect(&:name).include?(associated_model_config.object_label_method) ? associated_model_config.object_label_method : {abstract_model.table_name => method_name}
@@ -306,6 +310,31 @@ module Radmin
         # model_lookup = "admin.help.#{model}.#{name}".to_sym
         # translated = I18n.translate(model_lookup, help: generic_help, default: [generic_help])
         # (translated.is_a?(Hash) ? translated.to_a.first[1] : translated).html_safe
+      end
+
+      def filterable_json
+        res = {}
+
+        if filterable
+          case filterable.class.name
+            when 'Array'
+
+            when 'Hash'
+
+            when 'String'
+
+            when 'TrueClass'
+
+            else
+              if filterable.is_a?(Class)
+                
+              else
+                raise "Unsupported filterable: #{name}"
+              end
+          end
+        end
+
+        res.to_json
       end
     end
   end
