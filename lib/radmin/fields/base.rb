@@ -312,30 +312,38 @@ module Radmin
         # (translated.is_a?(Hash) ? translated.to_a.first[1] : translated).html_safe
       end
 
-      def filterable_json
-        res = {}
-
-        if filterable
-          case filterable.class.name
-            when 'Array'
-
-            when 'Hash'
-
-            when 'String'
-
-            when 'TrueClass'
-
-            else
-              if filterable.is_a?(Class)
-                
-              else
-                raise "Unsupported filterable: #{name}"
-              end
-          end
-        end
-
-        res.to_json
-      end
+      # def filterable_json
+      #   res = []
+      #
+      #   filterable_conversion(filterable, res) if filterable
+      #
+      #   res.to_json
+      # end
+      #
+      # private
+      #
+      # def filterable_conversion(filterable_val, res)
+      #   case filterable_val.class.name
+      #     when 'Array'
+      #       filterable_val.each do |val|
+      #         filterable_conversion(val, res)
+      #       end
+      #     when 'Hash'
+      #       filterable_val.each_pair do |val, arg|
+      #         filterable_conversion(val, res)
+      #       end
+      #     when 'String'
+      #       res << { filterable_val => true }
+      #     when 'TrueClass'
+      #       res << { filterable_val => true }
+      #     else
+      #       if filterable_val.is_a?(Class)
+      #
+      #       else
+      #         raise "Unsupported filterable: #{name}: #{filterable_val}"
+      #       end
+      #   end
+      # end
     end
   end
 end

@@ -5,6 +5,7 @@ $(document).ready ->
     switch field_type
       when 'boolean'
         """
+          <option>...<option>
           <option value="_true">#{I18n.true}<option>
           <option value="_false">#{I18n.false}<option>
           <option data-divider="true"><option>
@@ -13,6 +14,7 @@ $(document).ready ->
         """
       when 'integer', 'float', 'decimal'
         """
+          <option>...<option>
           <option value="_exactly">#{I18n.is_exactly}<option>
           <option value="_less">#{I18n.is_less}<option>
           <option value="_bigger">#{I18n.is_bigger}<option>
@@ -21,7 +23,9 @@ $(document).ready ->
           <option value="_blank">#{I18n.is_blank}<option>
         """
       else
-
+        """
+          <option>...<option>
+        """
 
   filter_template = ->
     ""
