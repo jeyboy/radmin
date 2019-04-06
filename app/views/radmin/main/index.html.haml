@@ -43,7 +43,17 @@
 #list
   = form_tag(index_path(params.except(:page, :f, :query)), method: :get, class: "pjax-form form-inline") do
     .well.w-100
-      %span#filters_box
+      %div#filters_box
+        %p.filter
+          = link_to '#' do
+            %span.filter_label
+              = fa_icon('trash', type: :solid)
+              Cool
+
+          %input
+
+          %input
+
       %hr.filters_box{style: "display:#{ordered_filters.empty? ? 'none' : 'block'}"}
 
       .btn-toolbar.mb-2{ role: 'toolbar' }

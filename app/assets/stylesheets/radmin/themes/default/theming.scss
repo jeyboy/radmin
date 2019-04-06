@@ -64,3 +64,23 @@
 #list .links ul {
   margin: 0;
 }
+
+.filter {
+  @extend .mb-1;
+
+  a {
+    text-decoration: none;
+  }
+
+  .filter_label {
+    @extend .bg-warning;
+    @extend .p-2;
+    @extend .rounded;
+    @extend .mr-1;
+
+    &:hover {
+      @extend .bg-primary;
+      @extend .text-white;
+    }
+  }
+}
