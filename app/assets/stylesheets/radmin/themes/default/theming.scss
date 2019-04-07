@@ -72,6 +72,20 @@
     text-decoration: none;
   }
 
+  .filter_select_style {
+    @extend .border;
+    @extend .border-dark;
+  }
+
+  .dropdown-item.active {
+    @extend .bg-warning;
+    @extend .text-dark;
+  }
+
+  .dropdown-item:hover {
+    @extend .bg-info;
+  }
+
   .filter_label {
     @extend .bg-warning;
     @extend .p-2;
@@ -79,6 +93,11 @@
     @extend .mr-1;
     @extend .text-capitalize;
     @extend .text-dark;
+
+    i {
+      @extend .fa;
+      @extend .fa-trash;
+    }
 
 
     &:hover {

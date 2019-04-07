@@ -17,12 +17,12 @@ $(document).ready ->
         <p class="filter">
           <a class="remove_list_filter" href="#">
             <span class="filter_label">
-              <i type="solid" class="#{I18n.filter_label_ico}"></i>
+              <i type="solid"></i>
               #{field_data.name}
             </span>
           </a>
 
-          <select class="filter_opts" data-style="#{I18n.filter_select_style}" data-type="#{field_data.type}">
+          <select class="filter_opts" data-style="filter_select_style" data-type="#{field_data.type}">
             #{build_options(field_data)}
           </select>
         </p>

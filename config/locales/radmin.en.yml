@@ -1,9 +1,6 @@
 en:
   admin:
     js:
-      filter_label_ico: 'fa fa-trash'
-      filter_select_style: 'border border-dark' # any bootstrap classes
-
       true: 'True'
       false: 'False'
 
