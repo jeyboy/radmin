@@ -19,25 +19,28 @@ module Radmin
     end
 
     def static_navigation
-      static_links = instance_eval(&Radmin::Config.navigation_static_links)
+      static_links =
+        Radmin::Config.navigation_static_links.is_a?(Proc) ?
+          instance_eval(&Radmin::Config.navigation_static_links) :
+            Radmin::Config.navigation_static_links
+
 
       li_stack = static_links.collect do |title, url|
         ico = nil
 
-        if url.is_a?(Array)
-          ico, url = url
-        elsif url.is_a?(Hash)
-          ico, url = url.values_at(:ico, :url)
-        end
+        ico, url = url if url.is_a?(Array)
 
-        nav_icon = ico ? fa_icon(ico, type: :solid).html_safe : ''
-        content_tag(:li, link_to("#{nav_icon} #{title}", url, target: '_blank'), class: 'nav-link')
+        nav_icon = ico ? fa_icon(ico, type: :solid) : ''
+        content_tag(:li, link_to("#{nav_icon} #{title}".html_safe, url, target: '_blank'), class: 'nav-link')
       end.join
 
       if li_stack.present?
         label =
-          instance_eval(&Radmin::Config.navigation_static_label) ||
-            t('admin.misc.navigation_static_label')
+          (
+            Radmin::Config.navigation_static_label.is_a?(Proc) ?
+              instance_eval(&Radmin::Config.navigation_static_label) :
+                Radmin::Config.navigation_static_label
+          ) || t('admin.misc.navigation_static_label')
 
         li_stack = %(<li class='dropdown-header'>#{label}</li>#{li_stack}).html_safe
       end

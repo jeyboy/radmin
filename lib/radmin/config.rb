@@ -154,12 +154,19 @@ module Radmin
 
 
       # accepts a hash of static links to be shown below the main navigation
+      def navigation_static_label=(label)
+        @navigation_static_label = label
+      end
       def navigation_static_label(&block)
         @navigation_static_label = block if block
         @navigation_static_label || DEFAULT_PROC
       end
 
       # accepts a hash of static links to be shown below the main navigation
+      def navigation_static_links=(links)
+        @navigation_static_links = links
+      end
+
       def navigation_static_links(&block)
         @navigation_static_links = block if block
         @navigation_static_links || DEFAULT_PROC

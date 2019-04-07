@@ -5,11 +5,22 @@
 # config.current_user_method(&:current_user)
 
 
-#config.navigation_static_links do
+#
+#config.navigation_static_links =
 #  {
 #    'OAuth Applications': ['mobile ', '/oauth/applications'],
 #    'Sidekiq': ['cogs', '/sidekiq']
 #  }
+#
+# Or use a block for dynamic configuration
+#config.navigation_static_links do
+#  res = {
+#    'OAuth Applications': ['mobile ', '/oauth/applications']
+#  }
+#
+#  res.merge!('Sidekiq': ['cogs', '/sidekiq']) if controller.current_user.can?(...)
+#
+#  res
 #end
 
 Radmin.config do |config|
