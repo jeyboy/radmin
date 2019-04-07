@@ -93,8 +93,8 @@ module Radmin
 
         wording = wording_for(:menu, target_action)
         %(
-            <li title="#{wording if only_icon}" rel="#{'tooltip' if only_icon}" class="icon nav-item #{target_action.key}_#{scope}_link">
-              <a class="nav-link #{'active' if current_action?(target_action)} #{target_action.remote? ? 'ajax' : ''}" href="#{radmin.url_for(action: target_action.action_name, controller: 'radmin/main', model_name: abstract_model.try(:to_param), id: (object.try(:persisted?) && object.try(:id) || nil))}">
+            <li title="#{wording if only_icon}" rel="#{'tooltip' if only_icon}" #{"data-toggle=\"tooltip\" data-placement=\"left\"" if only_icon} class="icon nav-item #{target_action.key}_#{scope}_link">
+              <a class="nav-link #{target_action.link_class} #{'active' if current_action?(target_action)} #{target_action.remote? ? 'ajax' : ''}" href="#{radmin.url_for(action: target_action.action_name, controller: 'radmin/main', model_name: abstract_model&.to_param, id: object&.id)}" #{"data-confirm=\"#{target_action.link_confirm_msg}\"" if target_action.link_confirm_msg.presence}>
                 #{fa_icon(target_action.link_icon, type: :solid)}
                 <span#{only_icon ? " style='display:none'" : ''}>#{wording}</span>
               </a>

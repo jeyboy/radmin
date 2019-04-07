@@ -14,6 +14,14 @@ module Radmin
         false
       end
 
+      register_property :link_confirm_msg do
+        nil
+      end
+
+      register_property :link_class do
+        nil
+      end
+
       register_property :link_icon do
         nil
       end

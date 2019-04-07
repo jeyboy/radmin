@@ -44,8 +44,16 @@ module Radmin
         end
       end
 
+      register_property :link_class do
+        'danger'
+      end
+
       register_property :link_icon do
         'times'
+      end
+
+      register_property :link_confirm_msg do
+        'Are you sure?'
       end
     end
   end

@@ -45,6 +45,26 @@
   thead {
     @extend .thead-dark;
   }
+
+  .last.links {
+    .nav-item {
+      .nav-link {
+        @extend .border;
+        @extend .border-info;
+        @extend .text-info;
+        @extend .rounded-circle;
+
+        @extend .h5;
+        @extend .p-2;
+        @extend .text-center;
+
+        &.danger {
+          @extend .text-danger;
+          @extend .border-danger;
+        }
+      }
+    }
+  }
 }
 
 .total-count {
@@ -105,4 +125,28 @@
       @extend .text-white;
     }
   }
+}
+
+// TOOLTIP
+
+.bs-tooltip-top .arrow:before {
+  border-top-color: $tooltip-bg!important;
+}
+
+.bs-tooltip-right .arrow:before {
+  border-right-color: $tooltip-bg!important;
+}
+
+.bs-tooltip-bottom .arrow:before {
+  border-bottom-color: $tooltip-bg!important;
+}
+
+.bs-tooltip-left .arrow:before {
+  border-left-color: $tooltip-bg!important;
+}
+
+.tooltip-inner {
+  //color: #000000;
+  font-weight: bold;
+  background-color: $tooltip-bg;
 }

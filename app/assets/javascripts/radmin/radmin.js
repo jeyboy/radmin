@@ -14,3 +14,7 @@
 //= require ajax-bootstrap-select.min
 
 //= require radmin/custom
+
+$(document).ready(function() {
+    $('[data-toggle="tooltip"]').tooltip()
+});
