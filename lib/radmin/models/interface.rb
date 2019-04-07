@@ -35,16 +35,26 @@ module Radmin
         end
       end
 
+      register_property :pretty_name do
+        model.respond_to?(:model_name) ?
+          model.model_name.human :
+          model_name.humanize
+      end
+
       register_property :label do
-        (@label ||= {})[::I18n.locale] ||= model.model_name.human
+        (@label ||= {})[::I18n.locale] ||= pretty_name
       end
 
       register_property :label_plural do
-        (@label_plural ||= {})[::I18n.locale] ||= model.model_name.human(count: Float::INFINITY, default: label.pluralize(::I18n.locale))
+        (@label_plural ||= {})[::I18n.locale] ||=
+          model.model_name.human(count: Float::INFINITY, default: label.pluralize(::I18n.locale))
       end
 
       register_property :table_name do
-        @table_name ||= model.respond_to?(:table_name) ? model.send(:table_name) : @model_name.underscore
+        @table_name ||=
+          model.respond_to?(:table_name) ?
+            model.table_name :
+              @model_name.underscore
       end
 
       register_property :object_label_method do
@@ -81,6 +91,14 @@ module Radmin
 
       def model
         @model ||= @model_name.constantize
+      end
+
+      def to_param
+        @to_param ||= class_name_to_path_name(@model_name) #@model_name.gsub('::', '~').underscore
+      end
+
+      def param_key
+        @param_key ||= class_name_to_param_name(@model_name) #@model_name.gsub('::', '_').underscore
       end
 
       def primary_key

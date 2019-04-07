@@ -177,17 +177,19 @@
     - if current_model.list.compact_pagination
       .row
         .col-md-6= paginate(@objects, theme: 'radmin_bootstrap/without_count', total_pages: Float::INFINITY, remote: false)
+        .col-md-6= link_to(t("admin.misc.show_all"), url_for(params.merge(all: true)), class: "show-all btn btn-danger ajax", data: {confirm: 'We have a lot of records in DB. Are you sure?'})
 
     - elsif @objects.respond_to?(:total_count)
       - total_count = @objects.total_count.to_i
       .row
         .col-md-6= paginate(@objects, theme: 'radmin_bootstrap', remote: false)
-      .row
-        .col-md-6= link_to(t("admin.misc.show_all"), index_path(params.merge(all: true)), class: "show-all btn btn-default clearfix pjax") unless total_count > 100 || total_count <= @objects.to_a.size
+        .col-md-6= link_to(t("admin.misc.show_all"), url_for(params.merge(all: true)), class: "show-all btn btn-danger ajax", data: { confirm: (total_count > 100 && total_count > @objects.to_a.size ? 'We have a lot of records in DB. Are you sure?' : false) })
 
       .total-count= "#{total_count} #{current_model.pluralize(total_count).downcase}"
 
     - else
+      = link_to(t("admin.misc.show_paginated"), url_for(params.except(:all)), class: "show-all btn btn-success ajax mb-2")
       .total-count= "#{@objects.size} #{current_model.pluralize(@objects.size).downcase}"
 
-= javascript_include_tag 'radmin/utils/filters'
+= content_for :javascripts do
+  = javascript_include_tag 'radmin/utils/filters'

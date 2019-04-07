@@ -8,7 +8,6 @@
 
     = csrf_meta_tag
     = stylesheet_link_tag 'radmin/radmin', media: :all
-    = javascript_include_tag 'radmin/radmin'
 
   %body.rails_admin
     -##admin-js{:'data-i18n-options' => I18n.t("admin.js").to_json}
@@ -30,3 +29,7 @@
         .col-sm-9.col-sm-offset-3.col-md-10.col-md-offset-2.pr-1.pl-2
           .content
             = render template: 'layouts/radmin/content'
+
+
+    = javascript_include_tag 'radmin/radmin'
+    = yield :javascripts

@@ -1,5 +1,5 @@
 %h4
-  = t("admin.form.are_you_sure_you_want_to_delete_the_object", model_name: @abstract_model.pretty_name.downcase)
+  = t("admin.form.are_you_sure_you_want_to_delete_the_object", model_name: current_model.label)
   &ldquo;
   %strong>= @model_config.with(object: @object).object_label
   \&rdquo;

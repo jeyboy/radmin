@@ -37,6 +37,7 @@ en:
       refresh: "Refresh"
       reset: "Reset"
       show_all: "Show all"
+      show_paginated: "Show paginated"
       add_filter: "Add filter"
       bulk_menu_title: "Selected items"
       filter_menu_title: "Filtered items"

@@ -9,10 +9,6 @@ module Radmin
       include Radmin::Utils::Base
       include Radmin::Sections
 
-      # def config
-      #   Radmin::Config.model self
-      # end
-
       def properties
         {}
       end
@@ -29,18 +25,6 @@ module Radmin
             model.columns_hash
           end
         end
-      end
-
-      def to_param
-        @to_param ||= class_name_to_path_name(@model_name) #@model_name.gsub('::', '~').underscore
-      end
-
-      def param_key
-        @param_key ||= class_name_to_param_name(@model_name) #@model_name.gsub('::', '_').underscore
-      end
-
-      def pretty_name
-        model.model_name.human
       end
 
       def primary_key

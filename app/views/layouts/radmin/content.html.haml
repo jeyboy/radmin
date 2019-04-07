@@ -2,7 +2,7 @@
   $('.nav.nav-pills li.active').removeClass('active');
   $('.nav.nav-pills li[data-model="#{current_model.to_param}"]').addClass('active');
 
-%title= "#{current_model.try(:pretty_name) || @page_name} | RAdmin"
+%title= "#{current_model&.label || @page_name} | RAdmin"
 
 .page-header
   %h1= @page_name
