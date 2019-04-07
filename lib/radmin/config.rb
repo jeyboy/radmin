@@ -3,13 +3,15 @@ require 'radmin/models'
 
 module Radmin
   class Config
-    DEFAULT_AUTHENTICATION = proc {}
+    DEFAULT_PROC = proc {}
 
-    DEFAULT_AUTHORIZE = proc {}
-
-    DEFAULT_AUDIT = proc {}
-
-    DEFAULT_CURRENT_USER = proc {}
+    # DEFAULT_AUTHENTICATION = proc {}
+    #
+    # DEFAULT_AUTHORIZE = proc {}
+    #
+    # DEFAULT_AUDIT = proc {}
+    #
+    # DEFAULT_CURRENT_USER = proc {}
 
     class << self
       # set brand text
@@ -37,11 +39,6 @@ module Radmin
       # Default items per page value used if a model level option has not
       # been configured
       attr_accessor :default_items_per_page
-
-
-      # accepts a hash of static links to be shown below the main navigation
-      attr_accessor :navigation_static_links
-      attr_accessor :navigation_static_label
 
       def default_hidden_fields=(hidden_fields)
         @default_hidden_fields = hidden_fields.stringify_keys
@@ -97,7 +94,7 @@ module Radmin
         # @registry[key]
       end
 
-      # @see RailsAdmin::Config::DEFAULT_AUTHORIZE
+      # @see RailsAdmin::Config::DEFAULT_PROC
       def authorize_with(*args, &block)
         # extension = args.shift
         # if extension
@@ -109,14 +106,14 @@ module Radmin
         # elsif block
         #   @authorize = block
         # end
-        @authorize || DEFAULT_AUTHORIZE
+        @authorize || DEFAULT_PROC
       end
 
 
-      # @see Radmin::Config::DEFAULT_AUTHENTICATION
+      # @see Radmin::Config::DEFAULT_PROC
       def authenticate_with(&blk)
         @authenticate = blk if blk
-        @authenticate || DEFAULT_AUTHENTICATION
+        @authenticate || DEFAULT_PROC
       end
 
       # Setup auditing/history/versioning provider that observe objects lifecycle
@@ -131,7 +128,7 @@ module Radmin
         # elsif block
         #   @audit = block
         # end
-        @audit || DEFAULT_AUDIT
+        @audit || DEFAULT_PROC
       end
 
 
@@ -148,12 +145,25 @@ module Radmin
       #     end
       #   end
       #
-      # @see Radmin::Config::DEFAULT_CURRENT_USER
+      # @see Radmin::Config::DEFAULT_PROC
       def current_user_method(&block)
         @current_user = block if block
-        @current_user || DEFAULT_CURRENT_USER
+        @current_user || DEFAULT_PROC
       end
 
+
+
+      # accepts a hash of static links to be shown below the main navigation
+      def navigation_static_label(&block)
+        @navigation_static_label = block if block
+        @navigation_static_label || DEFAULT_PROC
+      end
+
+      # accepts a hash of static links to be shown below the main navigation
+      def navigation_static_links(&block)
+        @navigation_static_links = block if block
+        @navigation_static_links || DEFAULT_PROC
+      end
 
 
       # Reset all configurations to defaults.
@@ -192,8 +202,6 @@ module Radmin
         # @main_app_name = proc { [Rails.application.engine_name.titleize.chomp(' Application'), 'Admin'] }
         # @registry = {}
         # @show_gravatar = true
-        @navigation_static_links = {}
-        @navigation_static_label = nil
         @parent_controller = '::ActionController::Base'
         @forgery_protection_settings = {with: :exception}
         # RailsAdmin::Config::Actions.reset

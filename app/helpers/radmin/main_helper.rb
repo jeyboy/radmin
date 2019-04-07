@@ -19,7 +19,9 @@ module Radmin
     end
 
     def static_navigation
-      li_stack = Radmin::Config.navigation_static_links.collect do |title, url|
+      static_links = instance_eval(&Radmin::Config.navigation_static_links)
+
+      li_stack = static_links.collect do |title, url|
         ico = nil
 
         if url.is_a?(Array)
@@ -29,11 +31,17 @@ module Radmin
         end
 
         nav_icon = ico ? fa_icon(ico, type: :solid).html_safe : ''
-        content_tag(:li, link_to(nav_icon + ' ' + title.to_s, url, target: '_blank'), class: 'nav-link')
+        content_tag(:li, link_to("#{nav_icon} #{title}", url, target: '_blank'), class: 'nav-link')
       end.join
 
-      label = Radmin::Config.navigation_static_label || t('admin.misc.navigation_static_label')
-      li_stack = %(<li class='dropdown-header'>#{label}</li>#{li_stack}).html_safe if li_stack.present?
+      if li_stack.present?
+        label =
+          instance_eval(&Radmin::Config.navigation_static_label) ||
+            t('admin.misc.navigation_static_label')
+
+        li_stack = %(<li class='dropdown-header'>#{label}</li>#{li_stack}).html_safe
+      end
+
       li_stack
     end
 
