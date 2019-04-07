@@ -1,15 +1,18 @@
 #= require 'radmin/utils/custom_filters'
+#= require 'radmin/utils/selects'
 
 $(document).ready ->
-  build_template = ()->
+  build_template = (field_options)->
     """
       <p class="filter">
-      <span class="filter_label">
-      <a href="#"><i type="solid" class="fa fa-trash"></i>
-      Cool
-      </a></span>
-      <input>
-      <input>
+        <a href="#">
+          <span class="filter_label">
+            <i type="solid" class="fa fa-trash"></i>
+            Cool
+          </span>
+        </a>
+
+
       </p>
     """
 

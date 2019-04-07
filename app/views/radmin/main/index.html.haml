@@ -50,9 +50,11 @@
               = fa_icon('trash', type: :solid)
               Cool
 
-          %input
+          %select.select{ 'data-style' => 'border border-dark'}
+            %option Mustard
+            %option Ketchup
+            %option Barbecue
 
-          %input
 
       %hr.filters_box{style: "display:#{ordered_filters.empty? ? 'none' : 'block'}"}
 
