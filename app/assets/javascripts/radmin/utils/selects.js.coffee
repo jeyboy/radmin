@@ -23,26 +23,33 @@
 #        return contacts;
 
 @init_select = ($elem, preprocessor)->
+  remote_search = $elem.data('remote-search');
+  live_search = $elem.data('live-search') || remote_search;
+
   $elem
     .selectpicker(
-      liveSearch: true,
+      liveSearch: !!live_search,
       iconBase: 'fa',
       showIcon: true,
       showSubtext: true,
       tickIcon: 'fa-check'
     )
-    .ajaxSelectPicker(
-      ajax:
-        url: '/server/path/to/ajax/results',
-        data:
-          q: '{{{q}}}'
 
-      locale:
-        emptyTitle: 'Searching...'
 
-      preprocessData: preprocessor || @default_preprocessor
-      preserveSelected: false
-    )
+  if remote_search
+    $elem
+      .ajaxSelectPicker(
+        ajax:
+          url: remote_search,
+          data:
+            q: '{{{q}}}'
+
+        locale:
+          emptyTitle: 'Searching...'
+
+        preprocessData: preprocessor || @default_preprocessor
+        preserveSelected: false
+      )
 
 
 $(document).ready ->

@@ -44,16 +44,17 @@
   = form_tag(index_path(params.except(:page, :f, :query)), method: :get, class: "pjax-form form-inline") do
     .well.w-100
       %div#filters_box
-        %p.filter
-          = link_to '#' do
-            %span.filter_label
-              = fa_icon('trash', type: :solid)
-              Cool
-
-          %select.select{ 'data-style' => 'border border-dark'}
-            %option Mustard
-            %option Ketchup
-            %option Barbecue
+        -#%p.filter
+        -#  = link_to '#' do
+        -#    %span.filter_label
+        -#      = fa_icon('trash', type: :solid)
+        -#      Cool
+        -#
+        -#  %select.select{ 'data-style' => 'border border-dark'}
+        -#    %option Mustard
+        -#    %option Ketchup
+        -#    %option{ 'data-divider'=>"true"} Soso
+        -#    %option Barbecue
 
 
       %hr.filters_box{style: "display:#{ordered_filters.empty? ? 'none' : 'block'}"}
@@ -72,7 +73,7 @@
                 -#  - else
                 -#    - ''
 
-                = link_to '#', class: 'dropdown-item list_filter', data: { field_name: field.name, field_type: field.type } do
+                = link_to '#', class: 'dropdown-item list_filter', data: { name: field.name, type: field.type } do
                   -#:"data-field-value" => "", :"data-field-datetimepicker-format" => (field.try(:parser) && field.parser.to_momentjs)}, field_options: field_options.html_safe
                   = capitalize_first_letter(field.label)
 
