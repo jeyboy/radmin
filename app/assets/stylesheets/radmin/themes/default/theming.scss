@@ -1,3 +1,13 @@
+.row_list {
+  @extend .d-flex;
+  @extend .list-inline;
+}
+
+.column_list {
+  @extend .list-inline;
+}
+
+
 .navbar {
   @extend .navbar-dark;
   @extend .bg-dark;
@@ -77,6 +87,7 @@
   @extend .row;
   @extend .pl-2;
   margin-left: -8px;
+  margin-right: 0;
 }
 
 .dropdown-item:hover {
@@ -133,6 +144,12 @@
       @extend .text-white;
     }
   }
+}
+
+// PAGINATION
+
+.pagination {
+  @extend .pr-2;
 }
 
 // TOOLTIP
