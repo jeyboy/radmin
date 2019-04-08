@@ -172,7 +172,7 @@
               %td.other.right= link_to "...", @other_right_link, class: 'pjax'
 
             %td.last.links
-              %ul.list-inline= menu_for :member, current_model, object, true
+              %ul.list-inline{ style: ("min-width: max-content" if current_model.list.inline_menu) }= menu_for :member, current_model, object, true
 
     - if current_model.list.compact_pagination
       .row

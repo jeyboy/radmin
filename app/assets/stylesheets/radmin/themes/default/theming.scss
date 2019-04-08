@@ -49,19 +49,22 @@
   .last.links {
     .nav-item {
       .nav-link {
-        @extend .border;
-        @extend .border-info;
-        @extend .text-info;
+        border: 1px solid #dee2e6;
         @extend .rounded-circle;
 
         @extend .h5;
         @extend .p-2;
         @extend .text-center;
+      }
+    }
 
-        &.danger {
-          @extend .text-danger;
-          @extend .border-danger;
-        }
+    .inline-nav-item {
+      display: inline-block;
+
+      .nav-link {
+        @extend .h5;
+        @extend .p-1;
+        @extend .text-center;
       }
     }
   }

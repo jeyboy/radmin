@@ -3,6 +3,10 @@ require 'radmin/sections/base'
 module Radmin
   module Sections
     class List < Radmin::Sections::Base
+      register_property :inline_menu do
+        false
+      end
+
       register_property :show_checkboxes do
         true
       end

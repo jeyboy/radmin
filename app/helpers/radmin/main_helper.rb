@@ -99,13 +99,18 @@ module Radmin
       target_actions =
         (@menu_for ||= {})[scope] ||= actions(scope).select { |a| a.http_methods.include?(:get) }
 
+      is_inline = only_icon && current_model.list.inline_menu
+      item_class = is_inline ? 'inline-nav-item' : 'nav-item'
+
       target_actions.collect do |target_action|
         next unless target_action.with_bindings(abstract_model: abstract_model, object: object, **rbindings).visible?
 
+        extra_item_class = "text-#{target_action.link_class.presence || 'info'} border-#{target_action.link_class.presence || 'info'}" if only_icon
+
         wording = wording_for(:menu, target_action)
         %(
-            <li title="#{wording if only_icon}" rel="#{'tooltip' if only_icon}" #{"data-toggle=\"tooltip\" data-placement=\"left\"" if only_icon} class="icon nav-item #{target_action.key}_#{scope}_link">
-              <a class="nav-link #{target_action.link_class} #{'active' if current_action?(target_action)} #{target_action.remote? ? 'ajax' : ''}" href="#{radmin.url_for(action: target_action.action_name, controller: 'radmin/main', model_name: abstract_model&.to_param, id: object&.id)}" #{"data-confirm=\"#{target_action.link_confirm_msg}\"" if target_action.link_confirm_msg.presence}>
+            <li title="#{wording if only_icon}" rel="#{'tooltip' if only_icon}" #{"data-toggle=\"tooltip\" data-placement=\"#{is_inline ? 'bottom' : 'left'}\"" if only_icon} class="icon #{item_class} #{target_action.key}_#{scope}_link">
+              <a class="nav-link #{extra_item_class} #{'active' if current_action?(target_action)} #{target_action.remote? ? 'ajax' : ''}" href="#{radmin.url_for(action: target_action.action_name, controller: 'radmin/main', model_name: abstract_model&.to_param, id: object&.id)}" #{"data-confirm=\"#{target_action.link_confirm_msg}\"" if target_action.link_confirm_msg.presence}>
                 #{fa_icon(target_action.link_icon, type: :solid)}
                 <span#{only_icon ? " style='display:none'" : ''}>#{wording}</span>
               </a>
