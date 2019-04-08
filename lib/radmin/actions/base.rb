@@ -1,4 +1,5 @@
 require 'singleton'
+require 'radmin/config'
 require 'radmin/actions'
 require 'radmin/utils/bindable'
 require 'radmin/utils/configurable'
@@ -19,7 +20,7 @@ module Radmin
       end
 
       register_property :link_class do
-        nil
+        Radmin::Config.default_link_class
       end
 
       register_property :link_icon do

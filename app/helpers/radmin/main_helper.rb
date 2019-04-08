@@ -105,7 +105,7 @@ module Radmin
       target_actions.collect do |target_action|
         next unless target_action.with_bindings(abstract_model: abstract_model, object: object, **rbindings).visible?
 
-        extra_item_class = "text-#{target_action.link_class.presence || 'info'} border-#{target_action.link_class.presence || 'info'}" if only_icon
+        extra_item_class = "text-#{target_action.link_class} border-#{target_action.link_class}" if only_icon && target_action.link_class
 
         wording = wording_for(:menu, target_action)
         %(

@@ -40,6 +40,8 @@ module Radmin
       # been configured
       attr_accessor :default_items_per_page
 
+      attr_accessor :default_link_class
+
       def default_hidden_fields=(hidden_fields)
         @default_hidden_fields = hidden_fields.stringify_keys
       end
@@ -200,6 +202,7 @@ module Radmin
         # @default_hidden_fields[:edit] = [:id, :_id, :created_at, :created_on, :deleted_at, :updated_at, :updated_on, :deleted_on]
         # @default_hidden_fields[:show] = [:id, :_id, :created_at, :created_on, :deleted_at, :updated_at, :updated_on, :deleted_on]
         @default_items_per_page = 20
+        @default_link_class = 'info'
         # @default_associated_collection_limit = 100
         # @default_search_operator = 'default'
         # @excluded_models = []
