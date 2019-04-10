@@ -10,6 +10,8 @@
     = stylesheet_link_tag 'radmin/radmin', media: :all
 
   %body.rails_admin
+    :javascript
+      #{include_js_translations}
     -##admin-js{:'data-i18n-options' => I18n.t("admin.js").to_json}
     -#
     -#-# Initialize JS simple i18n

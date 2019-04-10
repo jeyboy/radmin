@@ -1,6 +1,7 @@
-:javascript
-  $('.nav.nav-pills li.active').removeClass('active');
-  $('.nav.nav-pills li[data-model="#{current_model.to_param}"]').addClass('active');
+- content_for :javascripts do
+  :javascript
+    $('.nav.nav-pills li.active').removeClass('active');
+    $('.nav.nav-pills li[data-model="#{current_model.to_param}"]').addClass('active');
 
 %title= "#{current_model&.label || @page_name} | RAdmin"
 

@@ -1,3 +1,7 @@
+.text_type {
+  word-wrap: anywhere;
+}
+
 .row_list {
   @extend .d-flex;
   @extend .list-inline;

@@ -5,6 +5,11 @@ $(document).ready ->
   $filters = $('#filters_box')
 
   if $filters.length
+    proc_opt_selection = ($elem)->
+      val = $elem.find('option:selected').val()
+      console.log(val)
+
+
     show_separator = (show) ->
       $separator = $filters.next();
 
@@ -98,12 +103,16 @@ $(document).ready ->
           """
 
     $('#list')
-      .on 'change', '.filter_opts', ->
-        console.log('filter ops change')
+      .on 'change', '.filter_opts', (e)->
+        e.preventDefault();
+
+        proc_opt_selection($(this))
 
         return
 
-      .on 'click', '.list_filter', ->
+      .on 'click', '.list_filter', (e)->
+        e.preventDefault();
+
         template = build_template($(this).data())
 
         $template = $(template);
@@ -116,7 +125,9 @@ $(document).ready ->
 
         return
 
-      .on 'click', '.remove_list_filter', ->
+      .on 'click', '.remove_list_filter', (e)->
+        e.preventDefault();
+
         $(this).closest('.filter').remove()
 
         unless $filters.has('.filter').length
