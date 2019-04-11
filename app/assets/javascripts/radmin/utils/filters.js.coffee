@@ -27,7 +27,7 @@ $(document).ready ->
             </span>
           </a>
 
-          <select class="filter_opts" data-style="filter_select_style" data-type="#{field_data.type}">
+          <select class="filter_args" data-style="filter_select_style" data-type="#{field_data.type}">
             #{build_options(field_data)}
           </select>
         </p>
@@ -103,7 +103,7 @@ $(document).ready ->
           """
 
     $('#list')
-      .on 'change', '.filter_opts', (e)->
+      .on 'changed.bs.select', '.filter_args.bootstrap-select', (e)->
         e.preventDefault();
 
         proc_opt_selection($(this))
