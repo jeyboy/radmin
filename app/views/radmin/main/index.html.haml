@@ -54,13 +54,7 @@
               = t('admin.misc.add_filter')
             .dropdown-menu{ 'aria-labelledby' => 'btn_add_filter_list' }
               - filterable_fields.each do |field|
-                -#- field_options = case field.type
-                -#  - when :enum
-                -#    - options_for_select(field.with(object: current_model.model.new).enum)
-                -#  - else
-                -#    - ''
-
-                = link_to '#', class: 'dropdown-item list_filter', data: { name: field.name, type: field.type } do
+                = link_to '#', class: 'dropdown-item list_filter', data: { name: field.name, type: field.type, settings: field.filter_settings } do
                   -#:"data-field-value" => "", :"data-field-datetimepicker-format" => (field.try(:parser) && field.parser.to_momentjs)}, field_options: field_options.html_safe
                   = capitalize_first_letter(field.label)
 

@@ -312,6 +312,10 @@ module Radmin
         # (translated.is_a?(Hash) ? translated.to_a.first[1] : translated).html_safe
       end
 
+      def filter_settings
+        {}
+      end
+      
       # def filterable_json
       #   res = []
       #

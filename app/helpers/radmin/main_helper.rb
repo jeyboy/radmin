@@ -15,7 +15,7 @@ module Radmin
         label = navigation_label || t('admin.misc.navigation')
 
         %(<li class='dropdown-header'>#{capitalize_first_letter label}</li>#{li_stack}) if li_stack.present?
-      end.join.html_safe
+      end.join('<hr class="menu_breaker"/>').html_safe
     end
 
     def static_navigation

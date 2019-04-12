@@ -17,6 +17,11 @@
   @extend .bg-dark;
 }
 
+hr.menu_breaker {
+  margin: 6px 0;
+  border: 2px outset #aaaaaa;
+}
+
 .sidebar-nav {
   @extend .bg-dark;
 
@@ -37,7 +42,6 @@
       @extend .pr-0;
 
       color: #9cdbf7;
-      //@extend .text-success;
       text-decoration: none;
       display: block;
     }
