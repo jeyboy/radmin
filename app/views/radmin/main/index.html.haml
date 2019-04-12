@@ -40,21 +40,9 @@
 %hr.border-bottom.border-dark
 
 #list
-  = form_tag(index_path(params.except(:page, :f, :query)), method: :get, class: "pjax-form form-inline") do
+  = form_tag(index_path(params.except(:page, :f, :query)), method: :get, class: "ajax-form form-inline") do
     .well.w-100
       %div#filters_box
-        -#%p.filter
-        -#  = link_to '#' do
-        -#    %span.filter_label
-        -#      = fa_icon('trash', type: :solid)
-        -#      Cool
-        -#
-        -#  %select.select{ 'data-style' => 'border border-dark'}
-        -#    %option Mustard
-        -#    %option Ketchup
-        -#    %option{ 'data-divider'=>"true"} Soso
-        -#    %option Barbecue
-
 
       %hr.filters_box{style: "display:#{ordered_filters.empty? ? 'none' : 'block'}"}
 
@@ -97,8 +85,7 @@
           = t('admin.misc.bulk_menu_title')
         .dropdown-menu{ 'aria-labelledby' => 'btn_check_list' }
           - bulk_actions.each do |bulk_act|
-            -#link_to wording_for(:bulk_link, action), '#', onclick: "jQuery('#bulk_action').val('#{action.action_name}'); jQuery('#bulk_form').submit(); return false;"
-            %a.dropdown-item{ href: '#', :"data-action-name" => bulk_act.action_name }
+            = link_to '#', class: 'dropdown-item', data: { action_name: bulk_act.action_name }, onclick: "jQuery('#bulk_action').val('#{bulk_act.action_name}'); jQuery('#bulk_form').submit(); return false;" do
               = fa_icon(bulk_act.link_icon, type: :solid)
               = wording_for(:bulk_link, bulk_act)
 
@@ -126,8 +113,9 @@
           %a{href: index_path(params.merge(scope: scope, page: nil)), class: 'pjax'}= I18n.t("admin.scopes.#{current_model.to_param}.#{scope}", default: I18n.t("admin.scopes.#{scope}", default: scope.to_s.titleize))
 
 
-  = form_tag bulk_action_path(model_name: current_model.to_param), method: :post, id: "bulk_form", class: "form" do
+  = form_tag bulk_action_path(model_name: current_model.to_param), method: :post, id: 'bulk_form', class: 'form' do
     = hidden_field_tag :bulk_action
+
     - if description.present?
       %p
         %strong= description

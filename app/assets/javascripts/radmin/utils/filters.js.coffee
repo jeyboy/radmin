@@ -5,9 +5,48 @@ $(document).ready ->
   $filters = $('#filters_box')
 
   if $filters.length
+    input_num = 0
+
+#    @select_custom_option = (option, field_data)->
+      #  return null
+
+    select_option = (inputs_map, field_data, input_sequence_num)->
+
+
     proc_opt_selection = ($elem)->
       val = $elem.find('option:selected').val()
-      console.log(val)
+
+
+#      switch val
+##        when "_skip"
+##        when "_true"
+##        when "_false"
+##        when "_today"
+##        when "_yesterday"
+##        when "_this_week"
+##        when "_last_week"
+#
+#        when "_present"
+#
+#        when "_blank"
+#
+#        when "_exactly"
+#
+#        when "_less"
+#
+#        when "_bigger"
+#
+#        when "_between_x_and_y"
+#
+#        when "_exactly"
+#
+#        when "_contains"
+#
+#        when "_starts_with"
+#
+#        when "_ends_with"
+#
+#        else
 
 
     show_separator = (show) ->
@@ -19,7 +58,7 @@ $(document).ready ->
 
     build_template = (field_data) ->
       """
-        <p class="filter">
+        <p class="filter" data-type="#{field_data.type}" data-num=#{++input_num}>
           <a class="remove_list_filter" href="#">
             <span class="filter_label">
               <i type="solid"></i>
@@ -27,7 +66,7 @@ $(document).ready ->
             </span>
           </a>
 
-          <select class="filter_args" data-style="filter_select_style" data-type="#{field_data.type}">
+          <select class="filter_args" name="f[#{input_num}][o]" data-style="filter_select_style">
             #{build_options(field_data)}
           </select>
         </p>
@@ -40,7 +79,7 @@ $(document).ready ->
       return opts if opts
 
       opts = """
-        <option>...</option>
+        <option val="_skip">...</option>
         <option value="_present">#{I18n.is_present}</option>
         <option value="_blank">#{I18n.is_blank}</option>
         <option data-divider="true"></option>
@@ -59,20 +98,7 @@ $(document).ready ->
             <option value="_bigger">#{I18n.is_bigger}</option>
             <option value="_between_x_and_y">#{I18n.between_x_and_y}</option>
           """
-        when 'date'
-          """
-            <option value="_today">#{I18n.today}</option>
-            <option value="_yesterday">#{I18n.yesterday}</option>
-            <option value="_this_week">#{I18n.this_week}</option>
-            <option value="_last_week">#{I18n.last_week}</option>
-
-            <option data-divider="true"></option>
-            <option value="_exactly">#{I18n.is_exactly}</option>
-            <option value="_less">#{I18n.is_less}</option>
-            <option value="_bigger">#{I18n.is_bigger}</option>
-            <option value="_between_x_and_y">#{I18n.between_x_and_y}</option>
-          """
-        when 'datetime', 'timestamp'
+        when 'datetime', 'timestamp', 'date'
           """
             <option value="_today">#{I18n.today}</option>
             <option value="_yesterday">#{I18n.yesterday}</option>

@@ -63,11 +63,11 @@
   .last.links {
     .nav-item {
       .nav-link {
-        border: 1px solid #dee2e6;
+        border: 2px solid #dee2e6;
         @extend .rounded-circle;
 
         @extend .h5;
-        @extend .p-2;
+        @extend .p-1;
         @extend .text-center;
       }
     }
