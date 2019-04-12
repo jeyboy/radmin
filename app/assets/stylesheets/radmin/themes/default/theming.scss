@@ -36,17 +36,17 @@
       @extend .pl-0;
       @extend .pr-0;
 
-      color:  #00adee;
+      color: #9cdbf7;
       //@extend .text-success;
       text-decoration: none;
       display: block;
     }
 
     &:hover {
-      @extend .bg-warning;
+      background-color: #777777;
 
       a {
-        @extend .text-dark;
+        color: #ffffff;
       }
     }
 
