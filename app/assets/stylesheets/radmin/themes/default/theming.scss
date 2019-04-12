@@ -36,7 +36,8 @@
       @extend .pl-0;
       @extend .pr-0;
 
-      @extend .text-info;
+      color:  #00adee;
+      //@extend .text-success;
       text-decoration: none;
       display: block;
     }
@@ -45,12 +46,16 @@
       @extend .bg-warning;
 
       a {
-        @extend .text-primary;
+        @extend .text-dark;
       }
     }
 
     &.active {
-      @extend .bg-light;
+      @extend .bg-white;
+
+      a {
+        @extend .text-dark;
+      }
     }
   }
 }
