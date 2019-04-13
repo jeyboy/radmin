@@ -12,6 +12,7 @@
 #= require 'bootstrap'
 #= require 'bootstrap-select.min'
 #= require 'ajax-bootstrap-select.min'
+#= require 'bootstrap-datepicker.min'
 
 #= require 'radmin/custom'
 

@@ -1,25 +1,27 @@
 #= require 'radmin/utils/custom_filters'
-#= require 'radmin/utils/selects'
+#= require 'radmin/utils/inputs'
+
+window.template_datetime = (seq_num, opts)->
+
+window.template_time = (seq_num, opts)->
+
+window.template_date = (seq_num, opts)->
+
+window.template_integer = (seq_num, opts)->
+  "<input type='number' name='f[#{seq_num}][v]' step='1'>"
+
+window.template_float = (seq_num, opts)->
+  "<input type='number' name='f[#{seq_num}][v]' step='0.01'>"
+
+window.template_string = (seq_num, opts)->
+  "<input type='text' name='f[#{seq_num}][v]'>"
+
 
 $(document).ready ->
   $filters = $('#filters_box')
 
   if $filters.length
     input_num = 0
-
-    template_datetime = (seq_num)->
-
-    template_time = (seq_num)->
-
-    template_date = (seq_num)->
-
-    template_integer = (seq_num)->
-
-    template_float = (seq_num)->
-
-    template_string = (seq_num)->
-
-
 
     proc_opt_selection = ($elem)->
       $option = $elem.find('option:selected')
@@ -30,11 +32,11 @@ $(document).ready ->
       seq_num = $parent.data('num')
       opts = $option.data()
 
-      template = window["template" + opts.type](seq_num);
+      template = window["template_#{opts.type}"](seq_num);
 
-      $values_section.html()
+      $values_section.html(template)
 
-      init_select($template.find('select'))
+      init_select($values_section.find('select'))
 
 
     show_separator = (show) ->
