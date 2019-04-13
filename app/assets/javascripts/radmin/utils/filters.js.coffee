@@ -7,46 +7,34 @@ $(document).ready ->
   if $filters.length
     input_num = 0
 
-#    @select_custom_option = (option, field_data)->
-      #  return null
+    template_datetime = (seq_num)->
 
-    select_option = (inputs_map, field_data, input_sequence_num)->
+    template_time = (seq_num)->
+
+    template_date = (seq_num)->
+
+    template_integer = (seq_num)->
+
+    template_float = (seq_num)->
+
+    template_string = (seq_num)->
+
 
 
     proc_opt_selection = ($elem)->
-      val = $elem.find('option:selected').val()
+      $option = $elem.find('option:selected')
+      $parent = $elem.parent()
+      $values_section = $parent.find('.values')
 
+      val = $option.val()
+      seq_num = $parent.data('num')
+      opts = $option.data()
 
-#      switch val
-##        when "_skip"
-##        when "_true"
-##        when "_false"
-##        when "_today"
-##        when "_yesterday"
-##        when "_this_week"
-##        when "_last_week"
-#
-#        when "_present"
-#
-#        when "_blank"
-#
-#        when "_exactly"
-#
-#        when "_less"
-#
-#        when "_bigger"
-#
-#        when "_between_x_and_y"
-#
-#        when "_exactly"
-#
-#        when "_contains"
-#
-#        when "_starts_with"
-#
-#        when "_ends_with"
-#
-#        else
+      template = window["template" + opts.type](seq_num);
+
+      $values_section.html()
+
+      init_select($template.find('select'))
 
 
     show_separator = (show) ->
@@ -57,18 +45,24 @@ $(document).ready ->
 
 
     build_template = (field_data) ->
+      ++input_num
+
       """
-        <p class="filter" data-type="#{field_data.type}" data-num=#{++input_num}>
+        <p class="filter" data-num=#{input_num}>
           <a class="remove_list_filter" href="#">
             <span class="filter_label">
               <i type="solid"></i>
-              #{field_data.name}
+              #{field_data.label || field_data.name}
             </span>
           </a>
+
+          <input type="hidden" value="#{field_data.name}" name="f[#{input_num}][n]">
 
           <select class="filter_args" name="f[#{input_num}][o]" data-style="filter_select_style">
             #{build_options(field_data)}
           </select>
+
+          <span class="values"></span>
         </p>
       """
 
@@ -92,13 +86,19 @@ $(document).ready ->
             <option value="_false">#{I18n.false}</option>
           """
         when 'integer', 'float', 'decimal'
+          input_type = field_data['input_type'] ||
+            (if field_data.type == 'float' then 'float' else 'integer')
+
           """
-            <option value="_exactly">#{I18n.is_exactly}</option>
-            <option value="_less">#{I18n.is_less}</option>
-            <option value="_bigger">#{I18n.is_bigger}</option>
-            <option value="_between_x_and_y">#{I18n.between_x_and_y}</option>
+            <option value="_exactly" data-count="1" data-type="#{input_type}>#{I18n.is_exactly}</option>
+            <option value="_less" data-count="1" data-type="#{input_type}>#{I18n.is_less}</option>
+            <option value="_bigger" data-count="1" data-type="#{input_type}>#{I18n.is_bigger}</option>
+            <option value="_between_x_and_y" data-count="2" data-type="#{input_type}>#{I18n.between_x_and_y}</option>
           """
         when 'datetime', 'timestamp', 'date'
+          input_type = field_data['input_type'] ||
+            (if field_data.type == 'date' then 'date' else 'datetime')
+
           """
             <option value="_today">#{I18n.today}</option>
             <option value="_yesterday">#{I18n.yesterday}</option>
@@ -106,27 +106,49 @@ $(document).ready ->
             <option value="_last_week">#{I18n.last_week}</option>
 
             <option data-divider="true"></option>
-            <option value="_exactly">#{I18n.is_exactly}</option>
-            <option value="_less">#{I18n.is_less}</option>
-            <option value="_bigger">#{I18n.is_bigger}</option>
-            <option value="_between_x_and_y">#{I18n.between_x_and_y}</option>
+            <option value="_exactly" data-count="1" data-type="#{input_type}">#{I18n.is_exactly}</option>
+            <option value="_less" data-count="1" data-type="#{input_type}">#{I18n.is_less}</option>
+            <option value="_bigger" data-count="1" data-type="#{input_type}">#{I18n.is_bigger}</option>
+            <option value="_between_x_and_y" data-count="2" data-type="#{input_type}">#{I18n.between_x_and_y}</option>
           """
-        when 'enum' # finish me
+        when 'enum', 'belongs_to_association' # finish me
+#          input_type = field_data['input_type'] || 'string'
+
           """
             <option value="_present">#{I18n.is_present}</option>
           """
 
-        when 'string', 'text', 'belongs_to_association'
+        when 'string', 'text'
+          input_type = field_data['input_type'] || 'string'
+
           """
-            <option value="_exactly">#{I18n.is_exactly}</option>
-            <option value="_contains">#{I18n.contains}</option>
-            <option value="_starts_with">#{I18n.starts_with}</option>
-            <option value="_ends_with">#{I18n.ends_with}</option>
+            <option value="_exactly" data-count="1" data-type="#{input_type}">#{I18n.is_exactly}</option>
+            <option value="_contains" data-count="1" data-type="#{input_type}">#{I18n.contains}</option>
+            <option value="_starts_with" data-count="1" data-type="#{input_type}">#{I18n.starts_with}</option>
+            <option value="_ends_with" data-count="1" data-type="#{input_type}">#{I18n.ends_with}</option>
           """
         else
+          input_type = field_data['input_type'] || 'string'
+
           """
-            <option value="_exactly">#{I18n.is_exactly}</option>
+            <option value="_exactly" data-count="1" data-type="#{input_type}>#{I18n.is_exactly}</option>
           """
+
+
+    add_filter = (field_data) ->
+      template = build_template(field_data)
+
+      $template = $(template);
+
+      init_select($template.find('select'))
+
+      $filters.append($template)
+
+      # init with values
+#      if field_data.op
+
+
+      show_separator(true)
 
     $('#list')
       .on 'changed.bs.select', '.filter_args.bootstrap-select', (e)->
@@ -139,15 +161,7 @@ $(document).ready ->
       .on 'click', '.list_filter', (e)->
         e.preventDefault();
 
-        template = build_template($(this).data())
-
-        $template = $(template);
-
-        init_select($template.find('select'))
-
-        $filters.append($template)
-
-        show_separator(true)
+        add_filter($(this).data())
 
         return
 
