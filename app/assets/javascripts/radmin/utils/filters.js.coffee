@@ -1,20 +1,20 @@
 #= require 'radmin/utils/custom_filters'
 #= require 'radmin/utils/inputs'
 
-window.template_datetime = (seq_num, opts)->
+window.template_datetime = (name_mask, opts)->
 
-window.template_time = (seq_num, opts)->
+window.template_time = (name_mask, opts)->
 
-window.template_date = (seq_num, opts)->
+window.template_date = (name_mask, opts)->
 
-window.template_integer = (seq_num, opts)->
-  "<input type='number' name='f[#{seq_num}][v]' step='1'>"
+window.template_integer = (name_mask, opts)->
+  "<input type='number' name='#{name_mask}[v]' step='1'>"
 
-window.template_float = (seq_num, opts)->
-  "<input type='number' name='f[#{seq_num}][v]' step='0.01'>"
+window.template_float = (name_mask, opts)->
+  "<input type='number' name='#{name_mask}[v]' step='0.01'>"
 
-window.template_string = (seq_num, opts)->
-  "<input type='text' name='f[#{seq_num}][v]'>"
+window.template_string = (name_mask, opts)->
+  "<input type='text' name='#{name_mask}[v]'>"
 
 
 $(document).ready ->
@@ -29,14 +29,17 @@ $(document).ready ->
       $values_section = $parent.find('.values')
 
       val = $option.val()
-      seq_num = $parent.data('num')
+      name_mask = $parent.data('mask')
       opts = $option.data()
 
-      template = window["template_#{opts.type}"](seq_num);
+      if Number(opts.count) > 0
+        template = window["template_#{opts.type}"](name_mask);
 
-      $values_section.html(template)
+        $values_section.html(template)
 
-      init_select($values_section.find('select'))
+        init_select($values_section.find('select'))
+      else
+        $values_section.html('')
 
 
     show_separator = (show) ->
@@ -49,8 +52,10 @@ $(document).ready ->
     build_template = (field_data) ->
       ++input_num
 
+      mask = "f[#{field_data.name}][#{input_num}]"
+
       """
-        <p class="filter" data-num=#{input_num}>
+        <p class="filter" data-mask=#{mask}>
           <a class="remove_list_filter" href="#">
             <span class="filter_label">
               <i type="solid"></i>
@@ -58,9 +63,7 @@ $(document).ready ->
             </span>
           </a>
 
-          <input type="hidden" value="#{field_data.name}" name="f[#{input_num}][n]">
-
-          <select class="filter_args" name="f[#{input_num}][o]" data-style="filter_select_style">
+          <select class="filter_args" name="#{mask}[o]" data-style="filter_select_style">
             #{build_options(field_data)}
           </select>
 

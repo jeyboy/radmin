@@ -1,11 +1,13 @@
 require 'radmin/utils/configurable'
 require 'radmin/utils/bindable'
+require 'radmin/sections'
 
 module Radmin
   module Models
     class Interface
       include Radmin::Utils::Configurable
       include Radmin::Utils::Bindable
+      include Radmin::Sections
 
       attr_reader :model_name
 
@@ -76,7 +78,6 @@ module Radmin
 
 
 
-
       def initialize(model_or_model_name)
         @model = model_or_model_name if model_or_model_name.is_a?(Class)
         @model_name = model_or_model_name.to_s
@@ -137,30 +138,13 @@ module Radmin
         model.to_s
       end
 
-      # def query_scope(scope, query, fields = config.list.fields.select(&:queryable?))
-      #   wb = WhereBuilder.new(scope)
-      #   fields.each do |field|
-      #     value = parse_field_value(field, query)
-      #     wb.add(field, value, field.search_operator)
-      #   end
-      #   # OR all query statements
-      #   wb.build
-      # end
-      #
-      # def filter_scope(scope, filters, fields = config.list.fields.select(&:filterable?))
-      #   filters.each_pair do |field_name, filters_dump|
-      #     filters_dump.each do |_, filter_dump|
-      #       wb = WhereBuilder.new(scope)
-      #       field = fields.detect { |f| f.name.to_s == field_name }
-      #       value = parse_field_value(field, filter_dump[:v])
-      #
-      #       wb.add(field, value, (filter_dump[:o] || 'default'))
-      #       # AND current filter statements to other filter statements
-      #       scope = wb.build
-      #     end
-      #   end
-      #   scope
-      # end
+      def query_scope(scope, query, fields = list.fields.select(&:queryable?))
+        raise 'Override me'
+      end
+
+      def filter_scope(scope, filters) # , fields = list.fields.select(&:filterable?)
+        raise 'Override me'
+      end
     end
   end
 end
