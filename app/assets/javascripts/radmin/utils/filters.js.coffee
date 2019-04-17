@@ -32,10 +32,12 @@ $(document).ready ->
       name_mask = $parent.data('mask')
       opts = $option.data()
 
-      if Number(opts.count) > 0
+      intup_amount = Number(opts.count)
+
+      if intup_amount > 0
         template = window["template_#{opts.type}"](name_mask);
 
-        $values_section.html(template)
+        $values_section.html(template.repeat(intup_amount))
 
         init_select($values_section.find('select'))
       else

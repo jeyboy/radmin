@@ -27,6 +27,9 @@ module Radmin
       attr_accessor :model_class_blockers;
 
 
+      attr_accessor :filter_cmds
+      attr_accessor :filter_like_cmd
+      
       # set settings for `protect_from_forgery` method
       # By default, it raises exception upon invalid CSRF tokens
       attr_accessor :forgery_protection_settings
@@ -189,7 +192,6 @@ module Radmin
           'ApplicationRecord' => true
         }
 
-
         # @compact_show_view = true
         # @browser_validations = true
         # @yell_for_non_accessible_fields = true
@@ -214,9 +216,85 @@ module Radmin
         # @show_gravatar = true
         @parent_controller = '::ActionController::Base'
         @forgery_protection_settings = {with: :exception}
+        
+        init_filter_cmds        
         # RailsAdmin::Config::Actions.reset
       end
 
+      def init_filter_cmds
+        @filter_like_cmd = ->(result, name, val, type, adapter_type) {
+          result.first <<
+            case adapter_type
+              when 'postgresql'
+                "(#{name} ILIKE ?)"
+              else
+                "(LOWER(#{name}) LIKE LOWER(?))"
+                # raise NotImplementedError, "Unknown adapter type '#{adapter_type}'"
+            end
+
+          result.last << "%#{val}%"
+        }
+
+        @filter_cmds = {}
+
+        @filter_cmds['_skip'] = ->(result, name, val, type, adapter_type) {}
+        @filter_cmds['_present'] = ->(result, name, val, type, adapter_type) { result.first << "(#{name} IS NOT NULL)" }
+        @filter_cmds['_blank'] = ->(result, name, val, type, adapter_type) { result.first << "(#{name} IS NULL)" }
+        @filter_cmds['_true'] = ->(result, name, val, type, adapter_type) {
+          res.first << "(#{name} = ?)"
+          res.last << true
+        }
+        @filter_cmds['_false'] = ->(result, name, val, type, adapter_type) {
+          res.first << "(#{name} = ?)"
+          res.last << false
+        }
+        @filter_cmds['_exactly'] = ->(result, name, val, type, adapter_type) {
+          res.first << "(#{name} = ?)"
+          res.last << val
+        }
+        @filter_cmds['_contains'] = ->(result, name, val, type, adapter_type) {
+          @filter_like_cmd.call(result, name, "%#{val}%", type, adapter_type)
+        }
+        @filter_cmds['_starts_with'] = ->(result, name, val, type, adapter_type) {
+          @filter_like_cmd.call(result, name, "#{val}%", type, adapter_type)
+        }
+        @filter_cmds['_ends_with'] = ->(result, name, val, type, adapter_type) {
+          @filter_like_cmd.call(result, name, "%#{val}", type, adapter_type)
+        }
+        @filter_cmds['_less'] = ->(result, name, val, type, adapter_type) {
+          res.first << "(#{name} < ?)"
+          res.last << val
+        }
+        @filter_cmds['_bigger'] = ->(result, name, val, type, adapter_type) {
+          res.first << "(#{name} > ?)"
+          res.last << val
+        }
+        @filter_cmds['_between_x_and_y'] = ->(result, name, val, type, adapter_type) {
+          res.first << "(#{name} BETWEEN ? AND ?)"
+          res.last << val.first << val.last
+        }
+
+        @filter_cmds['_today'] = ->(result, name, val, type, adapter_type) {
+          res.first << "(#{name} >= ?)"
+          res.last << Time.zone.now.beginning_of_day
+        }
+
+
+        @filter_cmds['_yesterday'] = ->(result, name, val, type, adapter_type) {
+          res.first << "(#{name} >= ?)"
+          res.last << Time.zone.now.beginning_of_day - 1.day
+        }
+
+        @filter_cmds['_this_week'] = ->(result, name, val, type, adapter_type) {
+          res.first << "(#{name} >= ?)"
+          res.last << Time.zone.now.beginning_of_day
+        }
+
+        @filter_cmds['_last_week'] = ->(result, name, val, type, adapter_type) {
+          res.first << "(#{name} >= ?)"
+          res.last << Time.zone.now.beginning_of_day
+        }
+      end
 
       # # Application title, can be an array of two elements
       # attr_accessor :main_app_name

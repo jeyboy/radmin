@@ -272,7 +272,8 @@ module Radmin
 
       # Reader for field's type
       def type
-        @type ||= self.class.name.to_s.demodulize.underscore.to_sym
+        @type ||=
+          self.class.name.to_s.demodulize.underscore.to_sym
       end
 
       # Reader for field's value
@@ -291,6 +292,26 @@ module Radmin
         EOM
       end
 
+      def filterable_attrs
+        @filterable_attrs ||= begin
+          if filterable.is_a?(TrueClass)
+            [abstract_model.model, nil]
+          elsif filterable.is_a?(Array)
+            # [TargetClass, -> {}]
+            # [TargetClass, SecondClass.scope_name]
+            # [TargetClass, :target_class_scope_name]
+
+            case filterable.last.class.name
+              when 'Proc', 'ActiveRecord::Relation', 'Symbol'
+                [abstract_model.model, nil]
+              else
+                raise 'Wrong filter config'
+            end
+          else
+            raise 'Wrong filter config'
+          end
+        end
+      end
 
       # def form_default_value
       #   (default_value if bindings[:object].new_record? && value.nil?)

@@ -71,8 +71,32 @@ module Radmin
       end
       
       def filter_scope(scope, filters) # , fields = list.fields.select(&:filterable?)
+        # scope.joined_includes_values
+
+        filter_cmds = Radmin::Config.filter_cmds
+        
+        fields =
+          list.fields.each_with_object({}) { |field, res|
+            res[field.name.to_s] = field if field.filterable?
+          }
+
         filters.each_pair do |field_name, filters_dump|
-      #     filters_dump.each do |_, filter_dump|
+          field = fields[field_name]
+
+          next unless field
+
+          mdl, mdl_scope = field.filterable_attrs
+          adapter_type = self.class.adapter_type(mdl)
+
+          filters_dump.each_with_object(["", []]) do |(_, filter_dump), res|
+            cmd = filter_cmds[filter_dump[:o]]
+            
+            next unless cmd
+            
+            cmd.call(res, field_name, filter_dump[:v], field.type, adapter_type)
+
+            # scope = scope.merge(field.filterable) unless field.filterable.is_a?(TrueClass)
+
       #       wb = WhereBuilder.new(scope)
       #       field = fields.detect { |f| f.name.to_s == field_name }
       #       value = parse_field_value(field, filter_dump[:v])
@@ -80,7 +104,7 @@ module Radmin
       #       wb.add(field, value, (filter_dump[:o] || 'default'))
       #       # AND current filter statements to other filter statements
       #       scope = wb.build
-      #     end
+          end
         end
       
         scope

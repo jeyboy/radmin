@@ -76,7 +76,9 @@ module Radmin
       end
 
 
-
+      def self.adapter_type(mdl)
+        mdl.connection.adapter_name.downcase
+      end
 
       def initialize(model_or_model_name)
         @model = model_or_model_name if model_or_model_name.is_a?(Class)
@@ -137,7 +139,7 @@ module Radmin
       def to_s
         model.to_s
       end
-
+      
       def query_scope(scope, query, fields = list.fields.select(&:queryable?))
         raise 'Override me'
       end
