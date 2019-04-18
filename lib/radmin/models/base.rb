@@ -88,23 +88,23 @@ module Radmin
           mdl, mdl_scope = field.filterable_attrs
           adapter_type = self.class.adapter_type(mdl)
 
-          filters_dump.each_with_object(["", []]) do |(_, filter_dump), res|
-            cmd = filter_cmds[filter_dump[:o]]
-            
-            next unless cmd
-            
-            cmd.call(res, field_name, filter_dump[:v], field.type, adapter_type)
+          where_params =
+            filters_dump.each_with_object(["", []]) do |(_, filter_dump), res|
+              cmd = filter_cmds[filter_dump[:o]]
 
-            # scope = scope.merge(field.filterable) unless field.filterable.is_a?(TrueClass)
+              next unless cmd
 
-      #       wb = WhereBuilder.new(scope)
-      #       field = fields.detect { |f| f.name.to_s == field_name }
-      #       value = parse_field_value(field, filter_dump[:v])
-      #
-      #       wb.add(field, value, (filter_dump[:o] || 'default'))
-      #       # AND current filter statements to other filter statements
-      #       scope = wb.build
-          end
+              cmd.call(res, field_name, filter_dump[:v], field.type, adapter_type)
+        #       wb = WhereBuilder.new(scope)
+        #       field = fields.detect { |f| f.name.to_s == field_name }
+        #       value = parse_field_value(field, filter_dump[:v])
+        #
+        #       wb.add(field, value, (filter_dump[:o] || 'default'))
+        #       # AND current filter statements to other filter statements
+        #       scope = wb.build
+            end
+
+          scope = scope.merge(mdl.where(where_params.first.join(" OR ")), *where_params.last)
         end
       
         scope

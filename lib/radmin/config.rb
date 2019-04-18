@@ -88,11 +88,7 @@ module Radmin
           end
         end
 
-        res = Radmin::Models.get_model(key, entity)
-
-        res.instance_eval(&block) if block
-
-        res
+        Radmin::Models.get_model(key, entity, &block)
 
         # @registry[key] ||= RailsAdmin::Config::LazyModel.new(entity)
         # @registry[key].add_deferred_block(&block) if block

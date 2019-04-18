@@ -4,9 +4,14 @@ module Radmin
   module Models
     @models = {}
 
-    def self.get_model(key, entity)
-      @models[key] ||=
-        Radmin::Models::Abstract.new(entity)
+    def self.get_model(key, entity, &block)
+      @models[key] || if block
+        mdl = Radmin::Models::Abstract.new(entity)
+
+        mdl.instance_eval(&block)
+
+        @models[key] = mdl
+      end
     end
 
     def self.visible(bindings)
