@@ -282,16 +282,14 @@ module Radmin
         }
 
 
-        # TODO: finish me
-
         @filter_cmds['_this_week'] = ->(result, name, val, type, adapter_type) {
-          result.first << "(#{name} >= ?)"
-          result.last << Time.zone.now.beginning_of_day
+          result.first << "(#{name} BETWEEN ? AND ?)"
+          result.last << Time.zone.now.beginning_of_week << Time.zone.now.end_of_week
         }
 
         @filter_cmds['_last_week'] = ->(result, name, val, type, adapter_type) {
-          result.first << "(#{name} >= ?)"
-          result.last << Time.zone.now.beginning_of_day
+          result.first << "(#{name} BETWEEN ? AND ?)"
+          result.last << (Time.zone.now.beginning_of_week - 1.week) << (Time.zone.now.end_of_week - 1.week)
         }
       end
 

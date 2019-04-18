@@ -58,7 +58,9 @@ module Radmin
         scope
       end
 
-      def query_scope(scope, query, fields = list.fields.select(&:queryable?))
+      def query_scope(scope, query) # , fields = list.fields.select(&:queryable?)
+
+
       #   wb = WhereBuilder.new(scope)
       #   fields.each do |field|
       #     value = parse_field_value(field, query)
@@ -71,8 +73,6 @@ module Radmin
       end
       
       def filter_scope(scope, filters) # , fields = list.fields.select(&:filterable?)
-        # scope.joined_includes_values
-
         filter_cmds = Radmin::Config.filter_cmds
         
         fields =
