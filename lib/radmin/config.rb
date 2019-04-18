@@ -237,16 +237,16 @@ module Radmin
         @filter_cmds['_present'] = ->(result, name, val, type, adapter_type) { result.first << "(#{name} IS NOT NULL)" }
         @filter_cmds['_blank'] = ->(result, name, val, type, adapter_type) { result.first << "(#{name} IS NULL)" }
         @filter_cmds['_true'] = ->(result, name, val, type, adapter_type) {
-          res.first << "(#{name} = ?)"
-          res.last << true
+          result.first << "(#{name} = ?)"
+          result.last << true
         }
         @filter_cmds['_false'] = ->(result, name, val, type, adapter_type) {
-          res.first << "(#{name} = ?)"
-          res.last << false
+          result.first << "(#{name} = ?)"
+          result.last << false
         }
         @filter_cmds['_exactly'] = ->(result, name, val, type, adapter_type) {
-          res.first << "(#{name} = ?)"
-          res.last << val
+          result.first << "(#{name} = ?)"
+          result.last << val
         }
         @filter_cmds['_contains'] = ->(result, name, val, type, adapter_type) {
           @filter_like_cmd.call(result, name, "%#{val}%", type, adapter_type)
@@ -258,37 +258,40 @@ module Radmin
           @filter_like_cmd.call(result, name, "%#{val}", type, adapter_type)
         }
         @filter_cmds['_less'] = ->(result, name, val, type, adapter_type) {
-          res.first << "(#{name} < ?)"
-          res.last << val
+          result.first << "(#{name} < ?)"
+          result.last << val
         }
         @filter_cmds['_bigger'] = ->(result, name, val, type, adapter_type) {
-          res.first << "(#{name} > ?)"
-          res.last << val
+          result.first << "(#{name} > ?)"
+          result.last << val
         }
         @filter_cmds['_between_x_and_y'] = ->(result, name, val, type, adapter_type) {
-          res.first << "(#{name} BETWEEN ? AND ?)"
-          res.last << val.first << val.last
+          result.first << "(#{name} BETWEEN ? AND ?)"
+          result.last << val.first << val.last
         }
 
         @filter_cmds['_today'] = ->(result, name, val, type, adapter_type) {
-          res.first << "(#{name} >= ?)"
-          res.last << Time.zone.now.beginning_of_day
+          result.first << "(#{name} >= ?)"
+          result.last << Time.zone.now.beginning_of_day
         }
 
 
         @filter_cmds['_yesterday'] = ->(result, name, val, type, adapter_type) {
-          res.first << "(#{name} >= ?)"
-          res.last << Time.zone.now.beginning_of_day - 1.day
+          result.first << "(#{name} >= ?)"
+          result.last << Time.zone.now.beginning_of_day - 1.day
         }
 
+
+        # TODO: finish me
+
         @filter_cmds['_this_week'] = ->(result, name, val, type, adapter_type) {
-          res.first << "(#{name} >= ?)"
-          res.last << Time.zone.now.beginning_of_day
+          result.first << "(#{name} >= ?)"
+          result.last << Time.zone.now.beginning_of_day
         }
 
         @filter_cmds['_last_week'] = ->(result, name, val, type, adapter_type) {
-          res.first << "(#{name} >= ?)"
-          res.last << Time.zone.now.beginning_of_day
+          result.first << "(#{name} >= ?)"
+          result.last << Time.zone.now.beginning_of_day
         }
       end
 

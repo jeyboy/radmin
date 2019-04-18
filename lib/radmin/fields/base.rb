@@ -292,10 +292,20 @@ module Radmin
         EOM
       end
 
+      def filterable?
+        filterable_attrs.first.present?
+      end
+
+      def filter_settings
+        {}
+      end
+
       def filterable_attrs
         @filterable_attrs ||= begin
           if filterable.is_a?(TrueClass)
             [abstract_model.model, nil]
+          elsif filterable.is_a?(FalseClass)
+            [nil]
           elsif filterable.is_a?(Array)
             # [TargetClass, -> {}]
             # [TargetClass, SecondClass.scope_name]
@@ -333,18 +343,6 @@ module Radmin
         # (translated.is_a?(Hash) ? translated.to_a.first[1] : translated).html_safe
       end
 
-      def filter_settings
-        {}
-      end
-      
-      # def filterable_json
-      #   res = []
-      #
-      #   filterable_conversion(filterable, res) if filterable
-      #
-      #   res.to_json
-      # end
-      #
       # private
       #
       # def filterable_conversion(filterable_val, res)

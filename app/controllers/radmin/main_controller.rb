@@ -106,7 +106,18 @@ module Radmin
       options = options.merge(include: associations) unless associations.blank?
       # options = options.merge(get_sort_hash(abstract_model))
       options = options.merge(query: params[:query]) if params[:query].present?
-      options = options.merge(filters: params[:f]) if params[:f].present?
+
+      if params[:f].present?
+        filters =
+          if params[:f].is_a?(ActionController::Parameters)
+            params[:f].permit!.to_hash
+          else
+            params[:f]
+          end
+        
+        options = options.merge(filters: filters)
+      end
+      
       options = options.merge(bulk_ids: params[:bulk_ids]) if params[:bulk_ids]
 
       abstract_model.all(options, scope)

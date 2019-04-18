@@ -76,7 +76,7 @@ module Radmin
         filter_cmds = Radmin::Config.filter_cmds
         
         fields =
-          list.fields.each_with_object({}) { |field, res|
+          list.fields.each_with_object({}) { |(field_name, field), res|
             res[field.name.to_s] = field if field.filterable?
           }
 
@@ -88,23 +88,21 @@ module Radmin
           mdl, mdl_scope = field.filterable_attrs
           adapter_type = self.class.adapter_type(mdl)
 
+          next unless mdl
+
+          mdl_filed_name = "#{mdl.table_name}.#{field_name}"
+
           where_params =
-            filters_dump.each_with_object(["", []]) do |(_, filter_dump), res|
-              cmd = filter_cmds[filter_dump[:o]]
+            filters_dump.each_with_object([[], []]) do |(_, filter_dump), res|
+              cmd = filter_cmds[filter_dump['o']]
 
               next unless cmd
 
-              cmd.call(res, field_name, filter_dump[:v], field.type, adapter_type)
-        #       wb = WhereBuilder.new(scope)
-        #       field = fields.detect { |f| f.name.to_s == field_name }
-        #       value = parse_field_value(field, filter_dump[:v])
-        #
-        #       wb.add(field, value, (filter_dump[:o] || 'default'))
-        #       # AND current filter statements to other filter statements
-        #       scope = wb.build
+              cmd.call(res, mdl_filed_name, filter_dump['v'], field.type, adapter_type)
             end
 
-          scope = scope.merge(mdl.where(where_params.first.join(" OR ")), *where_params.last)
+          scope = scope.merge(mdl_scope) if mdl_scope
+          scope = scope.merge(mdl.where(where_params.first.join(" OR "), *where_params.last))
         end
       
         scope
