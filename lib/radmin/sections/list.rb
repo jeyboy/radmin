@@ -45,6 +45,14 @@ module Radmin
       register_property :row_css_class do
         ''
       end
+
+      # register_property :searchable do
+      #   false
+      # end
+      #
+      # register_property :filterable do
+      #   false
+      # end
     end
   end
 end

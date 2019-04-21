@@ -30,7 +30,8 @@ module Radmin
       end
 
       def scoped
-        where('1=1')
+        model
+        # where('1=1')
       end
 
       def find(id)
@@ -59,7 +60,12 @@ module Radmin
       end
 
       def query_scope(scope, query) # , fields = list.fields.select(&:queryable?)
+        filter_cmds = Radmin::Config.filter_cmds
 
+        fields =
+          list.fields.each_with_object({}) { |(field_name, field), res|
+            res[field.name.to_s] = field if field.queryable?
+          }
 
       #   wb = WhereBuilder.new(scope)
       #   fields.each do |field|
@@ -85,24 +91,25 @@ module Radmin
 
           next unless field
 
-          mdl, mdl_scope = field.filterable_attrs
-          adapter_type = self.class.adapter_type(mdl)
+          field.filterable_attrs.each do |(mdl, mdl_scope)|
+            adapter_type = self.class.adapter_type(mdl)
 
-          next unless mdl
+            next unless mdl
 
-          mdl_filed_name = "#{mdl.table_name}.#{field_name}"
+            mdl_filed_name = "#{mdl.table_name}.#{field_name}"
 
-          where_params =
-            filters_dump.each_with_object([[], []]) do |(_, filter_dump), res|
-              cmd = filter_cmds[filter_dump['o']]
+            where_params =
+              filters_dump.each_with_object([[], []]) do |(_, filter_dump), res|
+                cmd = filter_cmds[filter_dump['o']]
 
-              next unless cmd
+                next unless cmd
 
-              cmd.call(res, mdl_filed_name, filter_dump['v'], field.type, adapter_type)
-            end
+                cmd.call(res, mdl_filed_name, filter_dump['v'], field.type, adapter_type)
+              end
 
-          scope = scope.merge(mdl_scope) if mdl_scope
-          scope = scope.merge(mdl.where(where_params.first.join(" OR "), *where_params.last))
+            scope = scope.merge(mdl_scope) if mdl_scope
+            scope = scope.merge(mdl.where(where_params.first.join(" OR "), *where_params.last))
+          end
         end
       
         scope

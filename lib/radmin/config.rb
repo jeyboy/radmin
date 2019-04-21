@@ -228,7 +228,7 @@ module Radmin
                 # raise NotImplementedError, "Unknown adapter type '#{adapter_type}'"
             end
 
-          result.last << "%#{val}%"
+          result.last << "#{val}"
         }
 
         @filter_cmds = {}

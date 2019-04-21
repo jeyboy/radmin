@@ -80,6 +80,44 @@ module Radmin
         mdl.connection.adapter_name.downcase
       end
 
+      def self.identify_filter_params(mdl, filter)
+        if filter == true
+          [mdl, nil]
+        elsif filter.is_a?(Array)
+          # [TargetClass, -> {}]
+          # [TargetClass, SecondClass.scope_name]
+          # [TargetClass, :target_class_scope_name]
+
+          case filter.last.class.name
+            when 'Proc', 'ActiveRecord::Relation', 'Symbol'
+              [mdl, filter.last]
+            else
+              raise 'Wrong filter config'
+          end
+        elsif filter == false
+          nil
+        else
+          raise 'Wrong filter config'
+        end
+      end
+
+      def identify_filter_params(filter)
+        self.class.identify_filter_params(model, filter)
+      end
+
+      def identify_filters_params(filters)
+        if filters == true
+          [identify_filter_params(filters)]
+        elsif filters.is_a?(Array)
+          filters.map do |s|
+            identify_filter_params(s)
+          end
+        else
+          raise 'Wrong searchable config'
+        end.compact
+      end
+
+
       def initialize(model_or_model_name)
         @model = model_or_model_name if model_or_model_name.is_a?(Class)
         @model_name = model_or_model_name.to_s

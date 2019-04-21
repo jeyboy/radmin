@@ -76,7 +76,7 @@ module Radmin
 
       register_property :html_attributes do
         {
-            required: required?,
+          required: required?,
         }
       end
 
@@ -134,7 +134,7 @@ module Radmin
         # @searchable ||= associated_model_config.abstract_model.properties.collect(&:name).include?(associated_model_config.object_label_method) ? [associated_model_config.object_label_method, {abstract_model.model => method_name}] : {abstract_model.model => method_name}
       end
 
-      register_property :search_operator do
+      register_property :searchable_operator do
         @search_operator ||= Radmin::Config.default_search_operator
       end
 
@@ -260,7 +260,6 @@ module Radmin
         false
       end
 
-
       def bindings
         @section.bindings
       end
@@ -293,34 +292,25 @@ module Radmin
       end
 
       def filterable?
-        filterable_attrs.first.present?
+        filterable && filterable_attrs.present?
+      end
+
+      def filterable_attrs
+        @filterable_attrs ||=
+          abstract_model.identify_filters_params(filterable)
       end
 
       def filter_settings
         {}
       end
 
-      def filterable_attrs
-        @filterable_attrs ||= begin
-          if filterable.is_a?(TrueClass)
-            [abstract_model.model, nil]
-          elsif filterable.is_a?(FalseClass)
-            [nil]
-          elsif filterable.is_a?(Array)
-            # [TargetClass, -> {}]
-            # [TargetClass, SecondClass.scope_name]
-            # [TargetClass, :target_class_scope_name]
+      def searchable?
+        searchable && searchable_attrs.present?
+      end
 
-            case filterable.last.class.name
-              when 'Proc', 'ActiveRecord::Relation', 'Symbol'
-                [abstract_model.model, nil]
-              else
-                raise 'Wrong filter config'
-            end
-          else
-            raise 'Wrong filter config'
-          end
-        end
+      def searchable_attrs
+        @searchable_attrs ||=
+          abstract_model.identify_filters_params(searchable)
       end
 
       # def form_default_value
