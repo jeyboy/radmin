@@ -51,5 +51,4 @@
         preserveSelected: false
       )
 
-$(document).ready ->
-  init_select($('.select'))
+init_select($('.select'))

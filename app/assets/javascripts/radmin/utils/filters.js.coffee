@@ -17,167 +17,177 @@ window.template_string = (name_mask, opts)->
   "<input type='text' name='#{name_mask}[v]'>"
 
 
-$(document).ready ->
-  $filters = $('#filters_box')
+$filters = $('#filters_box')
 
-  if $filters.length
-    input_num = 0
+if $filters.length
+  input_num = 0
 
-    proc_opt_selection = ($elem)->
-      $option = $elem.find('option:selected')
-      $parent = $elem.parent()
-      $values_section = $parent.find('.values')
+  proc_opt_selection = ($elem)->
+    $option = $elem.find('option:selected')
+    $parent = $elem.parent()
+    $values_section = $parent.find('.values')
 
-      val = $option.val()
-      name_mask = $parent.data('mask')
-      opts = $option.data()
+    val = $option.val()
+    name_mask = $parent.data('mask')
+    opts = $option.data()
 
-      intup_amount = Number(opts.count)
+    intup_amount = Number(opts.count)
 
-      if intup_amount > 0
-        template = window["template_#{opts.type}"](name_mask);
+    if intup_amount > 0
+      template = window["template_#{opts.type}"](name_mask);
 
-        $values_section.html(template.repeat(intup_amount))
+      $values_section.html(template.repeat(intup_amount))
 
-        init_select($values_section.find('select'))
-      else
-        $values_section.html('')
-
-
-    show_separator = (show) ->
-      $separator = $filters.next();
-
-      if $separator.hasClass('filters_box')
-        $separator.css({display: if show then 'block' else 'none'})
+      init_select($values_section.find('select'))
+    else
+      $values_section.html('')
 
 
-    build_template = (field_data) ->
-      ++input_num
+  show_separator = (show) ->
+    $separator = $filters.next();
 
-      mask = "f[#{field_data.name}][#{input_num}]"
-
-      """
-        <p class="filter" data-mask=#{mask}>
-          <a class="remove_list_filter" href="#">
-            <span class="filter_label">
-              <i type="solid"></i>
-              #{field_data.label || field_data.name}
-            </span>
-          </a>
-
-          <select class="filter_args" name="#{mask}[o]" data-style="filter_select_style">
-            #{build_options(field_data)}
-          </select>
-
-          <span class="values"></span>
-        </p>
-      """
+    if $separator.hasClass('filters_box')
+      $separator.css({display: if show then 'block' else 'none'})
 
 
-    build_options = (field_data) ->
-      opts = build_custom_options(field_data)
+  build_template = (field_data) ->
+    ++input_num
 
-      return opts if opts
+    mask = "f[#{field_data.name}][#{input_num}]"
 
-      opts = """
-        <option val="_skip">...</option>
-        <option value="_present">#{I18n.is_present}</option>
-        <option value="_blank">#{I18n.is_blank}</option>
-        <option data-divider="true"></option>
-      """
+    """
+      <p class="filter" data-mask=#{mask}>
+        <a class="remove_list_filter" href="#">
+          <span class="filter_label">
+            <i type="solid"></i>
+            #{field_data.label || field_data.name}
+          </span>
+        </a>
 
-      opts += switch field_data.type
-        when 'boolean'
-          """
-            <option value="_true">#{I18n.true}</option>
-            <option value="_false">#{I18n.false}</option>
-          """
-        when 'integer', 'float', 'decimal'
-          input_type = field_data['input_type'] ||
-            (if field_data.type == 'float' then 'float' else 'integer')
+        <select class="filter_args" name="#{mask}[o]" data-style="filter_select_style">
+          #{build_options(field_data)}
+        </select>
 
-          """
-            <option value="_exactly" data-count="1" data-type="#{input_type}>#{I18n.is_exactly}</option>
-            <option value="_less" data-count="1" data-type="#{input_type}>#{I18n.is_less}</option>
-            <option value="_bigger" data-count="1" data-type="#{input_type}>#{I18n.is_bigger}</option>
-            <option value="_between_x_and_y" data-count="2" data-type="#{input_type}>#{I18n.between_x_and_y}</option>
-          """
-        when 'datetime', 'timestamp', 'date'
-          input_type = field_data['input_type'] ||
-            (if field_data.type == 'date' then 'date' else 'datetime')
+        <span class="values"></span>
+      </p>
+    """
 
-          """
-            <option value="_today">#{I18n.today}</option>
-            <option value="_yesterday">#{I18n.yesterday}</option>
-            <option value="_this_week">#{I18n.this_week}</option>
-            <option value="_last_week">#{I18n.last_week}</option>
 
-            <option data-divider="true"></option>
-            <option value="_exactly" data-count="1" data-type="#{input_type}">#{I18n.is_exactly}</option>
-            <option value="_less" data-count="1" data-type="#{input_type}">#{I18n.is_less}</option>
-            <option value="_bigger" data-count="1" data-type="#{input_type}">#{I18n.is_bigger}</option>
-            <option value="_between_x_and_y" data-count="2" data-type="#{input_type}">#{I18n.between_x_and_y}</option>
-          """
-        when 'enum', 'belongs_to_association' # finish me
+  build_options = (field_data) ->
+    opts = build_custom_options(field_data)
+
+    return opts if opts
+
+    opts = """
+      <option val="_skip">...</option>
+      <option value="_present">#{I18n.is_present}</option>
+      <option value="_blank">#{I18n.is_blank}</option>
+      <option data-divider="true"></option>
+    """
+
+    opts += switch field_data.type
+      when 'boolean'
+        """
+          <option value="_true">#{I18n.true}</option>
+          <option value="_false">#{I18n.false}</option>
+        """
+      when 'integer', 'float', 'decimal'
+        input_type = field_data['input_type'] ||
+          (if field_data.type == 'float' then 'float' else 'integer')
+
+        """
+          <option value="_exactly" data-count="1" data-type="#{input_type}>#{I18n.is_exactly}</option>
+          <option value="_less" data-count="1" data-type="#{input_type}>#{I18n.is_less}</option>
+          <option value="_bigger" data-count="1" data-type="#{input_type}>#{I18n.is_bigger}</option>
+          <option value="_between_x_and_y" data-count="2" data-type="#{input_type}>#{I18n.between_x_and_y}</option>
+        """
+      when 'datetime', 'timestamp', 'date'
+        input_type = field_data['input_type'] ||
+          (if field_data.type == 'date' then 'date' else 'datetime')
+
+        """
+          <option value="_today">#{I18n.today}</option>
+          <option value="_yesterday">#{I18n.yesterday}</option>
+          <option value="_this_week">#{I18n.this_week}</option>
+          <option value="_last_week">#{I18n.last_week}</option>
+
+          <option data-divider="true"></option>
+          <option value="_exactly" data-count="1" data-type="#{input_type}">#{I18n.is_exactly}</option>
+          <option value="_less" data-count="1" data-type="#{input_type}">#{I18n.is_less}</option>
+          <option value="_bigger" data-count="1" data-type="#{input_type}">#{I18n.is_bigger}</option>
+          <option value="_between_x_and_y" data-count="2" data-type="#{input_type}">#{I18n.between_x_and_y}</option>
+        """
+      when 'enum', 'belongs_to_association' # finish me
 #          input_type = field_data['input_type'] || 'string'
 
-          """
-            <option value="_present">#{I18n.is_present}</option>
-          """
+        """
+          <option value="_present">#{I18n.is_present}</option>
+        """
 
-        when 'string', 'text'
-          input_type = field_data['input_type'] || 'string'
+      when 'string', 'text'
+        input_type = field_data['input_type'] || 'string'
 
-          """
-            <option value="_exactly" data-count="1" data-type="#{input_type}">#{I18n.is_exactly}</option>
-            <option value="_contains" data-count="1" data-type="#{input_type}">#{I18n.contains}</option>
-            <option value="_starts_with" data-count="1" data-type="#{input_type}">#{I18n.starts_with}</option>
-            <option value="_ends_with" data-count="1" data-type="#{input_type}">#{I18n.ends_with}</option>
-          """
-        else
-          input_type = field_data['input_type'] || 'string'
+        """
+          <option value="_exactly" data-count="1" data-type="#{input_type}">#{I18n.is_exactly}</option>
+          <option value="_contains" data-count="1" data-type="#{input_type}">#{I18n.contains}</option>
+          <option value="_starts_with" data-count="1" data-type="#{input_type}">#{I18n.starts_with}</option>
+          <option value="_ends_with" data-count="1" data-type="#{input_type}">#{I18n.ends_with}</option>
+        """
+      else
+        input_type = field_data['input_type'] || 'string'
 
-          """
-            <option value="_exactly" data-count="1" data-type="#{input_type}>#{I18n.is_exactly}</option>
-          """
-
-
-    add_filter = (field_data) ->
-      template = build_template(field_data)
-
-      $template = $(template);
-
-      init_select($template.find('select'))
-
-      $filters.append($template)
-
-      # init with values
-#      if field_data.op
+        """
+          <option value="_exactly" data-count="1" data-type="#{input_type}>#{I18n.is_exactly}</option>
+        """
 
 
-      show_separator(true)
+  window.add_filter = (field_data, key, values) ->
+    template = build_template(field_data)
 
-    $('#list')
-      .on 'changed.bs.select', '.filter_args.bootstrap-select', (e)->
-        e.preventDefault();
+    $template = $(template);
 
-        proc_opt_selection($(this))
+    $select = $template.find('select')
 
-        return
+    init_select($select)
 
-      .on 'click', '.list_filter', (e)->
-        e.preventDefault();
+    $filters.append($template)
 
-        add_filter($(this).data())
+    if (key)
+      $select.val(key)
+      $select
+        .selectpicker("refresh")
+        .trigger('changed.bs.select')
 
-        return
+      if (values)
+        $template.find('.values *').each (i, el) ->
+          this.value = values[i]
 
-      .on 'click', '.remove_list_filter', (e)->
-        e.preventDefault();
+    show_separator(true)
 
-        $(this).closest('.filter').remove()
+    $template
 
-        unless $filters.has('.filter').length
-          show_separator(false)
 
-        return
+  $('#list')
+    .on 'changed.bs.select', '.filter_args.bootstrap-select', (e)->
+      e.preventDefault();
+
+      proc_opt_selection($(this))
+
+      return
+
+    .on 'click', '.list_filter', (e)->
+      e.preventDefault();
+
+      add_filter($(this).data())
+
+      return
+
+    .on 'click', '.remove_list_filter', (e)->
+      e.preventDefault();
+
+      $(this).closest('.filter').remove()
+
+      unless $filters.has('.filter').length
+        show_separator(false)
+
+      return
