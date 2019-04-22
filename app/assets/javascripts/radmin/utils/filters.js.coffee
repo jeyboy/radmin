@@ -8,13 +8,13 @@ window.template_time = (name_mask, opts)->
 window.template_date = (name_mask, opts)->
 
 window.template_integer = (name_mask, opts)->
-  "<input type='number' name='#{name_mask}[v]' step='1'>"
+  "<input type='number' value='#{opts && opts.v || ''}' name='#{name_mask}[v]' step='1'>"
 
 window.template_float = (name_mask, opts)->
-  "<input type='number' name='#{name_mask}[v]' step='0.01'>"
+  "<input type='number' value='#{opts && opts.v || ''}' name='#{name_mask}[v]' step='0.01'>"
 
 window.template_string = (name_mask, opts)->
-  "<input type='text' name='#{name_mask}[v]'>"
+  "<input type='text' value='#{opts && opts.v || ''}' name='#{name_mask}[v]'>"
 
 
 $filters = $('#filters_box')
@@ -34,10 +34,24 @@ if $filters.length
     intup_amount = Number(opts.count)
 
     if intup_amount > 0
-      template = window["template_#{opts.type}"](name_mask);
+      $parent_select = $elem.find('select')
+
+      values = $parent_select.data('values')
+
+      if values
+        values_len = values.length
+        template = ''
+
+        for i in [0...intup_amount]
+          val = if i < values_len then values[i] else ''
+          template = template.concat(window["template_#{opts.type}"](name_mask, {v: val}))
+
+        $parent_select.data('values', null)
+      else
+        template = window["template_#{opts.type}"](name_mask);
+        template = template.repeat(intup_amount)
 
       $values_section.html(template.repeat(intup_amount))
-
       init_select($values_section.find('select'))
     else
       $values_section.html('')
@@ -142,7 +156,7 @@ if $filters.length
 
 
   window.add_filter = (field_data, key, values) ->
-    template = build_template(field_data)
+    template = build_template(field_data, if key then values else '')
 
     $template = $(template);
 
@@ -153,14 +167,12 @@ if $filters.length
     $filters.append($template)
 
     if (key)
+      $select.data('values', values)
+
       $select.val(key)
       $select
         .selectpicker("refresh")
         .trigger('changed.bs.select')
-
-      if (values)
-        $template.find('.values *').each (i, el) ->
-          this.value = values[i]
 
     show_separator(true)
 
