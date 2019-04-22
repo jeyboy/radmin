@@ -118,6 +118,10 @@ hr.menu_breaker {
 .filter {
   @extend .mb-1;
 
+  .bootstrap-select {
+    width: auto!important;
+  }
+
   a {
     text-decoration: none;
   }
@@ -160,7 +164,6 @@ hr.menu_breaker {
       @extend .fa;
       @extend .fa-trash;
     }
-
 
     &:hover {
       @extend .bg-primary;
