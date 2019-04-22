@@ -26,6 +26,8 @@
 
 - content_for :javascripts do
   :javascript
+    window.use_relations = #{current_model.filter_schema == :manual};
+
     jQuery(function($) {
       #{ordered_filter_string}
     });

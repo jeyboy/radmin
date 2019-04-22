@@ -1,6 +1,12 @@
 Radmin.config do |config|
   config.parent_controller = 'ApplicationController'
 
+  # :or_and # 'or' between rules grouped by field and 'and' between groups of rules for different fields
+  # :or_or # 'or' between rules grouped by field and 'or' between groups of rules for different fields
+  # :and_and # 'and' between rules grouped by field and 'and' between groups of rules for different fields
+  # :manual # user can config relation between each pair of rules with UI
+  # config.default_filter_schema = :manual
+
   ## == Devise ==
   # config.authenticate_with do
   #   warden.authenticate! scope: :user
@@ -33,6 +39,6 @@ Radmin.config do |config|
     show
     edit
     delete
-    #show_in_app
+    show_in_app
   end
 end

@@ -64,6 +64,14 @@ if $filters.length
       $separator.css({display: if show then 'block' else 'none'})
 
 
+  build_rels_template = (mask) ->
+    """
+      <select class="rel_args hide" name="#{mask}[r]" data-style="filter_rel_select_style">
+        <option value='or' selected>OR</option>
+        <option value='and'>AND</option>
+      </select>
+    """
+
   build_template = (field_data) ->
     ++input_num
 
@@ -84,10 +92,7 @@ if $filters.length
 
         <span class="values"></span>
 
-        <select class="rel_args hide" name="#{mask}[r]" data-style="filter_rel_select_style">
-          <option value='or' selected>OR</option>
-          <option value='and'>AND</option>
-        </select>
+        #{ if window.use_relations then build_rels_template(mask) else '' }
       </p>
     """
 
