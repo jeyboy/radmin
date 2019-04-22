@@ -7,8 +7,8 @@ require 'radmin/version'
 Gem::Specification.new do |spec|
   spec.name        = 'radmin'
   spec.version     = Radmin::VERSION
-  spec.authors     = ['JB']
-  spec.email       = ['jeyboy@bigmir.net']
+  spec.authors     = ['jeyboy', 'BlackKOT']
+  spec.email       = ['jeyboy@bigmir.net', 'oko10ko@ukr.net']
   spec.homepage    = 'https://github.com/jeyboy/radmin'
   spec.summary     = 'Admin panel'
   spec.description = 'Admin panel'
