@@ -83,6 +83,11 @@ if $filters.length
         </select>
 
         <span class="values"></span>
+
+        <select class="rel_args hide" name="#{mask}[r]" data-style="filter_rel_select_style">
+          <option value='or' selected>OR</option>
+          <option value='and'>AND</option>
+        </select>
       </p>
     """
 
@@ -93,7 +98,7 @@ if $filters.length
     return opts if opts
 
     opts = """
-      <option val="_skip">...</option>
+      <option value="_skip">...</option>
       <option value="_present">#{I18n.is_present}</option>
       <option value="_blank">#{I18n.is_blank}</option>
       <option data-divider="true"></option>
@@ -155,26 +160,37 @@ if $filters.length
         """
 
 
-  window.add_filter = (field_data, key, values) ->
-    template = build_template(field_data, if key then values else '')
+  window.add_filter = (field_data, key, rel, values) ->
+    template = build_template(field_data)
 
-    $template = $(template);
+    $template = $(template)
 
-    $select = $template.find('select')
+    $selects = $template.find('select')
 
-    init_select($select)
+    init_select($selects)
+
+    $last_filter = $filters.find('.filter:last-child')
 
     $filters.append($template)
 
     if (key)
-      $select.data('values', values)
+      $filter_select = $selects.filter('.filter_args')
 
-      $select.val(key)
-      $select
+      $filter_select.data('values', values)
+
+      $filter_select.val(key)
+      $filter_select
         .selectpicker("refresh")
         .trigger('changed.bs.select')
 
+      if (rel)
+        $rel_select = $selects.filter('.rel_args')
+        $rel_select.selectpicker('val', rel);
+
+
     show_separator(true)
+
+    $last_filter.find('.rel_args').removeClass('hide')
 
     $template
 
@@ -201,5 +217,8 @@ if $filters.length
 
       unless $filters.has('.filter').length
         show_separator(false)
+      else
+        $last_filter = $filters.find('.filter:last-child')
+        $last_filter.find('.rel_args').addClass('hide')
 
       return

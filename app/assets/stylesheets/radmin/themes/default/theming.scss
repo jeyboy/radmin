@@ -127,6 +127,13 @@ hr.menu_breaker {
     @extend .border-dark;
   }
 
+  .filter_rel_select_style {
+    @extend .font-weight-bold;
+    @extend .border;
+    @extend .border-dark;
+    @extend .btn-info;
+  }
+
   .dropdown-item.active {
     @extend .bg-warning;
     @extend .text-dark;
