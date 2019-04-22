@@ -39,7 +39,7 @@ module Radmin
     end
     ################################
 
-    
+
 #     # Check for required middlewares, users may forget to use them in Rails API mode
 #     config.after_initialize do |app|
 #       has_session_store = ::Rails.version < '5.0' || app.config.middleware.to_a.any? do |m|
