@@ -24,8 +24,7 @@ module Radmin
           instance_eval(&Radmin::Config.navigation_static_links) :
             Radmin::Config.navigation_static_links
 
-
-      li_stack = static_links.collect do |title, url|
+      li_stack = (static_links || []).collect do |title, url|
         ico = nil
 
         ico, url = url if url.is_a?(Array)
