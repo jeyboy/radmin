@@ -30,6 +30,16 @@ module Radmin
       Dir[File.join(File.dirname(__FILE__), '../tasks/*.rake')].each { |f| load f }
     end
 
+    ######### NOT TESTED ###########
+    # Active record patch for using 'OR' in rails 4 and rails 3
+    config.after_initialize do |app|
+      # if Rails::VERSION::MAJOR < 5
+      app.send :require, 'rails_or'
+      # end
+    end
+    ################################
+
+    
 #     # Check for required middlewares, users may forget to use them in Rails API mode
 #     config.after_initialize do |app|
 #       has_session_store = ::Rails.version < '5.0' || app.config.middleware.to_a.any? do |m|

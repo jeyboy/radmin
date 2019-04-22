@@ -24,6 +24,6 @@ begin
 
     Rails.application.eager_load!
   end
-rescue
+rescue => e
   print "Can't add default method for models"
 end

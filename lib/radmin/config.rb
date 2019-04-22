@@ -4,6 +4,7 @@ require 'radmin/models'
 module Radmin
   class Config
     DEFAULT_PROC = proc {}
+    DEFAULT_FILTER_SCHEMA = :or_and
 
     # DEFAULT_AUTHENTICATION = proc {}
     #
@@ -26,6 +27,12 @@ module Radmin
       # class names which stops chain of parents
       attr_accessor :model_class_blockers;
 
+      # schema used for union between filter rules
+      # :or_and # 'or' between rules grouped by field and 'and' between groups of rules for different fields
+      # :or_or # 'or' between rules grouped by field and 'or' between groups of rules for different fields
+      # :and_and # 'and' between rules grouped by field and 'and' between groups of rules for different fields
+      # :manual # user can config relation between each pair of rules with UI
+      attr_accessor :default_filter_schema
 
       attr_accessor :filter_cmds
       attr_accessor :filter_like_cmd
@@ -153,6 +160,9 @@ module Radmin
       end
 
 
+      def default_filter_schema=(new_schema)
+        @default_filter_schema = new_schema.presence || DEFAULT_FILTER_SCHEMA
+      end
 
       # accepts a hash of static links to be shown below the main navigation
       def navigation_static_label=(label)
@@ -213,7 +223,10 @@ module Radmin
         @parent_controller = '::ActionController::Base'
         @forgery_protection_settings = {with: :exception}
         
-        init_filter_cmds        
+        init_filter_cmds
+
+        @default_filter_schema = DEFAULT_FILTER_SCHEMA
+
         # RailsAdmin::Config::Actions.reset
       end
 

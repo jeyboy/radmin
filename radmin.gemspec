@@ -38,6 +38,8 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'bootstrap', '~> 4.3.1'
   spec.add_dependency 'font_awesome5_rails', '~> 0.5.0'
 
+  spec.add_dependency 'rails_or'
+
   # spec.add_dependency 'builder'
   # spec.add_dependency 'rack-pjax'
   # spec.add_dependency 'nested_form'

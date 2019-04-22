@@ -1,6 +1,7 @@
 require 'radmin/utils/configurable'
 require 'radmin/utils/bindable'
 require 'radmin/sections'
+require 'radmin/config'
 
 module Radmin
   module Models
@@ -14,6 +15,10 @@ module Radmin
       #default scope for model
       register_property :scoped do
         model
+      end
+
+      register_property :filter_schema do
+        Radmin::Config.default_filter_schema
       end
 
       register_property :description do
