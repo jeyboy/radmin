@@ -71,7 +71,10 @@ hr.menu_breaker {
 
   .last.links {
     .nav-item {
+      @extend .text-right;
+
       .nav-link {
+        max-width: 36px;
         border: 2px solid #dee2e6;
         @extend .rounded-circle;
 
