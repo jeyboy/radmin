@@ -30,7 +30,6 @@ module Radmin
 
       def scoped
         model
-        # where('1=1')
       end
 
       def find(id)
@@ -61,19 +60,42 @@ module Radmin
       def query_scope(scope, query) # , fields = list.fields.select(&:queryable?)
         filter_cmds = Radmin::Config.filter_cmds
 
+        joiner = search_schema == :or ? ' OR ' : ' AND '
+        is_or_branch = search_schema == :or
+        
         fields =
           list.fields.each_with_object({}) { |(field_name, field), res|
             res[field.name.to_s] = field if field.queryable?
           }
 
-      #   wb = WhereBuilder.new(scope)
-      #   fields.each do |field|
-      #     value = parse_field_value(field, query)
-      #     wb.add(field, value, field.search_operator)
-      #   end
-      #   # OR all query statements
-      #   wb.build
-      
+        fields.each_pair do |name, field|
+          field.searchable_attrs.each do |(mdl, mdl_scope)|
+            adapter_type = self.class.adapter_type(mdl)
+
+            next unless mdl
+
+            mdl_filed_name = "#{mdl.table_name}.#{field_name}"
+
+            where_params =
+              filters_dump.each_with_object([[], []]) do |(_, filter_dump), res|
+                cmd = filter_cmds[search_operator]
+
+                next unless cmd
+
+                cmd.call(res, mdl_filed_name, query, field.type, adapter_type)
+              end
+
+            scope = scope.merge(mdl_scope) if mdl_scope
+
+            scope = scope.merge(
+              begin
+                rel = mdl.where(where_params.first.join(joiner), *where_params.last)
+                is_or_branch ? mdl.or(rel) : rel
+              end
+            )
+          end
+        end
+
         scope
       end
       

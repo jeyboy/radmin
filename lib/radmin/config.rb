@@ -5,14 +5,7 @@ module Radmin
   class Config
     DEFAULT_PROC = proc {}
     DEFAULT_FILTER_SCHEMA = :or_and
-
-    # DEFAULT_AUTHENTICATION = proc {}
-    #
-    # DEFAULT_AUTHORIZE = proc {}
-    #
-    # DEFAULT_AUDIT = proc {}
-    #
-    # DEFAULT_CURRENT_USER = proc {}
+    DEFAULT_SEARCH_SCHEMA = :or
 
     class << self
       # set brand text
@@ -25,13 +18,20 @@ module Radmin
       attr_accessor :parent_controller
 
       # class names which stops chain of parents
-      attr_accessor :model_class_blockers;
+      attr_accessor :model_class_blockers
 
+      
+      attr_accessor :default_search_operator
+
+      # :or # 'or' between rules
+      # :and # 'and' between rules
+      attr_accessor :default_search_schema
+      
       # schema used for union between filter rules
       # :or_and # 'or' between rules grouped by field and 'and' between groups of rules for different fields
       # :or_or # 'or' between rules grouped by field and 'or' between groups of rules for different fields
       # :and_and # 'and' between rules grouped by field and 'and' between groups of rules for different fields
-      # :manual # user can config relation between each pair of rules with UI
+      # # (not implemented) :manual # user can config relation between each pair of rules with UI
       attr_accessor :default_filter_schema
 
       attr_accessor :filter_cmds
@@ -57,10 +57,24 @@ module Radmin
       end
 
       def default_search_operator=(operator)
-        if %w(default like starts_with ends_with is =).include? operator
+        operator = operator.to_s
+
+        if operator.start_with? '_'
           @default_search_operator = operator
         else
-          raise(ArgumentError.new("Search operator '#{operator}' not supported"))
+          @default_search_operator =
+            case operator.downcase
+              when 'default', 'is', '='
+                '_exactly'
+              when 'like'
+                '_contains'
+              when 'starts_with'
+                '_starts_with'
+              when 'ends_with'
+                '_ends_with'
+              else
+                raise(ArgumentError.new("Search operator '#{operator}' not supported"))
+            end
         end
       end
 
@@ -160,6 +174,10 @@ module Radmin
       end
 
 
+      def default_search_schema=(new_schema)
+        @default_search_schema = new_schema.presence || DEFAULT_SEARCH_SCHEMA
+      end
+
       def default_filter_schema=(new_schema)
         @default_filter_schema = new_schema.presence || DEFAULT_FILTER_SCHEMA
       end
@@ -177,16 +195,12 @@ module Radmin
       def navigation_static_links=(links)
         @navigation_static_links = links
       end
-
       def navigation_static_links(&block)
         @navigation_static_links = block if block
         @navigation_static_links || DEFAULT_PROC
       end
 
-
       # Reset all configurations to defaults.
-      #
-      # @see Radmin::Config.registry
       def reset
         @brand_text = 'RAdmin'
         @brand_icon_url = nil
@@ -212,7 +226,7 @@ module Radmin
         @default_items_per_page = 20
         @default_link_class = 'info'
         # @default_associated_collection_limit = 100
-        # @default_search_operator = 'default'
+        @default_search_operator = '_exactly'
         # @excluded_models = []
         # @included_models = []
         # @total_columns_width = 697

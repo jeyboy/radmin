@@ -21,6 +21,14 @@ module Radmin
         Radmin::Config.default_filter_schema
       end
 
+      register_property :search_schema do
+        Radmin::Config.default_search_schema
+      end
+      
+      register_property :search_operator do
+        Radmin::Config.default_search_operator
+      end
+
       register_property :description do
         nil
       end

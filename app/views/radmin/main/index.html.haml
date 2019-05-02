@@ -62,10 +62,11 @@
                   -#:"data-field-value" => "", :"data-field-datetimepicker-format" => (field.try(:parser) && field.parser.to_momentjs)}, field_options: field_options.html_safe
                   = capitalize_first_letter(field.label)
 
-                - params[:f][field.name]&.each_pair do |_, args|
-                  = content_for :javascript_commands do
-                    :javascript
-                      window.add_filter(#{settings.to_json.html_safe}, '#{args[:o]}', '#{args[:r]}', #{[args[:v]].to_json.html_safe if args[:v].present?})
+                - if params[:f]
+                  - params[:f][field.name]&.each_pair do |_, args|
+                    = content_for :javascript_commands do
+                      :javascript
+                        window.add_filter(#{settings.to_json.html_safe}, '#{args[:o]}', '#{args[:r]}', #{[args[:v]].to_json.html_safe if args[:v].present?})
 
         .input-group.mr-2.mt-2
           %input.form-control.input-small{name: "query", type: "search", value: query, placeholder: t("admin.misc.search")}
