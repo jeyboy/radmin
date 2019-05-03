@@ -22,6 +22,20 @@ $filters = $('#filters_box')
 if $filters.length
   input_num = 0
 
+  clear_filters = (reload = false)->
+    if reload
+      new_url = decodeURI(window.location.search).slice(1)
+
+      parts = new_url.split('&')
+
+      parts = parts.filter (item) ->
+        return !(item.startsWith('f[') || item.startsWith('query='))
+
+      window.location.search = parts.join('&') # encodeURI(parts.join('&'))
+    else
+      $('.remove_list_filter').trigger('click')
+
+
   proc_opt_selection = ($elem)->
     $option = $elem.find('option:selected')
     $parent = $elem.parent()
@@ -199,8 +213,19 @@ if $filters.length
 
     $template
 
-
   $('#list')
+    .on 'click', '#clear_filters', (e)->
+      e.stopPropagation()
+    
+      clear_filters(false)
+      false
+  
+    .on 'click', '#remove_filters', (e)->
+      e.stopPropagation()
+
+      clear_filters(true)
+      false
+
     .on 'changed.bs.select', '.filter_args.bootstrap-select', (e)->
       e.preventDefault();
 

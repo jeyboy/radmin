@@ -172,6 +172,10 @@ hr.menu_breaker {
   }
 }
 
+#remove_filters {
+  @extend .text-white;
+}
+
 // PAGINATION
 
 .pagination {

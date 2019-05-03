@@ -28,10 +28,6 @@
   :javascript
     window.use_relations = #{current_model.filter_schema == :manual};
 
-    jQuery(function($) {
-      #{ordered_filter_string}
-    });
-
 -#%style
 -#  - properties.each do |property|
 -#    - next unless property.column_width.present?
@@ -46,7 +42,7 @@
     .well.w-100
       %div#filters_box
 
-      %hr.filters_box{style: "display:#{ordered_filters.empty? ? 'none' : 'block'}"}
+      %hr.filters_box{style: "display: none"}
 
       .btn-toolbar.mb-2{ role: 'toolbar' }
         - if filterable_fields.present?
@@ -76,8 +72,14 @@
             %button.btn.btn-success{type: 'submit', :'data-disable-with' => '<i class="icon-white icon-refresh"></i> '.html_safe + t('admin.misc.refresh')}
               = fa_icon('sync-alt', type: :solid)
               = t('admin.misc.refresh')
+
           .btn-group{ role: 'group' }
-            %button#remove_filter.btn.btn-danger{title: "Reset filters"}
+            %a#clear_filters.btn.btn-warning{title: "Clear filters"}
+              = fa_icon('eraser', type: :solid)
+              = t('admin.misc.clear_all')
+
+          .btn-group{ role: 'group' }
+            %a#remove_filters.btn.btn-danger{title: "Reset filters"}
               = fa_icon('trash', type: :solid)
               = t('admin.misc.reset')
 
