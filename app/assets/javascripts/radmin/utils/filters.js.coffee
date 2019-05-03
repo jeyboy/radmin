@@ -24,14 +24,15 @@ if $filters.length
 
   clear_filters = (reload = false)->
     if reload
-      new_url = decodeURI(window.location.search).slice(1)
-
-      parts = new_url.split('&')
-
-      parts = parts.filter (item) ->
-        return !(item.startsWith('f[') || item.startsWith('query='))
-
-      window.location.search = parts.join('&') # encodeURI(parts.join('&'))
+      #      new_url = decodeURI(window.location.search).slice(1)
+      #
+      #      parts = new_url.split('&')
+      #
+      #      parts = parts.filter (item) ->
+      #        return !(item.startsWith('f[') || item.startsWith('query='))
+      #
+      #      window.location.search = parts.join('&')
+      window.location.search = ''
     else
       $('.remove_list_filter').trigger('click')
 
