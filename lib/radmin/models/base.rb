@@ -187,7 +187,6 @@ module Radmin
 
         scope
       end
-
     end
   end
 end

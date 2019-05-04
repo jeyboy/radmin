@@ -14,6 +14,13 @@ module Radmin
         _groups[key].instance_eval(&block) if block
       end
 
+      def visible_groups
+        _groups.select do |group_key, group|
+          #   with_bindings()
+          group.visible? && group.visible_fields.present?
+        end
+      end
+      
       protected
 
       def _groups
