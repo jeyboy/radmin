@@ -53,6 +53,7 @@ en:
       log_out: "Log out"
       ago: "ago"
       more: "Plus %{count} more %{models_name}"
+      no_results: 'No results'
     flash:
       successful: "%{name} successfully %{action}"
       error: "%{name} failed to be %{action}"
