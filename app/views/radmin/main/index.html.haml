@@ -37,6 +37,8 @@
 
 %hr.border-bottom.border-dark
 
+= yield :before_filters
+
 #list
   = form_tag(index_path(params.except(:page, :f, :query)), method: :get, class: "ajax-form form-inline") do
     .well.w-100
@@ -111,6 +113,8 @@
 
   %hr.border-bottom.border-dark
 
+  = yield :after_filters
+
   - unless current_model.list.scopes.empty?
     %ul.nav.nav-tabs#scope_selector
       - current_model.list.scopes.each_with_index do |scope, index|
@@ -168,6 +172,8 @@
               %ul{ class: (current_model.list.inline_menu ? 'row_list' : 'column_list') }= menu_for :member, current_model, object, true
 
   .container
+    = yield :before_pagination
+
     - if current_model.list.compact_pagination
       .row
         .col-md-= paginate(@objects, theme: 'radmin_bootstrap/without_count', total_pages: Float::INFINITY, remote: false)
@@ -189,6 +195,8 @@
         .total-count= "#{@objects.size} #{current_model.pluralize(@objects.size).downcase}"
 
   = yield :pagination
+
+  = yield :after_pagination
 
 = content_for :javascripts do
   = javascript_include_tag 'radmin/utils/filters'
