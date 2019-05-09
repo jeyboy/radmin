@@ -19,8 +19,6 @@ module Radmin
       
       def initialize(abstract_model)
         @abstract_model = abstract_model
-
-        group(DEFAULT_GROUP)
       end
       
       def bindings

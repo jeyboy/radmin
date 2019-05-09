@@ -6,6 +6,10 @@ module Radmin
     class Base < Radmin::Models::Interface
       include Radmin::Utils::Base
 
+      def model_fields
+        model.columns.map(&:name)
+      end
+
       def properties
         {}
       end

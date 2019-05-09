@@ -25,6 +25,13 @@ module Radmin
           column_info && column_info.type || :string
         end
 
+        
+        if _fields[name]
+          target_group = get_group(field.group || DEFAULT_GROUP)
+          target_group.remove_field(name)
+        end
+        
+        
         field =
           (
             _fields[name] =
@@ -68,20 +75,19 @@ module Radmin
           field.default_value(proc { val })
         end
 
+        target_group = get_group(field.group || DEFAULT_GROUP)
+        target_group.append_field(name, field)
+        
         field
       end
 
       # include fields by name and apply an optionnal block to each (through a call to fields),
       # or include fields by conditions if no field names
       def include_fields(*field_names, &block)
-        if field_names.empty?
-          _fields.select { |f| f.instance_eval(&block) }.each do |f|
-            next if f.defined
-            f.defined = true
-            f.order = _fields.count(&:defined)
-          end
-        else
-          fields(*field_names, &block)
+        items = field_names.empty? ? abstract_model.model_fields : field_names
+
+        items.each do |item|
+          field(item, nil, &block)
         end
       end
 

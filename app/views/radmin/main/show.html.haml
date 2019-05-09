@@ -1,5 +1,8 @@
-- current_model.show.with_bindings(**bindings).visible_groups.each do |fieldset|
-  - unless (fields = fieldset.with_bindings(**bindings).visible_fields).empty?
+- groups = current_model.show.with_bindings(**bindings).visible_groups(has_visible_fields: false)
+- groups.each do |name, fieldset|
+  - fields = fieldset.visible_fields
+
+  - unless fields.empty?
     - if !(values = fields.map{ |f| f.formatted_value.presence }).compact.empty? || !Radmin::config.compact_show_view
       .fieldset
         %h4

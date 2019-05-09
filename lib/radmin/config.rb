@@ -52,6 +52,9 @@ module Radmin
 
       attr_accessor :default_link_class
 
+      # hide blank fields in show view if true
+      attr_accessor :compact_show_view
+
       def default_hidden_fields=(hidden_fields)
         @default_hidden_fields = hidden_fields.stringify_keys
       end
@@ -212,7 +215,7 @@ module Radmin
           'ApplicationRecord' => true
         }
 
-        # @compact_show_view = true
+        @compact_show_view = true
         # @browser_validations = true
         # @yell_for_non_accessible_fields = true
         @authenticate = nil
@@ -341,9 +344,6 @@ module Radmin
       # # Configuration option to specify which method names will be searched for
       # # to be used as a label for object records. This defaults to [:name, :title]
       # attr_accessor :label_methods
-      #
-      # # hide blank fields in show view if true
-      # attr_accessor :compact_show_view
       #
       # # Tell browsers whether to use the native HTML5 validations (novalidate form option).
       # attr_accessor :browser_validations

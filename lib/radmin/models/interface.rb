@@ -49,7 +49,7 @@ module Radmin
           klass
         end
       end
-
+      
       register_property :pretty_name do
         model.respond_to?(:model_name) ?
           model.model_name.human :
@@ -155,6 +155,10 @@ module Radmin
         @param_key ||= class_name_to_param_name(@model_name) #@model_name.gsub('::', '_').underscore
       end
 
+      def model_fields
+        []
+      end
+      
       def primary_key
         raise 'Override me'
       end

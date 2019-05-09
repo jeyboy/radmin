@@ -5,11 +5,12 @@ module Radmin
     class Base
       include Radmin::Utils::Configurable
 
-      attr_reader :section, :name
+      attr_reader :section, :name, :fields
       
       def initialize(section, name) #, properties)
         @section = section
         @name = name.to_s
+        @fields = {}
       end
 
       def bindings
@@ -19,6 +20,18 @@ module Radmin
       def with_bindings(args)
         section.with_bindings(args)
         self
+      end
+
+      def append_field(name, field)
+        @fields[name.to_s] = field
+      end
+
+      def remove_field(name)
+        @fields.delete(name.to_s)
+      end
+
+      def visible_fields
+        @fields.values.collect { |f| f.with_bindings(bindings) }.select(&:visible)
       end
 
       # Configurable group label which by default is group's name humanized.
