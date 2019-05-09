@@ -139,10 +139,10 @@ module Radmin
       register_property :breadcrumb_parent do
         if root?
           [:dashboard]
-        elsif collection?
+        else member?
           [:index, bindings[:abstract_model]]
-        elsif member?
-          [:show, bindings[:abstract_model], bindings[:object]]
+        # elsif member?
+        #   [:show, bindings[:abstract_model], bindings[:object]]
         end
       end
 
