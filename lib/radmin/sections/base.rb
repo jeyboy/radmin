@@ -16,6 +16,10 @@ module Radmin
       register_property :links do
         []
       end
+
+      register_property :compact? do
+        Radmin::config.compact_show_view
+      end
       
       def initialize(abstract_model)
         @abstract_model = abstract_model
