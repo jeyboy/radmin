@@ -65,7 +65,7 @@ module Radmin
       end
 
       register_property :additional_info do
-        'Cool story bro' # nil
+        nil
       end
 
       # Accessor for field's help text displayed below input field.

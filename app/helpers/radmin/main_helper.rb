@@ -146,5 +146,14 @@ module Radmin
     def filterable_fields
       @filterable_fields ||= current_model.list.fields.values.select(&:filterable)
     end
+    
+    # def form_header
+    #   model_label = current_model.label
+    #   if @object.new_record?
+    #     I18n.t('admin.form.new_model', name: model_label)
+    #   else
+    #     @object.send(current_model.object_label_method).presence || "#{model_label} ##{@object.id}"
+    #   end  
+    # end
   end
 end
