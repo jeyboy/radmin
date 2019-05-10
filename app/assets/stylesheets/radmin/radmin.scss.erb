@@ -9,15 +9,12 @@
 @import 'font_awesome5_webfont';
 /*@import 'font_awesome5';*/
 
-<% if theme == :custom %>
-  @import "radmin/custom/variables";
-  @import "radmin/custom/mixins";
-  @import "radmin/custom/theming";
-<% else %>
-  /*@import "radmin/base/variables";*/
-  /*@import "radmin/base/mixins";*/
-  /*@import "radmin/base/theming";*/
+<% if theme != :none %>
   @import "radmin/themes/<%= theme %>/variables";
   @import "radmin/themes/<%= theme %>/mixins";
   @import "radmin/themes/<%= theme %>/theming";
 <% end %>
+
+@import "radmin/custom/variables";
+@import "radmin/custom/mixins";
+@import "radmin/custom/theming";

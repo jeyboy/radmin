@@ -1,21 +1,21 @@
-- compact_view = current_model.show.compact?
+#show
+  - compact_view = current_model.show.compact?
 
-- groups = current_model.show.with_bindings(**bindings).visible_groups(has_visible_fields: false)
-- groups.each do |name, fieldset|
-  - fields = fieldset.visible_fields
+  - groups = current_model.show.with_bindings(**bindings).visible_groups(has_visible_fields: false)
+  - groups.each do |name, fieldset|
+    - fields = fieldset.visible_fields
 
-  - unless fields.empty?
-    - if !(values = fields.map{ |f| f.formatted_value.presence }).compact.empty? || !compact_view
-      .fieldset
-        %h4
-          = fieldset.label
-        - if fieldset.help
-          %p= fieldset.help
-        %dl
-          - fields.each_with_index do |field, index|
-            - unless values[index].nil? && compact_view
-              %dt
-                %span.label.label-info{class: "#{field.type_css_class} #{field.css_class}"}
-                  = field.label
-              %dd.well
-                = field.pretty_value
+    - unless fields.empty?
+      - if !(values = fields.map{ |f| f.formatted_value.presence }).compact.empty? || !compact_view
+        .fieldset
+          %h4
+            = fieldset.label
+          - if fieldset.help
+            %p= fieldset.help
+          %dl
+            - fields.each_with_index do |field, index|
+              - unless values[index].nil? && compact_view
+                %dt.label.label-info{class: "#{field.type_css_class} #{field.css_class}"}
+                  %span= field.label
+                %dd.well
+                  = field.pretty_value

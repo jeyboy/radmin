@@ -2,6 +2,16 @@
   word-wrap: anywhere;
 }
 
+hr.menu_breaker {
+  margin: 6px 0;
+  border: 2px outset #ffffff;
+}
+
+.dropdown-item:hover {
+  @extend .text-white;
+  @extend .bg-info;
+}
+
 .row_list {
   @extend .d-flex;
   @extend .list-inline;
@@ -12,14 +22,10 @@
 }
 
 
+
 .navbar {
   @extend .navbar-dark;
   @extend .bg-dark;
-}
-
-hr.menu_breaker {
-  margin: 6px 0;
-  border: 2px outset #ffffff;
 }
 
 .sidebar-nav {
@@ -68,112 +74,132 @@ hr.menu_breaker {
   thead {
     @extend .thead-dark;
   }
-
-  .last.links {
-    .nav-item {
-      @extend .text-right;
-
-      .nav-link {
-        max-width: 36px;
-        border: 2px solid #dee2e6;
-        @extend .rounded-circle;
-
-        @extend .h5;
-        @extend .p-1;
-        @extend .text-center;
-      }
-    }
-
-    .inline-nav-item {
-      display: inline-block;
-
-      .nav-link {
-        @extend .h5;
-        @extend .p-1;
-        @extend .text-center;
-      }
-    }
-  }
 }
 
-.total-count {
-  @extend .bg-dark;
-  @extend .text-light;
-  @extend .font-weight-bold;
-  @extend .row;
-  @extend .pl-2;
-  margin-left: -8px;
-  margin-right: 0;
-}
 
-.dropdown-item:hover {
-  @extend .text-white;
-  @extend .bg-info;
-}
-
-#list .links ul {
-  margin: 0;
-}
-
-.filter {
-  @extend .mb-1;
-
-  .bootstrap-select {
-    width: auto!important;
+#list {
+  .links ul {
+    margin: 0;
   }
 
-  a {
-    text-decoration: none;
-  }
-
-  .filter_select_style {
-    @extend .border;
-    @extend .border-dark;
-  }
-
-  .filter_rel_select_style {
+  .total-count {
+    @extend .bg-dark;
+    @extend .text-light;
     @extend .font-weight-bold;
-    @extend .border;
-    @extend .border-dark;
-    @extend .btn-info;
+    @extend .row;
+    @extend .pl-2;
+    margin-left: -8px;
+    margin-right: 0;
   }
 
-  .dropdown-item.active {
-    @extend .bg-warning;
-    @extend .text-dark;
-  }
+  .filter {
+    @extend .mb-1;
 
-  .dropdown-item:hover {
-    @extend .bg-info;
-  }
-
-  .remove_list_filter {
-    @extend .mb-2;
-    @extend .d-inline-block;
-  }
-
-  .filter_label {
-    @extend .bg-warning;
-    @extend .p-2;
-    @extend .rounded;
-    @extend .mr-1;
-    @extend .text-capitalize;
-    @extend .text-dark;
-
-    i {
-      @extend .fa;
-      @extend .fa-trash;
+    .bootstrap-select {
+      width: auto!important;
     }
 
-    &:hover {
-      @extend .bg-primary;
-      @extend .text-white;
+    a {
+      text-decoration: none;
+    }
+
+    .filter_select_style {
+      @extend .border;
+      @extend .border-dark;
+    }
+
+    .filter_rel_select_style {
+      @extend .font-weight-bold;
+      @extend .border;
+      @extend .border-dark;
+      @extend .btn-info;
+    }
+
+    .dropdown-item.active {
+      @extend .bg-warning;
+      @extend .text-dark;
+    }
+
+    .dropdown-item:hover {
+      @extend .bg-info;
+    }
+
+    .remove_list_filter {
+      @extend .mb-2;
+      @extend .d-inline-block;
+    }
+
+    .filter_label {
+      @extend .bg-warning;
+      @extend .p-2;
+      @extend .rounded;
+      @extend .mr-1;
+      @extend .text-capitalize;
+      @extend .text-dark;
+
+      i {
+        @extend .fa;
+        @extend .fa-trash;
+      }
+
+      &:hover {
+        @extend .bg-primary;
+        @extend .text-white;
+      }
+    }
+  }
+
+  #remove_filters {
+    @extend .text-white;
+  }
+
+  .radmin.table {
+    .last.links {
+      .nav-item {
+        @extend .text-right;
+
+        .nav-link {
+          max-width: 36px;
+          border: 2px solid #dee2e6;
+          @extend .rounded-circle;
+
+          @extend .h5;
+          @extend .p-1;
+          @extend .text-center;
+        }
+      }
+
+      .inline-nav-item {
+        display: inline-block;
+
+        .nav-link {
+          @extend .h5;
+          @extend .p-1;
+          @extend .text-center;
+        }
+      }
     }
   }
 }
 
-#remove_filters {
-  @extend .text-white;
+
+#show {
+  .label {
+    span {
+      @extend .bg-primary;
+      @extend .p-1;
+      @extend .text-white;
+      @extend .rounded;
+    }
+  }
+
+  .well {
+    @extend .border;
+    @extend .p-2;
+    @extend .mb-4;
+    @extend .rounded;
+    @extend .bg-light;
+  }
 }
 
 // PAGINATION
