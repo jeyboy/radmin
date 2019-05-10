@@ -17,5 +17,8 @@
               - unless values[index].nil? && compact_view
                 %dt.label.label-info{class: "#{field.type_css_class} #{field.css_class}"}
                   %span= field.label
+
+                  - if field.additional_info
+                    %span.additional= field.additional_info
                 %dd.well
                   = field.pretty_value

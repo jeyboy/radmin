@@ -185,11 +185,27 @@ hr.menu_breaker {
 
 #show {
   .label {
+    display: flex;
+    justify-content: space-between;
+
     span {
       @extend .bg-primary;
-      @extend .p-1;
+      @extend .pr-1;
+      @extend .pl-1;
+      @extend .ml-1;
       @extend .text-white;
-      @extend .rounded;
+      //@extend .rounded;
+      border-top-left-radius: 6px;
+      border-top-right-radius: 6px;
+
+      font-size: 14px;
+    }
+
+    .additional {
+      @extend .ml-0;
+      @extend .mr-1;
+      @extend .bg-warning;
+      @extend .text-dark;
     }
   }
 

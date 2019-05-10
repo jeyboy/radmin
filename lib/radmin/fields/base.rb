@@ -64,6 +64,9 @@ module Radmin
         # abstract_model.model.defined_enums[name.to_s]
       end
 
+      register_property :additional_info do
+        'Cool story bro' # nil
+      end
 
       # Accessor for field's help text displayed below input field.
       register_property :help do
