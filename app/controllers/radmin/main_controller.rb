@@ -58,6 +58,21 @@ module Radmin
       end
     end
 
+    def handle_save_error(whereto = :new)
+      flash.now[:error] = I18n.t('admin.flash.error', name: current_model.label, action: I18n.t("admin.actions.#{current_action.key}.done").html_safe).html_safe
+      flash.now[:error] += %(<br>- #{@object.errors.full_messages.join('<br>- ')}).html_safe
+
+      respond_to do |format|
+        format.html { render whereto, status: :not_acceptable }
+        format.js   { render whereto, layout: false, status: :not_acceptable }
+      end
+    end
+
+    def check_for_cancel
+      return unless params[:_continue] || (params[:bulk_action] && !params[:bulk_ids])
+      redirect_to(back_or_index, notice: I18n.t('admin.flash.noaction'))
+    end
+
     def visible_fields(target_action, model_config = current_model)
       model_config.send(target_action).with_bindings(controller: self, view: view_context, object: @object).visible_fields
     end
@@ -81,21 +96,6 @@ module Radmin
           sanitize_params_for!(:nested, association.associated_model_config, children_param)
         end
       end
-    end
-
-    # def handle_save_error(whereto = :new)
-    #   flash.now[:error] = I18n.t('admin.flash.error', name: current_model.label, action: I18n.t("admin.actions.#{current_action.key}.done").html_safe).html_safe
-    #   flash.now[:error] += %(<br>- #{@object.errors.full_messages.join('<br>- ')}).html_safe
-    #
-    #   respond_to do |format|
-    #     format.html { render whereto, status: :not_acceptable }
-    #     format.js   { render whereto, layout: false, status: :not_acceptable }
-    #   end
-    # end
-
-    def check_for_cancel
-      return unless params[:_continue] || (params[:bulk_action] && !params[:bulk_ids])
-      redirect_to(back_or_index, notice: I18n.t('admin.flash.noaction'))
     end
 
     def get_collection(abstract_model, scope, pagination)
