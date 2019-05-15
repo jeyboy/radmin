@@ -1,5 +1,7 @@
+!UNDER CONSTRUCTION
+
 # Radmin
-Short description and motivation.
+Generic admin panel
 
 ## Usage
 How to use my plugin.
