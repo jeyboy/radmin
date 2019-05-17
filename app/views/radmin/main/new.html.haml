@@ -1,5 +1,3 @@
 #new
-  = form_for @object, url: new_path(model_name: current_model.to_param), as: current_model.param_key, html: { multipart: true, class: "form-horizontal", data: { title: @page_name } } do |form|
-    - groups = current_model.new.with_bindings(**bindings, form: form).visible_groups(has_visible_fields: false)
-
-    = render 'radmin/form', groups: groups
+  = ra_form_for @object, url: new_path(model_name: current_model.to_param), as: current_model.param_key, html: { multipart: true, class: "form-horizontal", data: { title: @page_name } } do |form|
+    = form.generate(action: :new)

@@ -1,5 +1,12 @@
 module Radmin
   module MainHelper
+    def ra_form_for(*args, &block)
+      options = args.extract_options!.reverse_merge(builder: Radmin::FormBuilder)
+      # (options[:html] ||= {})[:novalidate] ||= !Radmin::Config.browser_validations
+
+      form_for(*(args << options), &block)
+    end
+
     def include_js_translations
       "window.I18n = #{I18n.t('admin.js').to_json};".html_safe
     end
