@@ -246,6 +246,10 @@ module Radmin
         false
       end
 
+      register_property :inverse_of do
+        nil
+      end
+
       # # Allowed methods for the field in forms
       # register_property :allowed_methods do
       #   [method_name]

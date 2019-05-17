@@ -47,7 +47,7 @@ module Radmin
         # do not show nested field if the target is the origin
         unless nested_field_association?(field, nested_in)
           @template.content_tag(:div, class: "form-group control-group #{field.type_css_class} #{field.css_class} #{'error' if field.errors.present?}", id: "#{dom_id(field)}_field") do
-            label(field.method_name, capitalize_first_letter(field.label), class: 'col-sm-2 control-label') +
+            label(field.name, capitalize_first_letter(field.label), class: 'col-sm-2 control-label') +
               (field.nested_form ? field_for(field) : input_for(field))
           end
         end
@@ -100,12 +100,12 @@ module Radmin
         [
           @object_name.to_s.gsub(/\]\[|[^-a-zA-Z0-9:.]/, '_').sub(/_$/, ''),
           options[:index],
-          field.method_name,
+          field.name,
         ].reject(&:blank?).join('_')
     end
 
     def dom_name(field)
-      (@dom_name ||= {})[field.name] ||= %(#{@object_name}#{options[:index] && "[#{options[:index]}]"}[#{field.method_name}]#{field.is_a?(Config::Fields::Association) && field.multiple? ? '[]' : ''})
+      (@dom_name ||= {})[field.name] ||= %(#{@object_name}#{options[:index] && "[#{options[:index]}]"}[#{field.name}]#{field.is_a?(Config::Fields::Association) && field.multiple? ? '[]' : ''})
     end
 
   protected
@@ -141,9 +141,10 @@ module Radmin
 
   private
     def nested_field_association?(field, nested_in)
-      field.inverse_of.presence && nested_in.presence && field.inverse_of == nested_in.name &&
-        (@template.instance_variable_get(:@model_config).abstract_model == field.abstract_model ||
-         field.name == nested_in.inverse_of)
+      field.inverse_of.presence && nested_in.presence &&
+        field.inverse_of == nested_in.name &&
+          (@template.current_model == field.abstract_model ||
+            field.name == nested_in.inverse_of)
     end
   end
 end
