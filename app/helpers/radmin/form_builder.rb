@@ -33,13 +33,16 @@ module Radmin
 
       return if fields.empty?
 
-      @template.content_tag :fieldset do
-        <<-CONTENT
-          #{@template.content_tag(:legend, %(<i class="icon-chevron-#{(fieldset.open? ? 'down' : 'right')}"></i> #{fieldset.label}).html_safe, style: fieldset.name == :default ? 'display:none' : '')}
-          #{@template.content_tag(:p, fieldset.help) if fieldset.help.present?}
-          #{fields.collect { |field| field_wrapper_for(field, nested_in) }.join}
-        CONTENT
-      end
+      res =
+        @template.content_tag :fieldset do
+          <<-CONTENT
+            #{@template.content_tag(:legend, %(<i class="icon-chevron-#{(fieldset.open? ? 'down' : 'right')}"></i> #{fieldset.label}).html_safe, style: fieldset.name == :default ? 'display:none' : '')}
+            #{@template.content_tag(:p, fieldset.help) if fieldset.help.present?}
+            #{fields.collect { |field| field_wrapper_for(field, nested_in) }.join}
+          CONTENT
+        end
+
+      res
     end
 
     def field_wrapper_for(field, nested_in)
@@ -57,12 +60,10 @@ module Radmin
     end
 
     def input_for(field)
-      css = 'col-sm-10 controls'
-      css += ' has-error' if field.errors.present?
+      css = "col-sm-10 controls #{'has-error' if field.errors.present?}"
+
       @template.content_tag(:div, class: css) do
-        field_for(field) +
-          errors_for(field) +
-          help_for(field)
+        field_for(field) + errors_for(field) + help_for(field)
       end
     end
 

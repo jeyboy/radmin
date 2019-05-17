@@ -41,14 +41,19 @@ module Radmin
         false
       end
 
+      register_property :errors do
+        if bindings[:object]
+          bindings[:object].errors[name]
+        end
+      end
+
       register_property :render do
         bindings[:view].
           render partial: "radmin/main/#{partial}", locals: {field: self, form: bindings[:form]}
       end
 
       register_property :partial do
-        nil
-        # nested_form ? :form_nested_one : :form_filtering_select
+        nested_form ? :form_nested_one : :form_filtering_select
       end
 
       register_property :label do
