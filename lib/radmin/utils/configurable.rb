@@ -75,6 +75,12 @@ module Radmin
           scope = class << self; self; end
           register_instance_option(option_name, scope, &default)
         end
+
+        def method_missing(message, *args, &block)
+          raise
+          # @words << message
+          # message.to_s.end_with?("?") ? sentence : self
+        end
       end
     end
   end

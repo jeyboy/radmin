@@ -20,7 +20,7 @@ module Radmin
           #   true
           # end
           #
-          # def method_name
+          # def name
           #   nested_form ? "#{super}_attributes".to_sym : "#{super.to_s.singularize}_ids".to_sym # name_ids
           # end
           #

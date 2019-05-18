@@ -45,7 +45,7 @@ module Radmin
         # end
         #
         # register_instance_option :allowed_methods do
-        #   [method_name, delete_method, cache_method].compact
+        #   [name, delete_method, cache_method].compact
         # end
         #
         # register_instance_option :html_attributes do

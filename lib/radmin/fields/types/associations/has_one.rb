@@ -32,7 +32,7 @@ module Radmin
           #   value.try :id
           # end
           #
-          # def method_name
+          # def name
           #   nested_form ? "#{name}_attributes".to_sym : "#{name}_id".to_sym
           # end
           #

@@ -11,17 +11,6 @@ module Radmin
 
       attr_reader :abstract_model, :name
 
-      def initialize(section, name)
-        @section = section
-        # @root = parent.root
-        #
-        @abstract_model = section.abstract_model
-        # @defined = false
-        @name = name.to_sym
-        # @order = 0
-        @properties = abstract_model.properties
-      end
-
       # Configurable group
       register_property :group do
         Radmin::Utils::Groupable::DEFAULT_GROUP
@@ -48,8 +37,7 @@ module Radmin
       end
 
       register_property :render do
-        bindings[:view].
-          render partial: "radmin/main/#{partial}", locals: {field: self, form: bindings[:form]}
+        bindings[:view].render(partial: "radmin/main/#{partial}", locals: {field: self, form: bindings[:form]})
       end
 
       register_property :partial do
@@ -129,7 +117,7 @@ module Radmin
 
       register_property :sortable do
         false
-        # @sortable ||= abstract_model.adapter_supports_joins? && associated_model_config.abstract_model.properties.collect(&:name).include?(associated_model_config.object_label_method) ? associated_model_config.object_label_method : {abstract_model.table_name => method_name}
+        # @sortable ||= abstract_model.adapter_supports_joins? && associated_model_config.abstract_model.properties.collect(&:name).include?(associated_model_config.object_label_method) ? associated_model_config.object_label_method : {abstract_model.table_name => name}
       end
 
       # serials and dates are reversed in list, which is more natural (last modified items first).
@@ -139,7 +127,7 @@ module Radmin
 
       register_property :searchable do
         false
-        # @searchable ||= associated_model_config.abstract_model.properties.collect(&:name).include?(associated_model_config.object_label_method) ? [associated_model_config.object_label_method, {abstract_model.model => method_name}] : {abstract_model.model => method_name}
+        # @searchable ||= associated_model_config.abstract_model.properties.collect(&:name).include?(associated_model_config.object_label_method) ? [associated_model_config.object_label_method, {abstract_model.model => name}] : {abstract_model.model => name}
       end
 
       register_property :searchable_operator do
@@ -257,7 +245,7 @@ module Radmin
 
       # # Allowed methods for the field in forms
       # register_property :allowed_methods do
-      #   [method_name]
+      #   [name]
       # end
 
       register_property :inline_add do
@@ -270,6 +258,20 @@ module Radmin
 
       register_property :eager_load do
         false
+      end
+
+
+
+
+      def initialize(section, name)
+        @section = section
+        # @root = parent.root
+        #
+        @abstract_model = section.abstract_model
+        # @defined = false
+        @name = name.to_sym
+        # @order = 0
+        @properties = abstract_model.properties
       end
 
       def bindings

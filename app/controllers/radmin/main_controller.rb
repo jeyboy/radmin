@@ -91,7 +91,7 @@ module Radmin
       target_params.permit! if target_params.respond_to?(:permit!)
 
       fields.select(&:nested_form).each do |association|
-        children_params = association.multiple? ? target_params[association.method_name].try(:values) : [target_params[association.method_name]].compact
+        children_params = association.multiple? ? target_params[association.name].try(:values) : [target_params[association.name]].compact
         (children_params || []).each do |children_param|
           sanitize_params_for!(:nested, association.associated_model_config, children_param)
         end
