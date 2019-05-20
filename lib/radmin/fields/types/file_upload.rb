@@ -6,27 +6,27 @@ module Radmin
       class FileUpload < Radmin::Fields::Base
         Radmin::Fields::Types.register(self)
 
-        # register_instance_option :partial do
+        # register_property :partial do
         #   :form_file_upload
         # end
         #
-        # register_instance_option :thumb_method do
+        # register_property :thumb_method do
         #   nil
         # end
         #
-        # register_instance_option :delete_method do
+        # register_property :delete_method do
         #   nil
         # end
         #
-        # register_instance_option :cache_method do
+        # register_property :cache_method do
         #   nil
         # end
         #
-        # register_instance_option :export_value do
+        # register_property :export_value do
         #   resource_url.to_s
         # end
         #
-        # register_instance_option :pretty_value do
+        # register_property :pretty_value do
         #   if value.presence
         #     v = bindings[:view]
         #     url = resource_url
@@ -40,15 +40,15 @@ module Radmin
         #   end
         # end
         #
-        # register_instance_option :image? do
+        # register_property :image? do
         #   (url = resource_url.to_s) && url.split('.').last =~ /jpg|jpeg|png|gif|svg/i
         # end
         #
-        # register_instance_option :allowed_methods do
+        # register_property :allowed_methods do
         #   [name, delete_method, cache_method].compact
         # end
         #
-        # register_instance_option :html_attributes do
+        # register_property :html_attributes do
         #   {
         #     required: required? && !value.present?,
         #   }

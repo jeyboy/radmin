@@ -6,7 +6,7 @@ module Radmin
       class Password < Radmin::Fields::Types::String
         Radmin::Fields::Types.register(self)
 
-        # register_instance_option :view_helper do
+        # register_property :view_helper do
         #   :password_field
         # end
         #
@@ -14,7 +14,7 @@ module Radmin
         #   params[name] = params[name].presence
         # end
         #
-        # register_instance_option :formatted_value do
+        # register_property :formatted_value do
         #   ''.html_safe
         # end
         #
@@ -23,11 +23,11 @@ module Radmin
         #   ''
         # end
         #
-        # register_instance_option :visible do
+        # register_property :visible do
         #   section.is_a?(RailsAdmin::Config::Sections::Edit)
         # end
         #
-        # register_instance_option :pretty_value do
+        # register_property :pretty_value do
         #   '*****'
         # end
       end

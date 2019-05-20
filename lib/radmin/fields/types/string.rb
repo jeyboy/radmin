@@ -10,7 +10,7 @@ module Radmin
         #   [50, length.to_i].reject(&:zero?).min
         # end
         #
-        # register_instance_option :html_attributes do
+        # register_property :html_attributes do
         #   {
         #     required: required?,
         #     maxlength: length,
@@ -37,7 +37,7 @@ module Radmin
         #   text
         # end
         #
-        # register_instance_option :partial do
+        # register_property :partial do
         #   :form_field
         # end
       end

@@ -13,7 +13,7 @@ module Radmin
         #   ::DateTime.parse(value_with_tz.strftime('%Y-%m-%d %H:%M:%S'))
         # end
         #
-        # register_instance_option :strftime_format do
+        # register_property :strftime_format do
         #   '%H:%M'
         # end
       end

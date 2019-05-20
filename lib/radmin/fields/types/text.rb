@@ -6,7 +6,7 @@ module Radmin
       class Text < Radmin::Fields::Base
         Radmin::Fields::Types.register(self)
 
-        # register_instance_option :html_attributes do
+        # register_property :html_attributes do
         #   {
         #     required: required?,
         #     cols: '48',
@@ -14,7 +14,7 @@ module Radmin
         #   }
         # end
         #
-        # register_instance_option :partial do
+        # register_property :partial do
         #   :form_text
         # end
       end

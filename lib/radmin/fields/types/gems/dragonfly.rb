@@ -7,7 +7,7 @@ module Radmin
         class Dragonfly < Radmin::Fields::Types::FileUpload
           Radmin::Fields::Types.register(self)
 
-          # register_instance_option :image? do
+          # register_property :image? do
           #   false unless value
           #   if abstract_model.model.new.respond_to?("#{name}_name")
           #     bindings[:object].send("#{name}_name").to_s.split('.').last =~ /jpg|jpeg|png|gif/i
@@ -16,15 +16,15 @@ module Radmin
           #   end
           # end
           #
-          # register_instance_option :delete_method do
+          # register_property :delete_method do
           #   "remove_#{name}"
           # end
           #
-          # register_instance_option :cache_method do
+          # register_property :cache_method do
           #   "retained_#{name}"
           # end
           #
-          # register_instance_option :thumb_method do
+          # register_property :thumb_method do
           #   '100x100>'
           # end
           #

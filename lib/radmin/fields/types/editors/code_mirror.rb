@@ -8,7 +8,7 @@ module Radmin
           Radmin::Fields::Types.register(self)
 
           # # Pass the theme and mode for Codemirror
-          # register_instance_option :config do
+          # register_property :config do
           #   {
           #     mode: 'css',
           #     theme: 'night',
@@ -16,7 +16,7 @@ module Radmin
           # end
           #
           # # Pass the location of the theme and mode for Codemirror
-          # register_instance_option :assets do
+          # register_property :assets do
           #   {
           #     mode: '/assets/codemirror/modes/css.js',
           #     theme: '/assets/codemirror/themes/night.css',
@@ -24,18 +24,18 @@ module Radmin
           # end
           #
           # # Use this if you want to point to a cloud instances of CodeMirror
-          # register_instance_option :js_location do
+          # register_property :js_location do
           #   '/assets/codemirror.js'
           # end
           #
           # # Use this if you want to point to a cloud instances of CodeMirror
-          # register_instance_option :css_location do
+          # register_property :css_location do
           #   '/assets/codemirror.css'
           # end
-          #
-          # register_instance_option :partial do
-          #   :form_code_mirror
-          # end
+
+          register_property :partial do
+            :form_code_mirror
+          end
         end
       end
     end

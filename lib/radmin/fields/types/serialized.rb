@@ -6,7 +6,7 @@ module Radmin
       class Serialized < Radmin::Fields::Types::Text
         Radmin::Fields::Types.register(self)
 
-        # register_instance_option :formatted_value do
+        # register_property :formatted_value do
         #   RailsAdmin.yaml_dump(value) unless value.nil?
         # end
         #

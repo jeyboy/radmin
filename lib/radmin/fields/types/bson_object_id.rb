@@ -6,7 +6,7 @@ module Radmin
       class BsonObjectId < Radmin::Fields::Types::String
         Radmin::Fields::Types.register(self)
 
-        # register_instance_option :label do
+        # register_property :label do
         #   label = ((@label ||= {})[::I18n.locale] ||= abstract_model.model.human_attribute_name name)
         #   label = 'Id' if label == ''
         #   label
@@ -16,11 +16,11 @@ module Radmin
         #   'BSON::ObjectId'
         # end
         #
-        # register_instance_option :read_only do
+        # register_property :read_only do
         #   true
         # end
         #
-        # register_instance_option :sort_reverse? do
+        # register_property :sort_reverse? do
         #   serial?
         # end
         #

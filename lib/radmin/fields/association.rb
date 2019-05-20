@@ -8,10 +8,9 @@ module Radmin
         super(klass)
       end
 
-      # # Reader for the association information hash
-      # def association
-      #   @properties
-      # end
+      register_property :partial do
+        nested_form ? :form_nested_one : :form_filtering_select
+      end
 
       # register_instance_option :pretty_value do
       #   v = bindings[:view]
@@ -68,6 +67,13 @@ module Radmin
       # # Reader for nested attributes
       # register_instance_option :nested_form do
       #   association.nested_options
+      # end
+
+
+
+      # # Reader for the association information hash
+      # def association
+      #   @properties
       # end
 
       # # Reader for the association's child model's configuration

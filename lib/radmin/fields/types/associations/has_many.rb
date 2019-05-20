@@ -7,16 +7,16 @@ module Radmin
         class HasMany < Radmin::Fields::Association
           Radmin::Fields::Types.register(self)
 
-          # register_instance_option :partial do
-          #   nested_form ? :form_nested_many : :form_filtering_multiselect
-          # end
-          #
+          register_property :partial do
+            nested_form ? :form_nested_many : :form_filtering_multiselect
+          end
+
           # # orderable associated objects
-          # register_instance_option :orderable do
+          # register_property :orderable do
           #   false
           # end
           #
-          # register_instance_option :inline_add do
+          # register_property :inline_add do
           #   true
           # end
           #

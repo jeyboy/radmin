@@ -7,44 +7,44 @@ module Radmin
         class Polymorphic < Radmin::Fields::Types::Associations::BelongsTo
           Radmin::Fields::Types.register(self)
 
-          # register_instance_option :partial do
-          #   :form_polymorphic_association
-          # end
-          #
+          register_property :partial do
+            :form_polymorphic_association
+          end
+
           # # Accessor whether association is visible or not. By default
           # # association checks that any of the child models are included in
           # # configuration.
-          # register_instance_option :visible? do
+          # register_property :visible? do
           #   associated_model_config.any?
           # end
           #
-          # register_instance_option :formatted_value do
+          # register_property :formatted_value do
           #   (o = value) && o.send(RailsAdmin.config(o).object_label_method)
           # end
           #
-          # register_instance_option :sortable do
+          # register_property :sortable do
           #   false
           # end
           #
-          # register_instance_option :searchable do
-          #   false
-          # end
-          #
-          # # TODO: not supported yet
-          # register_instance_option :associated_collection_cache_all do
+          # register_property :searchable do
           #   false
           # end
           #
           # # TODO: not supported yet
-          # register_instance_option :associated_collection_scope do
+          # register_property :associated_collection_cache_all do
+          #   false
+          # end
+          #
+          # # TODO: not supported yet
+          # register_property :associated_collection_scope do
           #   nil
           # end
           #
-          # register_instance_option :allowed_methods do
+          # register_property :allowed_methods do
           #   [children_fields]
           # end
           #
-          # register_instance_option :eager_load? do
+          # register_property :eager_load? do
           #   false
           # end
           #

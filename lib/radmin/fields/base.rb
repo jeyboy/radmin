@@ -11,19 +11,27 @@ module Radmin
 
       attr_reader :abstract_model, :name
 
+      register_property :render do
+        bindings[:view].render(partial: "radmin/main/#{partial}", locals: {field: self, form: bindings[:form]})
+      end
+
+      register_property :partial do
+        :form_field
+      end
+
+      register_property :view_helper do
+        :string
+      end
+
+
+
       # Configurable group
       register_property :group do
         Radmin::Utils::Groupable::DEFAULT_GROUP
       end
 
-
       register_property :export_value do
         value.inspect
-      end
-
-
-      register_property :view_helper do
-        :string
       end
 
       register_property :is_raw do
@@ -31,17 +39,7 @@ module Radmin
       end
 
       register_property :errors do
-        if bindings[:object]
-          bindings[:object].errors[name]
-        end
-      end
-
-      register_property :render do
-        bindings[:view].render(partial: "radmin/main/#{partial}", locals: {field: self, form: bindings[:form]})
-      end
-
-      register_property :partial do
-        nested_form ? :form_nested_one : :form_filtering_select
+        bindings[:object].errors[name] if bindings[:object]
       end
 
       register_property :label do

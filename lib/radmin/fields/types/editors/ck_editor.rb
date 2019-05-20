@@ -9,23 +9,23 @@ module Radmin
 
           # # If you want to have a different toolbar configuration for CKEditor
           # # create your own custom config.js and override this configuration
-          # register_instance_option :config_js do
+          # register_property :config_js do
           #   nil
           # end
           #
           # # Use this if you want to point to a cloud instances of CKeditor
-          # register_instance_option :location do
+          # register_property :location do
           #   nil
           # end
           #
           # # Use this if you want to point to a cloud instances of the base CKeditor
-          # register_instance_option :base_location do
+          # register_property :base_location do
           #   "#{Rails.application.config.assets.prefix}/ckeditor/"
           # end
-          #
-          # register_instance_option :partial do
-          #   :form_ck_editor
-          # end
+
+          register_property :partial do
+            :form_ck_editor
+          end
         end
       end
     end

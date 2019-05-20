@@ -4,11 +4,11 @@ module Radmin
       class Boolean < Radmin::Fields::Base
         Radmin::Fields::Types.register(self)
 
-        # register_instance_option :view_helper do
+        # register_property :view_helper do
         #   :check_box
         # end
         #
-        # register_instance_option :pretty_value do
+        # register_property :pretty_value do
         #   case value
         #   when nil
         #     %(<span class='label label-default'>&#x2012;</span>)
@@ -19,14 +19,14 @@ module Radmin
         #   end.html_safe
         # end
         #
-        # register_instance_option :export_value do
+        # register_property :export_value do
         #   value.inspect
         # end
-        #
-        # register_instance_option :partial do
-        #   :form_boolean
-        # end
-        #
+
+        register_property :partial do
+          :form_boolean
+        end
+
         # # Accessor for field's help text displayed below input field.
         # def generic_help
         #   ''

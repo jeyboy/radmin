@@ -7,20 +7,20 @@ module Radmin
         class HasOne < Radmin::Fields::Association
           Radmin::Fields::Types.register(self)
 
-          # register_instance_option :partial do
+          # register_property :partial do
           #   nested_form ? :form_nested_one : :form_filtering_select
           # end
           #
           # # Accessor for field's formatted value
-          # register_instance_option :formatted_value do
+          # register_property :formatted_value do
           #   (o = value) && o.send(associated_model_config.object_label_method)
           # end
           #
-          # register_instance_option :inline_add do
+          # register_property :inline_add do
           #   true
           # end
           #
-          # register_instance_option :inline_edit do
+          # register_property :inline_edit do
           #   true
           # end
           #
