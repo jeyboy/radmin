@@ -10,25 +10,25 @@ module Radmin
         #   :password_field
         # end
         #
-        # def parse_input(params)
-        #   params[name] = params[name].presence
-        # end
-        #
         # register_property :formatted_value do
         #   ''.html_safe
         # end
         #
-        # # Password field's value does not need to be read
-        # def value
-        #   ''
-        # end
-        #
         # register_property :visible do
-        #   section.is_a?(RailsAdmin::Config::Sections::Edit)
+        #   section.is_a?(Radmin::Sections::Edit)
         # end
         #
         # register_property :pretty_value do
         #   '*****'
+        # end
+        #
+        # def parse_input(params)
+        #   params[name] = params[name].presence
+        # end
+        #        #
+        # # Password field's value does not need to be read
+        # def value
+        #   ''
         # end
       end
     end

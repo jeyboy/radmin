@@ -6,13 +6,13 @@ module Radmin
       class Color < Radmin::Fields::Base
         Radmin::Fields::Types.register(self)
 
-        # register_property :pretty_value do
-        #   bindings[:view].content_tag :strong, (value.presence || ' - '), style: "color: #{color}"
-        # end
-
         register_property :partial do
           :form_colorpicker
         end
+
+        # register_property :pretty_value do
+        #   bindings[:view].content_tag :strong, (value.presence || ' - '), style: "color: #{color}"
+        # end
 
         # register_property :color do
         #   if value.present?

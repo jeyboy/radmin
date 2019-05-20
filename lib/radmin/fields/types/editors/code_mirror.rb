@@ -7,6 +7,10 @@ module Radmin
         class CodeMirror < Radmin::Fields::Types::Text
           Radmin::Fields::Types.register(self)
 
+          register_property :partial do
+            :form_code_mirror
+          end
+
           # # Pass the theme and mode for Codemirror
           # register_property :config do
           #   {
@@ -32,10 +36,6 @@ module Radmin
           # register_property :css_location do
           #   '/assets/codemirror.css'
           # end
-
-          register_property :partial do
-            :form_code_mirror
-          end
         end
       end
     end

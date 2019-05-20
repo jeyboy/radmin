@@ -7,6 +7,10 @@ module Radmin
         class SimpleMDE < Radmin::Fields::Types::Text
           Radmin::Fields::Types.register(self)
 
+          register_property :partial do
+            :form_simple_mde
+          end
+
           # # If you want to have a different SimpleMDE config for each instance
           # # you can override this option with these values: https://github.com/sparksuite/simplemde-markdown-editor#configuration
           # register_property :instance_config do
@@ -21,10 +25,6 @@ module Radmin
           # register_property :css_location do
           #   "#{Rails.application.config.assets.prefix}/simplemde.min.css"
           # end
-
-          register_property :partial do
-            :form_simple_mde
-          end
         end
       end
     end

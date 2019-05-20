@@ -7,6 +7,10 @@ module Radmin
         class Froala < Radmin::Fields::Types::Text
           Radmin::Fields::Types.register(self)
 
+          register_property :partial do
+            :form_froala
+          end
+
           # # If you want to have a different toolbar configuration for wysihtml5
           # # you can use a Ruby hash to configure these options:
           # # https://github.com/jhollingworth/bootstrap-wysihtml5/#advanced
@@ -21,10 +25,6 @@ module Radmin
           # register_property :js_location do
           #   ActionController::Base.helpers.asset_path('froala_editor.min.js')
           # end
-
-          register_property :partial do
-            :form_froala
-          end
         end
       end
     end

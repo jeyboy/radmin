@@ -6,10 +6,10 @@ module Radmin
       class Enum < Radmin::Fields::Base
         Radmin::Fields::Types.register(self)
 
-        # register_property :partial do
-        #   :form_enumeration
-        # end
-        #
+        register_property :partial do
+          :form_enumeration
+        end
+
         # register_property :enum_method do
         #   @enum_method ||= bindings[:object].class.respond_to?("#{name}_enum") || bindings[:object].respond_to?("#{name}_enum") ? "#{name}_enum" : name
         # end

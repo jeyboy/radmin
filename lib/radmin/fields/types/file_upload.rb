@@ -6,10 +6,10 @@ module Radmin
       class FileUpload < Radmin::Fields::Base
         Radmin::Fields::Types.register(self)
 
-        # register_property :partial do
-        #   :form_file_upload
-        # end
-        #
+        register_property :partial do
+          :form_file_upload
+        end
+
         # register_property :thumb_method do
         #   nil
         # end

@@ -4,6 +4,10 @@ module Radmin
       class Boolean < Radmin::Fields::Base
         Radmin::Fields::Types.register(self)
 
+        register_property :partial do
+          :form_boolean
+        end
+
         # register_property :view_helper do
         #   :check_box
         # end
@@ -22,10 +26,6 @@ module Radmin
         # register_property :export_value do
         #   value.inspect
         # end
-
-        register_property :partial do
-          :form_boolean
-        end
 
         # # Accessor for field's help text displayed below input field.
         # def generic_help

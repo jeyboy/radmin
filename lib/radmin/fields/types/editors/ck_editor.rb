@@ -7,6 +7,10 @@ module Radmin
         class CKEditor < Radmin::Fields::Types::Text
           Radmin::Fields::Types.register(self)
 
+          register_property :partial do
+            :form_ck_editor
+          end
+
           # # If you want to have a different toolbar configuration for CKEditor
           # # create your own custom config.js and override this configuration
           # register_property :config_js do
@@ -22,10 +26,6 @@ module Radmin
           # register_property :base_location do
           #   "#{Rails.application.config.assets.prefix}/ckeditor/"
           # end
-
-          register_property :partial do
-            :form_ck_editor
-          end
         end
       end
     end

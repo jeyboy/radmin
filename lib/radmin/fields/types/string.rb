@@ -6,16 +6,20 @@ module Radmin
       class String < Radmin::Fields::Base
         Radmin::Fields::Types.register(self)
 
-        # def input_size
-        #   [50, length.to_i].reject(&:zero?).min
-        # end
-        #
+        register_property :partial do
+          :form_field
+        end
+
         # register_property :html_attributes do
         #   {
         #     required: required?,
         #     maxlength: length,
         #     size: input_size,
         #   }
+        # end
+        #
+        # def input_size
+        #   [50, length.to_i].reject(&:zero?).min
         # end
         #
         # def generic_help
@@ -35,10 +39,6 @@ module Radmin
         #     end
         #   end
         #   text
-        # end
-        #
-        # register_property :partial do
-        #   :form_field
         # end
       end
     end
