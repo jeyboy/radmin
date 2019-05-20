@@ -16,6 +16,12 @@ module Radmin
         self.class.register_property(option_name, scope, &default)
       end
 
+      def method_missing(message, *args, &block)
+        raise
+        # @words << message
+        # message.to_s.end_with?("?") ? sentence : self
+      end
+
       module ClassMethods
         # Register an instance option. Instance option is a configuration
         # option that stores its value within an instance variable and is

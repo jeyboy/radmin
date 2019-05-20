@@ -30,8 +30,8 @@ module Radmin
         @fields.delete(name.to_s)
       end
 
-      def visible_fields
-        @fields.values.collect { |f| f.with_bindings(bindings) }.select(&:visible)
+      def visible_fields(exclude = {})
+        @fields.values.select {|f| f.with_bindings(bindings).visible && !exclude.has_key?(f.name) }
       end
 
       # Configurable group label which by default is group's name humanized.

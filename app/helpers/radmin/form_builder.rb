@@ -29,20 +29,18 @@ module Radmin
         controller: @template.controller,
       )
 
-      fields = fieldset.visible_fields
+      fields = fieldset.visible_fields({id: false})
 
       return if fields.empty?
 
-      res =
-        @template.content_tag :fieldset do
-          <<-CONTENT
-            #{@template.content_tag(:legend, %(<i class="icon-chevron-#{(fieldset.open? ? 'down' : 'right')}"></i> #{fieldset.label}).html_safe, style: fieldset.name == :default ? 'display:none' : '')}
-            #{@template.content_tag(:p, fieldset.help) if fieldset.help.present?}
-            #{fields.collect { |field| field_wrapper_for(field, nested_in) }.join}
-          CONTENT
-        end
-
-      res
+      @template.content_tag :fieldset do
+        <<-CONTENT
+          #{@template.content_tag(:legend, %(<i class="icon-chevron-#{(fieldset.open? ? 'down' : 'right')}"></i> #{fieldset.label}).html_safe, style: fieldset.name == :default ? 'display:none' : '')}
+          #{@template.content_tag(:p, fieldset.help) if fieldset.help.present?}
+          #{fields.collect { |field| field_wrapper_for(field, nested_in) }.join}
+        CONTENT
+          .html_safe
+      end
     end
 
     def field_wrapper_for(field, nested_in)

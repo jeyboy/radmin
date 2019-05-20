@@ -18,10 +18,10 @@ module Radmin
       }
     end
 
-    # def authorized?(action_name, abstract_model = nil, object = nil)
-    #   object = nil if object.try :new_record?
-    #   action(action_name, abstract_model, object).try(:authorized?)
-    # end
+    def authorized?(action_name, abstract_model = nil, object = nil)
+      object = nil if object.try :new_record?
+      action(action_name, abstract_model, object).try(:authorized?)
+    end
 
     def current_action?(target_action, abstract_model = current_model, object = @object)
       current_action.key == target_action.key &&
