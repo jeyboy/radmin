@@ -26,7 +26,7 @@
         - property_name = column[:property_name]
         - selected = (sort == property_name)
         - sort_direction = (sort_reverse ? "headerSortUp" : "headerSortDown" if selected)
-        - sort_location = send(path_method, params.except("sort_reverse").merge(model_name: @abstract_model.to_param, sort: property_name).merge(selected && sort_reverse != "true" ? {sort_reverse: "true"} : {}))
+        - sort_location = send(path_method, params.except("sort_reverse").merge(model_name: current_model.to_param, sort: property_name).merge(selected && sort_reverse != "true" ? {sort_reverse: "true"} : {}))
         %th{class: "header pjax #{column[:css_class]} #{sort_direction if selected}", :'data-href' => sort_location}= column[:link_text]
   %tbody
     - @history.each_with_index do |object, index|
@@ -35,14 +35,14 @@
           %td= l(object.created_at, format: :long, default: l(object.created_at, format: :long))
         %td= object.username
         - if @general
-          - if o = @abstract_model.get(object.item)
-            - label = o.send(@abstract_model.config.object_label_method)
-            - if show_action = action(:show, @abstract_model, o)
-              %td= link_to(label, url_for(action: show_action.action_name, model_name: @abstract_model.to_param, id: o.id), class: 'pjax')
+          - if o = current_model.get(object.item)
+            - label = o.send(current_model.object_label_method)
+            - if show_action = action(:show, current_model, o)
+              %td= link_to(label, url_for(action: show_action.action_name, model_name: current_model.to_param, id: o.id), class: 'pjax')
             - else
               %td= label
           - else
-            %td= "#{@abstract_model.config.label} ##{object.item}"
+            %td= "#{current_model.config.label} ##{object.item}"
         %td= object.message.in?(['delete', 'new']) ? t("admin.actions.#{object.message}.done").capitalize : object.message
 
 - unless params[:all] || !@history.respond_to?(:current_page)

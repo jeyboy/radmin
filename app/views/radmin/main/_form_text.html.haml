@@ -1,1 +1,3 @@
-= form.text_area field.name, field.html_attributes.reverse_merge(data: { richtext: false, options: {}.to_json }).reverse_merge({ value: field.form_value, class: 'form-control', required: field.required })
+%p Text
+
+-#= form.text_area field.name, field.html_attributes.reverse_merge(data: { richtext: false, options: {}.to_json }).reverse_merge({ value: field.form_value, class: 'form-control', required: field.required })
