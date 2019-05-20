@@ -8,12 +8,12 @@ require 'radmin/fields/types/editors/ck_editor'
 require 'radmin/fields/types/editors/code_mirror'
 require 'radmin/fields/types/editors/froala'
 require 'radmin/fields/types/editors/wysihtml5'
+require 'radmin/fields/types/editors/simple_mde'
 
 require 'radmin/fields/types/gems/carrierwave'
 require 'radmin/fields/types/gems/dragonfly'
 require 'radmin/fields/types/gems/paperclip'
 require 'radmin/fields/types/gems/refile'
-require 'radmin/fields/types/gems/simple_mde'
 
 require 'radmin/fields/types/boolean'
 require 'radmin/fields/types/bson_object_id'

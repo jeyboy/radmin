@@ -20,6 +20,10 @@ module Radmin
       register_property :compact? do
         Radmin::config.compact_show_view
       end
+
+      register_property :submit_buttons_location do
+        Radmin::Config::default_submit_buttons_location
+      end
       
       def initialize(abstract_model)
         @abstract_model = abstract_model

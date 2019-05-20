@@ -5,19 +5,26 @@ module Radmin
 
     def generate(options = {})
       without_field_error_proc_added_div do
+        action_param = options[:action].presence || @template.controller.params[:action]
+        target_model = options[:current_model].presence || @template.current_model
+
         options.reverse_merge!(
-          action: @template.controller.params[:action],
-          current_model: @template.current_model,
+          action: action_param,
+          current_model: target_model,
           nested_in: false,
+          buttons_location: target_model.send(action_param).submit_buttons_location
         )
 
         groups = visible_groups(options[:current_model], generator_action(options[:action], options[:nested_in]))
 
-        # object_infos +
+        buttons =
+          (options[:nested_in] ? '' : @template.render(partial: 'radmin/main/submit_buttons'))
+
+        (options[:buttons_location][:top] ? buttons : '').html_safe +
           groups.collect do |_, fieldset|
             fieldset_for fieldset, options[:nested_in]
           end.join.html_safe +
-          (options[:nested_in] ? '' : @template.render(partial: 'radmin/main/submit_buttons'))
+            (options[:buttons_location][:bottom] ? buttons : '').html_safe
       end
     end
 

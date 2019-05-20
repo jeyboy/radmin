@@ -52,8 +52,19 @@ module Radmin
 
       attr_accessor :default_link_class
 
+      attr_accessor :default_submit_buttons_location
+
       # hide blank fields in show view if true
       attr_accessor :compact_show_view
+
+      # :top and :bottom positions is available
+      def default_submit_buttons_location=(**args)
+        args.symbolize_keys!
+
+        @default_submit_buttons_location = {
+          top: args[:top], bottom: args[:bottom]
+        }
+      end
 
       def default_hidden_fields=(hidden_fields)
         @default_hidden_fields = hidden_fields.stringify_keys
@@ -243,6 +254,8 @@ module Radmin
         init_filter_cmds
 
         @default_filter_schema = DEFAULT_FILTER_SCHEMA
+
+        @default_submit_buttons_location = { bottom: true }
 
         # RailsAdmin::Config::Actions.reset
       end
