@@ -116,6 +116,14 @@ hr.menu_breaker {
 
 #new {
   padding-top: .5rem;
+
+  label {
+    font-weight: bold;
+
+    &::after {
+      content: ":";
+    }
+  }
 }
 
 #list {
