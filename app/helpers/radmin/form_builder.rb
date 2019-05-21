@@ -58,7 +58,7 @@ module Radmin
         # do not show nested field if the target is the origin
         unless nested_field_association?(field, nested_in)
           @template.content_tag(:div, class: "row form-group control-group #{field.type_css_class} #{field.css_class} #{'error' if field.errors.present?}", id: "#{dom_id(field)}_field") do
-            label(field.name, capitalize_first_letter(field.label), class: 'col-sm-2 control-label') +
+            label(field.name, capitalize_first_letter(field.label), class: 'col-md-3 col-sm-4 control-label') +
               (field.nested_form ? field_for(field) : input_for(field))
           end
         end
@@ -68,7 +68,7 @@ module Radmin
     end
 
     def input_for(field)
-      css = "col-sm-10 controls #{'has-error' if field.errors.present?}"
+      css = "col-sm-8 col-md-9 controls #{'has-error' if field.errors.present?}"
 
       @template.content_tag(:div, class: css) do
         field_for(field) + errors_for(field) + help_for(field)
