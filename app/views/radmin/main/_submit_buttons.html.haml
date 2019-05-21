@@ -3,7 +3,6 @@
 
   %button.btn-success{type: "submit", name: "_save", :'data-disable-with' => t("admin.form.save")}
     = fa_icon('check', type: :solid)
-    %i.icon-white.icon-ok
     = t("admin.form.save")
 
   - if authorized? :new, current_model

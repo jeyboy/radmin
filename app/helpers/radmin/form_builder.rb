@@ -2,6 +2,9 @@ module Radmin
   class FormBuilder < ::ActionView::Helpers::FormBuilder
     # include ::NestedForm::BuilderMixin
     include ::Radmin::ApplicationHelper
+    include ::FontAwesome::Rails::IconHelper
+
+    delegate :content_tag, to: :@template
 
     def generate(options = {})
       without_field_error_proc_added_div do
@@ -42,9 +45,9 @@ module Radmin
 
       @template.content_tag :fieldset do
         <<-CONTENT
-          #{@template.content_tag(:legend, %(<i class="icon-chevron-#{(fieldset.open? ? 'down' : 'right')}"></i> #{fieldset.label}).html_safe) unless fieldset.name == :default }
-          #{@template.content_tag(:p, fieldset.help) if fieldset.help.present?}
-          #{fields.collect { |field| field_wrapper_for(field, nested_in) }.join}
+          #{ @template.content_tag(:legend, "#{fa_icon("chevron-#{(fieldset.open? ? 'down' : 'right')}", type: :solid)} #{fieldset.label}".html_safe) if fieldset.name.present? }
+          #{ @template.content_tag(:p, fieldset.help) if fieldset.help.present? }
+          #{ fields.collect { |field| field_wrapper_for(field, nested_in) }.join }
         CONTENT
           .html_safe
       end
