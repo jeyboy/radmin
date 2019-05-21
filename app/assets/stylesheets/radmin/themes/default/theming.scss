@@ -124,6 +124,10 @@ hr.menu_breaker {
       content: ":";
     }
   }
+
+  .boolean_type {
+    @extend .align-items-center;
+  }
 }
 
 #list {

@@ -1,5 +1,2 @@
-%p Boolean
-
--#.checkbox
--#  %label{ style: 'display: block;' }
--#    = form.send field.view_helper, field.name, field.html_attributes.reverse_merge({ value: field.form_value, checked: field.form_value.in?([true, '1']), required: field.required})
+.checkbox
+  = form.send field.view_helper, field.name, field.html_attributes.reverse_merge({ value: field.form_value, checked: field.form_value.in?([true, '1']), required: field.required})
