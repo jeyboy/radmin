@@ -1,3 +1,31 @@
+button {
+  @extend .btn;
+}
+
+.save-btn {
+  @extend .btn-success;
+}
+
+.save-add-btn {
+  @extend .btn-info;
+}
+
+.save-edit-btn {
+  @extend .btn-info;
+}
+
+.func-btn {
+  @extend .btn-secondary;
+}
+
+.cancel-btn {
+  @extend .btn-warning;
+}
+
+.close-btn {
+  @extend .btn-danger;
+}
+
 .form-actions {
   @extend .d-flex;
   @extend .justify-content-end;
@@ -6,6 +34,7 @@
     margin: .25rem .125rem;
   }
 }
+
 
 .text_type {
   word-wrap: anywhere;
