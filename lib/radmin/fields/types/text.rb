@@ -12,7 +12,7 @@ module Radmin
 
         # register_property :html_attributes do
         #   {
-        #     required: required?,
+        #     required: required,
         #     cols: '48',
         #     rows: '3',
         #   }

@@ -20,7 +20,7 @@ module Radmin
       end
 
       register_property :view_helper do
-        :string
+        :text_field
       end
 
 
@@ -70,7 +70,7 @@ module Radmin
 
       register_property :html_attributes do
         {
-          required: required?,
+          required: required,
         }
       end
 
@@ -81,6 +81,8 @@ module Radmin
       register_property :css_class do
         "#{self.name}_field"
       end
+
+
 
       register_property :default_value do
         nil
@@ -96,6 +98,7 @@ module Radmin
       register_property :pretty_value do
         formatted_value || ' - '
       end
+
 
       register_property :multiple do
         false
@@ -325,17 +328,16 @@ module Radmin
           abstract_model.identify_filters_params(searchable)
       end
 
-      # def form_default_value
-      #   (default_value if bindings[:object].new_record? && value.nil?)
-      # end
-      #
-      # def form_value
-      #   form_default_value.nil? ? formatted_value : form_default_value
-      # end
+      def form_value
+        form_default_value =
+          (default_value if bindings[:object].new_record? && value.nil?)
+
+        form_default_value.nil? ? formatted_value : form_default_value
+      end
 
 
       def generic_help
-        # (required? ? I18n.translate('admin.form.required') : I18n.translate('admin.form.optional')) + '. '
+        # (required ? I18n.translate('admin.form.required') : I18n.translate('admin.form.optional')) + '. '
       end
 
       def generic_field_help

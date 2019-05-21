@@ -6,10 +6,10 @@ module Radmin
       class Password < Radmin::Fields::Types::String
         Radmin::Fields::Types.register(self)
 
-        # register_property :view_helper do
-        #   :password_field
-        # end
-        #
+        register_property :view_helper do
+          :password_field
+        end
+
         # register_property :formatted_value do
         #   ''.html_safe
         # end

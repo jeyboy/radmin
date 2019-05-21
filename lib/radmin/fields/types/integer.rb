@@ -6,9 +6,9 @@ module Radmin
       class Integer < Radmin::Fields::Base
         Radmin::Fields::Types.register(self)
 
-        # register_property :view_helper do
-        #   :number_field
-        # end
+        register_property :view_helper do
+          :number_field
+        end
 
         # register_property :sort_reverse? do
         #   serial?

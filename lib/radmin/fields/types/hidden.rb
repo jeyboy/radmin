@@ -6,10 +6,10 @@ module Radmin
       class Hidden < Radmin::Fields::Base
         Radmin::Fields::Types.register(self)
 
-        # register_property :view_helper do
-        #   :hidden_field
-        # end
-        #
+        register_property :view_helper do
+          :hidden_field
+        end
+
         # register_property :label do
         #   false
         # end

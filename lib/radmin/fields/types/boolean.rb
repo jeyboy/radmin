@@ -8,10 +8,10 @@ module Radmin
           :form_boolean
         end
 
-        # register_property :view_helper do
-        #   :check_box
-        # end
-        #
+        register_property :view_helper do
+          :check_box
+        end
+
         # register_property :pretty_value do
         #   case value
         #   when nil

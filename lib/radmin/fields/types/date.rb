@@ -23,7 +23,7 @@ module Radmin
         #
         # register_property :html_attributes do
         #   {
-        #     required: required?,
+        #     required: required,
         #     size: 18,
         #   }
         # end

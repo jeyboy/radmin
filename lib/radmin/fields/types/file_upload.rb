@@ -50,7 +50,7 @@ module Radmin
         #
         # register_property :html_attributes do
         #   {
-        #     required: required? && !value.present?,
+        #     required: required && !value.present?,
         #   }
         # end
         #
