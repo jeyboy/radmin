@@ -47,14 +47,14 @@ module Radmin
         #     "%B %d, %Y %H:%M"
         #   end
         # end
-        #
-        # register_property :datepicker_options do
-        #   {
-        #     showTodayButton: true,
-        #     format: parser.to_momentjs,
-        #   }
-        # end
-        #
+
+        register_property :datepicker_options do
+          {
+            # showTodayButton: true,
+            # format: parser.to_momentjs,
+          }
+        end
+
         # register_property :html_attributes do
         #   {
         #     required: required,
