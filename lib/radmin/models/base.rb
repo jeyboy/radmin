@@ -7,23 +7,38 @@ module Radmin
       include Radmin::Utils::Base
 
       def model_fields
-        model.columns.map(&:name)
+        @model_fields ||=
+          (@columns_info.keys + @relation_names).uniq
       end
 
       def properties
         {}
       end
 
+      # TODO: improvements?
       def virtual?
         @virtual ||= !model.respond_to?(:columns_hash)
       end
 
       def columns_info
-        @column_types ||= begin
-          if virtual?
-            {}
+        @columns_info ||= begin
+          virtual? ? {} : model.columns_hash
+        end
+      end
+
+      def relations_info
+        @relations_info ||= begin
+          @relation_names = []
+
+          if model.respond_to?(:reflections)
+            model.reflections.each_with_object({}) do |(rel_name, rel), res|
+              @relation_names << rel_name unless columns_info.has_key?(rel.foreign_key.to_s)
+
+              res[rel.foreign_key.to_s] = rel
+              res[rel_name.to_s] = rel
+            end
           else
-            model.columns_hash
+            {}
           end
         end
       end

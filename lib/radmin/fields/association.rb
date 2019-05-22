@@ -118,6 +118,10 @@ module Radmin
       # def associated_model_limit
       #   RailsAdmin.config.default_associated_collection_limit
       # end
+
+      def is_association?
+        true
+      end
     end
   end
 end

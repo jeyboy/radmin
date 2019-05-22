@@ -14,15 +14,23 @@ module Radmin
 
       def field(name, type = nil, &block)
         name = name.to_s
+        foreign_key = nil
 
         type ||= begin
-          column_info = abstract_model.columns_info[name]
+          rel_info = abstract_model.relations_info[name]
 
-          if !column_info && !abstract_model.model.respond_to?(name)
-            raise "Unknown attribute '#{name}' in model '#{abstract_model.model}'"
+          if rel_info
+            foreign_key = rel_info.foreign_key
+            rel_info.macro.to_sym
+          else
+            column_info = abstract_model.columns_info[name]
+
+            if !column_info && !abstract_model.model.respond_to?(name)
+              raise "Unknown attribute '#{name}' in model '#{abstract_model.model}'"
+            end
+
+            column_info && column_info.type || :string
           end
-
-          column_info && column_info.type || :string
         end
 
         
@@ -35,7 +43,7 @@ module Radmin
         field =
           (
             _fields[name] =
-              Radmin::Fields::Types.load(type).new(self, name)
+              Radmin::Fields::Types.load(type).new(self, name, foreign_key)
           )
 
         # # some fields are hidden by default (belongs_to keys, has_many associations in list views.)
@@ -71,7 +79,7 @@ module Radmin
         field.instance_eval(&block) if block
 
         field.default_value || begin
-          val = abstract_model.columns_info[name].default
+          val = abstract_model.columns_info[name]&.default
           field.default_value(proc { val })
         end
 
