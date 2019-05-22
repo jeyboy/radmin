@@ -5,6 +5,10 @@ module Radmin
     module Types
       class Decimal < Radmin::Fields::Base
         Radmin::Fields::Types.register(self)
+
+        register_property :default_value do
+          0
+        end
       end
     end
   end

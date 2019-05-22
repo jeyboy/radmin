@@ -10,6 +10,10 @@ module Radmin
           :number_field
         end
 
+        register_property :default_value do
+          0
+        end
+
         # register_property :sort_reverse? do
         #   serial?
         # end
