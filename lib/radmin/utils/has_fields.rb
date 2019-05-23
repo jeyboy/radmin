@@ -35,7 +35,7 @@ module Radmin
 
         
         if _fields[name]
-          target_group = get_group(field.group || DEFAULT_GROUP)
+          target_group = get_group(_fields[name].group || DEFAULT_GROUP)
           target_group.remove_field(name)
         end
         

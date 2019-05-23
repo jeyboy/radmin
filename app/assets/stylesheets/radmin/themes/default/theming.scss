@@ -126,6 +126,12 @@ hr.menu_breaker {
     }
   }
 
+  .add_info {
+    font-size: 12px;
+    @extend .text-info;
+    margin: 0;
+  }
+
   .form-group {
     @extend .align-items-center;
   }

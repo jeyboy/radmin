@@ -23,23 +23,15 @@ module Radmin
         :text_field
       end
 
+      # Output like raw value
+      register_property :is_raw do
+        false
+      end
 
 
       # Configurable group
       register_property :group do
         Radmin::Utils::Groupable::DEFAULT_GROUP
-      end
-
-      register_property :export_value do
-        value.inspect
-      end
-
-      register_property :is_raw do
-        false
-      end
-
-      register_property :errors do
-        bindings[:object].errors[name] if bindings[:object]
       end
 
       register_property :label do
@@ -50,13 +42,13 @@ module Radmin
         # label
       end
 
+      register_property :additional_info do
+        nil
+      end
+
       register_property :enum do
         nil
         # abstract_model.model.defined_enums[name.to_s]
-      end
-
-      register_property :additional_info do
-        nil
       end
 
       # Accessor for field's help text displayed below input field.
@@ -99,6 +91,14 @@ module Radmin
         formatted_value || ' - '
       end
 
+      register_property :export_value do
+        value.inspect
+      end
+
+
+      register_property :errors do
+        bindings[:object].errors[name] if bindings[:object]
+      end
 
       register_property :multiple do
         false

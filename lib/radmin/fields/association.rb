@@ -12,7 +12,7 @@ module Radmin
         nested_form ? :form_nested_one : :form_filtering_select
       end
 
-      # register_instance_option :pretty_value do
+      # register_property :pretty_value do
       #   v = bindings[:view]
       #   [value].flatten.select(&:present?).collect do |associated|
       #     amc = polymorphic? ? RailsAdmin.config(associated) : associated_model_config # perf optimization for non-polymorphic associations
@@ -26,17 +26,17 @@ module Radmin
       # # Accessor whether association is visible or not. By default
       # # association checks whether the child model is excluded in
       # # configuration or not.
-      # register_instance_option :visible? do
+      # register_property :visible? do
       #   @visible ||= !associated_model_config.excluded?
       # end
 
       # # use the association name as a key, not the association key anymore!
-      # register_instance_option :label do
+      # register_property :label do
       #   (@label ||= {})[::I18n.locale] ||= abstract_model.model.human_attribute_name association.name
       # end
 
       # # scope for possible associable records
-      # register_instance_option :associated_collection_scope do
+      # register_property :associated_collection_scope do
       #   # bindings[:object] & bindings[:controller] available
       #   associated_collection_scope_limit = (associated_collection_cache_all ? nil : 30)
       #   proc do |scope|
@@ -45,27 +45,27 @@ module Radmin
       # end
 
       # # inverse relationship
-      # register_instance_option :inverse_of do
+      # register_property :inverse_of do
       #   association.inverse_of
       # end
 
       # # preload entire associated collection (per associated_collection_scope) on load
       # # Be sure to set limit in associated_collection_scope if set is large
-      # register_instance_option :associated_collection_cache_all do
+      # register_property :associated_collection_cache_all do
       #   @associated_collection_cache_all ||= (associated_model_config.abstract_model.count < associated_model_limit)
       # end
 
-      # # determines whether association's elements can be removed
-      # register_instance_option :removable? do
-      #   association.foreign_key_nullable?
-      # end
+      # determines whether association's elements can be removed
+      register_property :removable? do
+        association.foreign_key_nullable?
+      end
 
-      # register_instance_option :eager_load? do
+      # register_property :eager_load? do
       #   !!searchable
       # end
 
       # # Reader for nested attributes
-      # register_instance_option :nested_form do
+      # register_property :nested_form do
       #   association.nested_options
       # end
 
@@ -89,11 +89,6 @@ module Radmin
       # # Reader for associated primary key
       # def associated_primary_key
       #   @associated_primary_key ||= association.primary_key
-      # end
-      #
-      # # Reader for the association's key
-      # def foreign_key
-      #   association.foreign_key
       # end
       #
       # # Reader whether this is a polymorphic association
