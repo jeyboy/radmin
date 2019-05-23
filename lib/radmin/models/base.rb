@@ -12,7 +12,7 @@ module Radmin
       end
 
       def properties
-        {}
+        @properties ||= {}
       end
 
       # TODO: improvements?

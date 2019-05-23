@@ -9,7 +9,7 @@ module Radmin
 
       VALIDATION_REQUIRE_RULES = [:presence, :numericality, :attachment_presence].freeze
 
-      attr_reader :abstract_model, :name, :foreign_key
+      attr_reader :abstract_model, :name, :properties
 
       register_property :render do
         bindings[:view].render(partial: "radmin/main/#{partial}", locals: {field: self, form: bindings[:form]})
@@ -264,7 +264,7 @@ module Radmin
 
 
 
-      def initialize(section, name, foreign_key = nil)
+      def initialize(section, name)
         @section = section
         # @root = parent.root
         #
@@ -272,8 +272,7 @@ module Radmin
         # @defined = false
         @name = name.to_sym
         # @order = 0
-        @properties = abstract_model.properties
-        @foreign_key = foreign_key
+        @properties = abstract_model.properties[name] || {}
       end
 
       def bindings
@@ -283,6 +282,10 @@ module Radmin
       def with_bindings(args)
         @section.with_bindings(args)
         self
+      end
+
+      def foreign_key
+        @properties[:foreign_key]
       end
 
       # Reader for field's type

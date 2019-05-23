@@ -57,6 +57,21 @@ module Radmin
       # hide blank fields in show view if true
       attr_accessor :compact_show_view
 
+      # Configuration option to specify which models you want to exclude.
+      attr_accessor :excluded_models
+
+      # # Configuration option to specify a whitelist of models you want to RailsAdmin to work with.
+      # # The excluded_models list applies against the whitelist as well and further reduces the models
+      # # RailsAdmin will use.
+      # # If included_models is left empty ([]), then RailsAdmin will automatically use all the models
+      # # in your application (less any excluded_models you may have specified).
+      # attr_accessor :included_models
+
+
+
+
+
+
       # :top and :bottom positions is available
       def default_submit_buttons_location=(**args)
         args.symbolize_keys!
@@ -241,7 +256,7 @@ module Radmin
         @default_link_class = 'info'
         # @default_associated_collection_limit = 100
         @default_search_operator = '_exactly'
-        # @excluded_models = []
+        @excluded_models = []
         # @included_models = []
         # @total_columns_width = 697
         # @label_methods = [:name, :title]
@@ -339,20 +354,8 @@ module Radmin
       # # Application title, can be an array of two elements
       # attr_accessor :main_app_name
       #
-      # # Configuration option to specify which models you want to exclude.
-      # attr_accessor :excluded_models
-      #
-      # # Configuration option to specify a whitelist of models you want to RailsAdmin to work with.
-      # # The excluded_models list applies against the whitelist as well and further reduces the models
-      # # RailsAdmin will use.
-      # # If included_models is left empty ([]), then RailsAdmin will automatically use all the models
-      # # in your application (less any excluded_models you may have specified).
-      # attr_accessor :included_models
-      #
       # # Default association limit
       # attr_accessor :default_associated_collection_limit
-      #
-      # attr_reader :default_search_operator
       #
       # # Configuration option to specify which method names will be searched for
       # # to be used as a label for object records. This defaults to [:name, :title]

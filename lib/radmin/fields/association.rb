@@ -23,12 +23,12 @@ module Radmin
       #   end.to_sentence.html_safe
       # end
 
-      # # Accessor whether association is visible or not. By default
-      # # association checks whether the child model is excluded in
-      # # configuration or not.
-      # register_property :visible? do
-      #   @visible ||= !associated_model_config.excluded?
-      # end
+      # Accessor whether association is visible or not. By default
+      # association checks whether the child model is excluded in
+      # configuration or not.
+      register_property :visible? do
+        @visible ||= !associated_abstract_model.excluded?
+      end
 
       # # use the association name as a key, not the association key anymore!
       # register_property :label do
@@ -57,7 +57,8 @@ module Radmin
 
       # determines whether association's elements can be removed
       register_property :removable? do
-        association.foreign_key_nullable?
+        false
+        # association.foreign_key_nullable?
       end
 
       # register_property :eager_load? do
@@ -76,11 +77,12 @@ module Radmin
       #   @properties
       # end
 
-      # # Reader for the association's child model's configuration
-      # def associated_model_config
-      #   @associated_model_config ||= RailsAdmin.config(association.klass)
-      # end
-      #
+      # Reader for the association's child model's configuration
+      def associated_abstract_model
+        @associated_abstract_model ||=
+          Radmin.config(association.klass)
+      end
+
       # # Reader for the association's child model object's label method
       # def associated_object_label_method
       #   @associated_object_label_method ||= associated_model_config.object_label_method
@@ -90,17 +92,17 @@ module Radmin
       # def associated_primary_key
       #   @associated_primary_key ||= association.primary_key
       # end
-      #
-      # # Reader whether this is a polymorphic association
-      # def polymorphic?
-      #   association.polymorphic?
-      # end
-      #
-      # # Reader for the association's value unformatted
-      # def value
-      #   bindings[:object].send(association.name)
-      # end
-      #
+
+      # Reader whether this is a polymorphic association
+      def polymorphic?
+        association.polymorphic?
+      end
+
+      # Reader for the association's value unformatted
+      def value
+        bindings[:object].send(association[:name])
+      end
+
       # # has many?
       # def multiple?
       #   true

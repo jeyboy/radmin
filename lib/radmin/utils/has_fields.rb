@@ -14,13 +14,19 @@ module Radmin
 
       def field(name, type = nil, &block)
         name = name.to_s
-        foreign_key = nil
 
         type ||= begin
           rel_info = abstract_model.relations_info[name]
 
           if rel_info
-            foreign_key = rel_info.foreign_key
+            abstract_model.properties[name] = {
+              primary_key: rel_info.klass.primary_key,
+              foreign_key: rel_info.foreign_key,
+              klass: rel_info.klass,
+              reflection_type: rel_info.macro.to_sym,
+              name: rel_info.name
+            }
+
             rel_info.macro.to_sym
           else
             column_info = abstract_model.columns_info[name]
@@ -43,7 +49,7 @@ module Radmin
         field =
           (
             _fields[name] =
-              Radmin::Fields::Types.load(type).new(self, name, foreign_key)
+              Radmin::Fields::Types.load(type).new(self, name)
           )
 
         # # some fields are hidden by default (belongs_to keys, has_many associations in list views.)

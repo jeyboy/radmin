@@ -143,6 +143,10 @@ module Radmin
         # end
       end
 
+      def excluded?
+        Radmin::excluded_models.include?(@model_name)
+      end
+
       def model
         @model ||= @model_name.constantize
       end
