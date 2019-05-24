@@ -19,12 +19,15 @@ module Radmin
           rel_info = abstract_model.relations_info[name]
 
           if rel_info
+            rel_klass = rel_info.polymorphic? ? nil : rel_info.klass
+
             abstract_model.properties[name] = {
-              primary_key: rel_info.klass.primary_key,
+              klass: rel_klass,
+              primary_key: rel_klass&.primary_key,
               foreign_key: rel_info.foreign_key,
-              klass: rel_info.klass,
               reflection_type: rel_info.macro.to_sym,
-              name: rel_info.name
+              name: rel_info.name,
+              is_polymorphic: rel_info.polymorphic?
             }
 
             rel_info.macro.to_sym

@@ -36,6 +36,9 @@ module Radmin
       # if Rails::VERSION::MAJOR < 5
       app.send :require, 'rails_or'
       # end
+
+      # Radmin::Config::included_models = Radmin::Models.viable
+      Radmin::Models.reset_polymorphics!
     end
     ################################
 

@@ -7,8 +7,10 @@ module Radmin
       include Radmin::Utils::Base
 
       def model_fields
-        @model_fields ||=
-          (@columns_info.keys + @relation_names).uniq
+        @model_fields ||= begin
+          relations_info
+          (columns_info.keys + @relation_names).uniq
+        end
       end
 
       def properties

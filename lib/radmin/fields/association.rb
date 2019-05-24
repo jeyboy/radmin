@@ -80,7 +80,7 @@ module Radmin
       # Reader for the association's child model's configuration
       def associated_abstract_model
         @associated_abstract_model ||=
-          Radmin.config(association.klass)
+          Radmin.config(properties[:klass])
       end
 
       # # Reader for the association's child model object's label method
@@ -95,12 +95,12 @@ module Radmin
 
       # Reader whether this is a polymorphic association
       def polymorphic?
-        association.polymorphic?
+        properties[:is_polymorphic]
       end
 
       # Reader for the association's value unformatted
       def value
-        bindings[:object].send(association[:name])
+        bindings[:object].send(properties[:name])
       end
 
       # # has many?

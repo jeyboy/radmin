@@ -3,6 +3,7 @@ require 'radmin/models/abstract'
 module Radmin
   module Models
     @models = {}
+    @polymorphics = {}
 
     def self.get_model(key, entity, &block)
       @models[key] || if block
@@ -22,6 +23,49 @@ module Radmin
       end
     end
 
+    # TODO: refactor me
+    def self.viable
+      Radmin::Config::included_models.collect(&:to_s).presence || begin
+        @@system_models ||=
+          ([Rails.application] + Rails::Engine.subclasses.collect(&:instance)).flat_map do |app|
+            (app.paths['app/models'].to_a + app.paths.eager_load).collect do |load_path|
+              Dir.glob(app.root.join(load_path)).collect do |load_dir|
+                Dir.glob(load_dir + '/**/*.rb').collect do |filename|
+                  # app/models/module/class.rb => module/class.rb => module/class => Module::Class
+                  lchomp(filename, "#{app.root.join(load_dir)}/").chomp('.rb').camelize
+                end
+              end
+            end
+          end.flatten.reject { |m| m.starts_with?('Concerns::') }
+      end
+    end
+
+    def self.reset_polymorphics!
+      @polymorphics = {}
+
+      Radmin::Models.viable.each do |klass|
+        init_class_polymorphics(klass)
+      end
+    end
+
+    def self.init_class_polymorphics(klass)
+      if !Radmin.config(klass) && klass.respond_to?(:reflections)
+        klass.reflections.each do |reflection|
+          if (name = reflection.options[:as]) || (name = reflection.options['as'])
+            register_polymorphic(name, klass)
+          end
+        end
+      end
+    end
+
+    def self.register_polymorphic(name, klass)
+      polymorphic_classes(name) << klass
+    end
+
+    def self.polymorphic_classes(name)
+      (@polymorphics[name] ||= [])
+    end
+
     # # Get all models that are configured as visible sorted by their weight and label.
     # def self.visible(bindings)
     #   visible_models_with_bindings(bindings).sort do |a, b|
@@ -34,6 +78,10 @@ module Radmin
     # end
 
     private
+
+      def self.lchomp(base, arg)
+        base.to_s.reverse.chomp(arg.to_s.reverse).reverse
+      end
 
       # def self.visible_models_with_bindings(bindings)
       #   models.collect { |m| m.with(bindings) }.select do |m|

@@ -60,12 +60,12 @@ module Radmin
       # Configuration option to specify which models you want to exclude.
       attr_accessor :excluded_models
 
-      # # Configuration option to specify a whitelist of models you want to RailsAdmin to work with.
-      # # The excluded_models list applies against the whitelist as well and further reduces the models
-      # # RailsAdmin will use.
-      # # If included_models is left empty ([]), then RailsAdmin will automatically use all the models
-      # # in your application (less any excluded_models you may have specified).
-      # attr_accessor :included_models
+      # Configuration option to specify a whitelist of models you want to RailsAdmin to work with.
+      # The excluded_models list applies against the whitelist as well and further reduces the models
+      # RailsAdmin will use.
+      # If included_models is left empty ([]), then RailsAdmin will automatically use all the models
+      # in your application (less any excluded_models you may have specified).
+      attr_accessor :included_models
 
 
 
@@ -257,7 +257,7 @@ module Radmin
         # @default_associated_collection_limit = 100
         @default_search_operator = '_exactly'
         @excluded_models = []
-        # @included_models = []
+        @included_models = []
         # @total_columns_width = 697
         # @label_methods = [:name, :title]
         # @main_app_name = proc { [Rails.application.engine_name.titleize.chomp(' Application'), 'Admin'] }
@@ -272,7 +272,7 @@ module Radmin
 
         @default_submit_buttons_location = { bottom: true }
 
-        # RailsAdmin::Config::Actions.reset
+        # Radmin::Actions.reset
       end
 
       def init_filter_cmds
