@@ -37,8 +37,7 @@ module Radmin
       app.send :require, 'rails_or'
       # end
 
-      # Radmin::Config::included_models = Radmin::Models.viable
-      Radmin::Models.reset_polymorphics!
+      Radmin::Models.init!
     end
     ################################
 

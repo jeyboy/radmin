@@ -5,6 +5,10 @@ module Radmin
     @models = {}
     @polymorphics = {}
 
+    def self.has_models?
+      @models.present?
+    end
+
     def self.get_model(key, entity, &block)
       @models[key] || if block
         mdl = Radmin::Models::Abstract.new(entity)
@@ -26,21 +30,49 @@ module Radmin
     # TODO: refactor me
     def self.viable
       Radmin::Config::included_models.collect(&:to_s).presence || begin
-        @@system_models ||=
-          ([Rails.application] + Rails::Engine.subclasses.collect(&:instance)).flat_map do |app|
-            (app.paths['app/models'].to_a + app.paths.eager_load).collect do |load_path|
-              Dir.glob(app.root.join(load_path)).collect do |load_dir|
-                Dir.glob(load_dir + '/**/*.rb').collect do |filename|
-                  # app/models/module/class.rb => module/class.rb => module/class => Module::Class
-                  lchomp(filename, "#{app.root.join(load_dir)}/").chomp('.rb').camelize
+        !Rails.application ? [] :
+          @@system_models ||=
+            ([Rails.application] + Rails::Engine.subclasses.collect(&:instance)).flat_map do |app|
+              (app.paths['app/models'].to_a + app.paths.eager_load).collect do |load_path|
+                Dir.glob(app.root.join(load_path)).collect do |load_dir|
+                  Dir.glob(load_dir + '/**/*.rb').collect do |filename|
+                    # app/models/module/class.rb => module/class.rb => module/class => Module::Class
+                    lchomp(filename, "#{app.root.join(load_dir)}/").chomp('.rb').camelize
+                  end
                 end
               end
-            end
-          end.flatten.reject { |m| m.starts_with?('Concerns::') }
+            end.flatten.reject { |m| m.starts_with?('Concerns::') }
       end
     end
 
-    def self.reset_polymorphics!
+    def self.init!
+      unless Radmin::Models.has_models?
+        Radmin::Config::included_models = Radmin::Models.viable
+
+
+        #TODO: init all viable models
+        #
+        #   radmin do
+        #     object_label_method :to_s
+        #
+        #     list do
+        #       include_all_fields
+        #     end
+        #
+        #     new do
+        #       include_all_fields
+        #     end
+        #
+        #     edit do
+        #       include_all_fields
+        #     end
+        #
+        #     show do
+        #       include_all_fields
+        #     end
+        #   end
+      end
+
       @polymorphics = {}
 
       Radmin::Models.viable.each do |klass|

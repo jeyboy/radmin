@@ -8,7 +8,7 @@ module Radmin
     included do |base|
       base.extend Radmin::Base
 
-      Radmin::init_class_polymorphics(base)
+      Radmin::Models::init_class_polymorphics(base)
     end
 
     def radmin(&block)
