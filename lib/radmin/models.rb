@@ -46,31 +46,23 @@ module Radmin
     end
 
     def self.init!
-      unless Radmin::Models.has_models?
-        Radmin::Config::included_models = Radmin::Models.viable
+      if !Radmin::Models.has_models? && Radmin::Config::default_init_proc.is_a?(Proc)
+        excl_mdls =
+          Radmin::Config::excluded_models.each_with_object({}) { |m, res| res[m.to_s] = true }
+            .merge(Radmin::Config::model_class_blockers)
 
+        mdls =
+          Radmin::Config::included_models.presence ||
+            Radmin::Models.viable.each_with_object({}) do |mn, res|
+              next if excl_mdls.has_key?(mn)
 
-        #TODO: init all viable models
-        #
-        #   radmin do
-        #     object_label_method :to_s
-        #
-        #     list do
-        #       include_all_fields
-        #     end
-        #
-        #     new do
-        #       include_all_fields
-        #     end
-        #
-        #     edit do
-        #       include_all_fields
-        #     end
-        #
-        #     show do
-        #       include_all_fields
-        #     end
-        #   end
+              mc = class_obj(mn) # || mn.constantize
+              res[mc] = true if mc && res[mc].nil?
+            end.keys
+
+        mdls.each do |mdl|
+          mdl.class_eval(&Radmin::Config::default_init_proc)
+        end
       end
 
       @polymorphics = {}
@@ -110,6 +102,14 @@ module Radmin
     # end
 
     private
+      def self.class_obj(class_name)
+        return nil unless Object.const_defined?(class_name)
+
+        klass = Object.const_get(class_name)
+        klass.is_a?(Class) ? klass : nil
+      rescue NameError
+        nil
+      end
 
       def self.lchomp(base, arg)
         base.to_s.reverse.chomp(arg.to_s.reverse).reverse

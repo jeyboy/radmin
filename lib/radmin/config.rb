@@ -68,7 +68,7 @@ module Radmin
       attr_accessor :included_models
 
 
-
+      attr_accessor :default_init_proc
 
 
 
@@ -271,6 +271,28 @@ module Radmin
         @default_filter_schema = DEFAULT_FILTER_SCHEMA
 
         @default_submit_buttons_location = { bottom: true }
+
+        @default_init_proc = -> {
+          radmin do
+            object_label_method :to_s
+
+            list do
+              include_all_fields
+            end
+
+            new do
+              include_all_fields
+            end
+
+            edit do
+              include_all_fields
+            end
+
+            show do
+              include_all_fields
+            end
+          end
+        }
 
         # Radmin::Actions.reset
       end
