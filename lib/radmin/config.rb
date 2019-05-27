@@ -60,16 +60,30 @@ module Radmin
       # Configuration option to specify which models you want to exclude.
       attr_accessor :excluded_models
 
-      # Configuration option to specify a whitelist of models you want to RailsAdmin to work with.
+      # Configuration option to specify a whitelist of models you want to Radmin to work with.
       # The excluded_models list applies against the whitelist as well and further reduces the models
-      # RailsAdmin will use.
-      # If included_models is left empty ([]), then RailsAdmin will automatically use all the models
+      # Radmin will use.
+      # If included_models is left empty ([]), then Radmin will automatically use all the models
       # in your application (less any excluded_models you may have specified).
       attr_accessor :included_models
 
+      # Use classes found in models folder and not inherited from base Active Record class
+      attr_accessor :attach_non_model_classes
 
+      # Default init config for automatically proceeding models
       attr_accessor :default_init_proc
 
+      # Default pathes where to search models
+      # ->(app) {
+      #   app.paths['app/models'].to_a + app.paths.eager_load
+      # }
+      attr_accessor :default_model_paths
+
+      # Configure default places where to search models
+      # :all
+      # :main_app
+      # :subengines
+      attr_accessor :default_model_collector_mode
 
 
       # :top and :bottom positions is available
@@ -272,8 +286,10 @@ module Radmin
 
         @default_submit_buttons_location = { bottom: true }
 
-        @default_init_proc = -> {
-          radmin do
+        @attach_non_model_classes = true
+
+        @default_init_proc = ->(klass) {
+          klass.send :radmin do
             object_label_method :to_s
 
             list do
@@ -293,6 +309,10 @@ module Radmin
             end
           end
         }
+
+        @default_model_paths = ->(app) { app.paths['app/models'].to_a }
+
+        @default_model_collector_mode = :all
 
         # Radmin::Actions.reset
       end

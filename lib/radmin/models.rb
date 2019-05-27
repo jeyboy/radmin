@@ -30,20 +30,15 @@ module Radmin
     # TODO: refactor me
     def self.viable
       Radmin::Config::included_models.collect(&:to_s).presence || begin
-        !Rails.application ? [] :
-          @@system_models ||=
-            ([Rails.application] + Rails::Engine.subclasses.collect(&:instance)).flat_map do |app|
-              (app.paths['app/models'].to_a + app.paths.eager_load).collect do |load_path|
-                Dir.glob(app.root.join(load_path)).collect do |load_dir|
-                  Dir.glob(load_dir + '/**/*.rb').collect do |filename|
-                    # app/models/module/class.rb => module/class.rb => module/class => Module::Class
-                    lchomp(filename, "#{app.root.join(load_dir)}/").chomp('.rb').camelize
-                  end
-                end
-              end
-            end.flatten.reject { |m| m.starts_with?('Concerns::') }
+        collector_mode = Radmin::Config::default_model_collector_mode
+
+        res = main_app_models_list if collector_mode == :all || collector_mode == :main_app || collector_mode != :subengines
+        (res ||= []).concat(engines_models_list) if collector_mode == :all || collector_mode == :subengines
+
+        res
       end
     end
+
 
     def self.init!
       if !Radmin::Models.has_models? && Radmin::Config::default_init_proc.is_a?(Proc)
@@ -61,6 +56,14 @@ module Radmin
             end.keys
 
         mdls.each do |mdl|
+          if !mdl.respond_to?(:radmin)
+            if Radmin::Config::attach_non_model_classes
+              mdl.send(:include, Radmin::Base)
+            else
+              next
+            end
+          end
+
           mdl.class_eval(&Radmin::Config::default_init_proc)
         end
       end
@@ -102,6 +105,30 @@ module Radmin
     # end
 
     private
+      def self.main_app_models_list
+        !Rails.application ? [] :
+          @@app_models_list ||= app_models_list(Rails.application)
+      end
+
+      def self.engines_models_list
+        @@engines_models_list ||=
+          Rails::Engine.subclasses.each_with_object([]) do |entity, res|
+            app_models_list(entity.instance, res)
+          end
+      end
+
+      def self.app_models_list(app, res_arr = [])
+        Radmin::Config.default_model_paths.call(app).each_with_object(res_arr) do |load_dir, res|
+          # Dir.glob(app.root.join(load_path)).collect do |load_dir|
+            Dir.glob(load_dir + '/**/*.rb').collect do |filename|
+              name = lchomp(filename, "#{app.root.join(load_dir)}/").chomp('.rb').camelize
+
+              res << name if name && !name.starts_with?('Concerns::')
+            end
+          # end
+        end
+      end
+
       def self.class_obj(class_name)
         return nil unless Object.const_defined?(class_name)
 
