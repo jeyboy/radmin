@@ -59,10 +59,10 @@ module Radmin
         model_param = node.to_param
         url = radmin.url_for(action: :index, controller: 'radmin/main', model_name: model_param)
         level_class = " nav-level-#{level}" if level > 0
-        nav_icon = node.navigation_icon ? fa_icon(node.navigation_icon, type: :solid).html_safe : ''
+        nav_icon = node.navigation_icon ? fa_icon(node.navigation_icon, type: :solid) + ' ' : ''
 
         li = content_tag :li, data: {model: model_param}, class: 'nav-link' do
-          link_to nav_icon + ' ' + capitalize_first_letter(node.label_plural), url, class: "ajax #{level_class}"
+          link_to nav_icon + capitalize_first_letter(node.label_plural), url, class: "ajax #{level_class}"
         end
 
         li + navigation(nodes_stack, nodes_stack.select { |n| n.parent.to_s == node.model_name }, level + 1)

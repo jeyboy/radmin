@@ -61,8 +61,11 @@ module Radmin
       end
 
       register_property :label_plural do
-        (@label_plural ||= {})[::I18n.locale] ||=
-          model.model_name.human(count: Float::INFINITY, default: label.pluralize(::I18n.locale))
+        (@label_plural ||= {})[::I18n.locale] ||= begin
+          model.respond_to?(:model_name) ?
+            model.model_name.human(count: Float::INFINITY, default: label.pluralize(::I18n.locale)) :
+              label.pluralize(::I18n.locale)
+        end
       end
 
       register_property :table_name do

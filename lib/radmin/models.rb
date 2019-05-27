@@ -27,7 +27,6 @@ module Radmin
       end
     end
 
-    # TODO: refactor me
     def self.viable
       Radmin::Config::included_models.collect(&:to_s).presence || begin
         collector_mode = Radmin::Config::default_model_collector_mode
@@ -39,7 +38,6 @@ module Radmin
       end
     end
 
-
     def self.init!
       if !Radmin::Models.has_models? && Radmin::Config::default_init_proc.is_a?(Proc)
         excl_mdls =
@@ -47,15 +45,15 @@ module Radmin
             .merge(Radmin::Config::model_class_blockers)
 
         mdls =
-          Radmin::Config::included_models.presence ||
-            Radmin::Models.viable.each_with_object({}) do |mn, res|
+          (Radmin::Config::included_models.presence || Radmin::Models.viable)
+            .uniq.sort.each_with_object({}) do |mn, res|
               next if excl_mdls.has_key?(mn)
 
               mc = class_obj(mn) # || mn.constantize
               res[mc] = true if mc && res[mc].nil?
             end.keys
 
-        mdls.uniq.sort.each do |mdl|
+        mdls.each do |mdl|
           if !mdl.respond_to?(:radmin)
             if Radmin::Config::attach_non_model_classes
               mdl.send(:include, Radmin::Base)
