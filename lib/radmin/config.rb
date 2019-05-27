@@ -8,6 +8,12 @@ module Radmin
     DEFAULT_SEARCH_SCHEMA = :or
 
     class << self
+      # show Gravatar in Navigation bar
+      attr_accessor :show_gravatar
+
+      # Application title
+      attr_accessor :app_title
+
       # set brand text
       attr_accessor :brand_text
 
@@ -17,10 +23,13 @@ module Radmin
       # set parent controller
       attr_accessor :parent_controller
 
+      # set settings for `protect_from_forgery` method
+      # By default, it raises exception upon invalid CSRF tokens
+      attr_accessor :forgery_protection_settings
+
       # class names which stops chain of parents
       attr_accessor :model_class_blockers
 
-      
       attr_accessor :default_search_operator
 
       # :or # 'or' between rules
@@ -34,17 +43,16 @@ module Radmin
       # # (not implemented) :manual # user can config relation between each pair of rules with UI
       attr_accessor :default_filter_schema
 
+      # See #init_filter_cmds
       attr_accessor :filter_cmds
       attr_accessor :filter_like_cmd
-      
-      # set settings for `protect_from_forgery` method
-      # By default, it raises exception upon invalid CSRF tokens
-      attr_accessor :forgery_protection_settings
-
 
       # Fields to be hidden in show, create and update views
       attr_accessor :default_hidden_fields
 
+      # # Configuration option to specify which method names will be searched for
+      # # to be used as a label for object records. This defaults to [:name, :title]
+      # attr_accessor :label_methods
 
       # Default items per page value used if a model level option has not
       # been configured
@@ -52,6 +60,7 @@ module Radmin
 
       attr_accessor :default_link_class
 
+      # :top and :bottom positions is available
       attr_accessor :default_submit_buttons_location
 
       # hide blank fields in show view if true
@@ -86,7 +95,16 @@ module Radmin
       attr_accessor :default_model_collector_mode
 
 
-      # :top and :bottom positions is available
+      # # Default association limit
+      # attr_accessor :default_associated_collection_limit
+      #
+      # # Tell browsers whether to use the native HTML5 validations (novalidate form option).
+      # attr_accessor :browser_validations
+      #
+      # # Set the max width of columns in list view before a new set is created
+      # attr_accessor :total_columns_width
+
+
       def default_submit_buttons_location=(**args)
         args.symbolize_keys!
 
@@ -94,6 +112,17 @@ module Radmin
           top: args[:top], bottom: args[:bottom]
         }
       end
+
+
+      # def default_hidden_fields=(fields)
+      #   if fields.is_a?(Array)
+      #     @default_hidden_fields = {}
+      #     @default_hidden_fields[:edit] = fields
+      #     @default_hidden_fields[:show] = fields
+      #   else
+      #     @default_hidden_fields = fields
+      #   end
+      # end
 
       def default_hidden_fields=(hidden_fields)
         @default_hidden_fields = hidden_fields.stringify_keys
@@ -153,10 +182,6 @@ module Radmin
         end
 
         Radmin::Models.get_model(key, entity, &block)
-
-        # @registry[key] ||= RailsAdmin::Config::LazyModel.new(entity)
-        # @registry[key].add_deferred_block(&block) if block
-        # @registry[key]
       end
 
       # @see RailsAdmin::Config::DEFAULT_PROC
@@ -245,6 +270,7 @@ module Radmin
 
       # Reset all configurations to defaults.
       def reset
+        @app_title = nil # proc { [Rails.application.engine_name.titleize.chomp(' Application'), 'Admin'] }
         @brand_text = 'RAdmin'
         @brand_icon_url = nil
 
@@ -261,7 +287,8 @@ module Radmin
         @authenticate = nil
         @authorize = nil
         @audit = nil
-        # @current_user = nil
+        @current_user = nil
+
         # @default_hidden_fields = {}
         # @default_hidden_fields[:base] = [:_type]
         # @default_hidden_fields[:edit] = [:id, :_id, :created_at, :created_on, :deleted_at, :updated_at, :updated_on, :deleted_on]
@@ -270,13 +297,13 @@ module Radmin
         @default_link_class = 'info'
         # @default_associated_collection_limit = 100
         @default_search_operator = '_exactly'
+
         @excluded_models = []
         @included_models = []
         # @total_columns_width = 697
         # @label_methods = [:name, :title]
-        # @main_app_name = proc { [Rails.application.engine_name.titleize.chomp(' Application'), 'Admin'] }
-        # @registry = {}
-        # @show_gravatar = true
+
+        @show_gravatar = true
         @parent_controller = '::ActionController::Base'
         @forgery_protection_settings = {with: :exception}
         
@@ -393,34 +420,6 @@ module Radmin
         }
       end
 
-      # # Application title, can be an array of two elements
-      # attr_accessor :main_app_name
-      #
-      # # Default association limit
-      # attr_accessor :default_associated_collection_limit
-      #
-      # # Configuration option to specify which method names will be searched for
-      # # to be used as a label for object records. This defaults to [:name, :title]
-      # attr_accessor :label_methods
-      #
-      # # Tell browsers whether to use the native HTML5 validations (novalidate form option).
-      # attr_accessor :browser_validations
-      #
-      # # Set the max width of columns in list view before a new set is created
-      # attr_accessor :total_columns_width
-      #
-      # # Stores model configuration objects in a hash identified by model's class
-      # # name.
-      # #
-      # # @see RailsAdmin.config
-      # attr_reader :registry
-      #
-      # # show Gravatar in Navigation bar
-      # attr_accessor :show_gravatar
-      #
-      # # yell about fields that are not marked as accessible
-      # attr_accessor :yell_for_non_accessible_fields
-      #
       # # Setup authentication to be run as a before filter
       # # This is run inside the controller instance so you can setup any authentication you need to
       # #
@@ -480,61 +479,6 @@ module Radmin
       # def configure_with(extension)
       #   configuration = RailsAdmin::CONFIGURATION_ADAPTERS[extension].new
       #   yield(configuration) if block_given?
-      # end
-      #
-      # # pool of all found model names from the whole application
-      # def models_pool
-      #   excluded = (excluded_models.collect(&:to_s) + %w(RailsAdmin::History PaperTrail::Version PaperTrail::VersionAssociation ActiveStorage::Attachment ActiveStorage::Blob))
-      #
-      #   (viable_models - excluded).uniq.sort
-      # end
-      #
-      #
-      # def default_hidden_fields=(fields)
-      #   if fields.is_a?(Array)
-      #     @default_hidden_fields = {}
-      #     @default_hidden_fields[:edit] = fields
-      #     @default_hidden_fields[:show] = fields
-      #   else
-      #     @default_hidden_fields = fields
-      #   end
-      # end
-      #
-      # # Returns all model configurations
-      # #
-      # # @see RailsAdmin::Config.registry
-      # def models
-      #   RailsAdmin::AbstractModel.all.collect { |m| model(m) }
-      # end
-      #
-      # # Reset a provided model's configuration.
-      # #
-      # # @see RailsAdmin::Config.registry
-      # def reset_model(model)
-      #   key = model.is_a?(Class) ? model.name.to_sym : model.to_sym
-      #   @registry.delete(key)
-      # end
-      #
-      # # Reset all models configuration
-      # # Used to clear all configurations when reloading code in development.
-      # # @see RailsAdmin::Engine
-      # # @see RailsAdmin::Config.registry
-      # def reset_all_models
-      #   @registry = {}
-      # end
-      #
-      # # Get all models that are configured as visible sorted by their weight and label.
-      # #
-      # # @see RailsAdmin::Config::Hideable
-      #
-      # def visible_models(bindings)
-      #   visible_models_with_bindings(bindings).sort do |a, b|
-      #     if (weight_order = a.weight <=> b.weight) == 0
-      #       a.label.downcase <=> b.label.downcase
-      #     else
-      #       weight_order
-      #     end
-      #   end
       # end
     end
 

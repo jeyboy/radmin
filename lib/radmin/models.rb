@@ -55,7 +55,7 @@ module Radmin
               res[mc] = true if mc && res[mc].nil?
             end.keys
 
-        mdls.each do |mdl|
+        mdls.uniq.sort.each do |mdl|
           if !mdl.respond_to?(:radmin)
             if Radmin::Config::attach_non_model_classes
               mdl.send(:include, Radmin::Base)

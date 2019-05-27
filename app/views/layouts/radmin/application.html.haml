@@ -1,22 +1,23 @@
 !!! 5
 %html{lang: I18n.locale}
   %head
-    %meta{content: "IE=edge", "http-equiv" => "X-UA-Compatible"}
-    %meta{content: "text/html; charset=utf-8", "http-equiv" => "Content-Type"}
-    %meta{content: "width=device-width, initial-scale=1", name: "viewport; charset=utf-8"}
-    %meta{content: "NONE,NOARCHIVE", name: "robots"}
+    %title= Radmin::Config::app_title || Radmin::Config::brand_text
+
+    = favicon_link_tag Radmin::Config::brand_icon_url
+
+    %meta{content: 'IE=edge', 'http-equiv' => 'X-UA-Compatible'}
+    %meta{content: 'text/html; charset=utf-8', 'http-equiv' => 'Content-Type'}
+    %meta{content: 'width=device-width, initial-scale=1', name: 'viewport; charset=utf-8'}
+    %meta{content: 'NONE,NOARCHIVE', name: 'robots'}
 
     = csrf_meta_tag
     = stylesheet_link_tag 'radmin/radmin', media: :all
 
+    = yield :pre_javascripts
+
   %body.rails_admin
     :javascript
       #{include_js_translations}
-    -##admin-js{:'data-i18n-options' => I18n.t("admin.js").to_json}
-    -#
-    -#-# Initialize JS simple i18n
-    -#:javascript
-    -#  Radmin.I18n.init('#{I18n.locale}', document.getElementById("admin-js").dataset.i18nOptions);
 
     -##loading.label.label-warning{style: 'display:none; position:fixed; right:20px; bottom:20px; z-index:100000'}= t('admin.loading')
 
@@ -32,6 +33,9 @@
           .content
             = render template: 'layouts/radmin/content'
 
+      - if content_for?(:footer)
+        .row
+          = yield :footer
 
   = javascript_include_tag 'radmin/radmin'
   = yield :javascripts

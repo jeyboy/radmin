@@ -162,5 +162,31 @@ module Radmin
     #     @object.send(current_model.object_label_method).presence || "#{model_label} ##{@object.id}"
     #   end  
     # end
+
+    def edit_user_link
+      return nil unless _current_user.respond_to?(:email)
+      return nil unless abstract_model = Radmin.config(_current_user.class)
+      return nil unless (edit_action = Radmin::Actions.find(:edit, controller: controller, abstract_model: abstract_model, object: _current_user)).try(:authorized?)
+      link_to radmin.url_for(action: edit_action.action_name, model_name: abstract_model.to_param, id: _current_user.id, controller: 'radmin/main') do
+        html = []
+        html << image_tag("#{(request.ssl? ? 'https://secure' : 'http://www')}.gravatar.com/avatar/#{Digest::MD5.hexdigest _current_user.email}?s=30", alt: '') if Radmin::Config.show_gravatar && _current_user.email.present?
+        html << content_tag(:span, _current_user.email)
+        html.join.html_safe
+      end
+    end
+
+    def logout_path
+      if defined?(Devise)
+        scope = Devise::Mapping.find_scope!(_current_user)
+        main_app.send("destroy_#{scope}_session_path") rescue false
+      elsif main_app.respond_to?(:logout_path)
+        main_app.logout_path
+      end
+    end
+
+    def logout_method
+      return [Devise.sign_out_via].flatten.first if defined?(Devise)
+      :delete
+    end
   end
 end
