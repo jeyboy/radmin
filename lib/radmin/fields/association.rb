@@ -27,7 +27,7 @@ module Radmin
       # association checks whether the child model is excluded in
       # configuration or not.
       register_property :visible? do
-        @visible ||= !associated_abstract_model.excluded?
+        @visible ||= !associated_abstract_model&.excluded?
       end
 
       # # use the association name as a key, not the association key anymore!
@@ -81,6 +81,10 @@ module Radmin
       def associated_abstract_model
         @associated_abstract_model ||=
           Radmin.config(properties[:klass])
+      end
+
+      def associated_label_name
+        instance_label_method.presence || associated_abstract_model.object_label_method
       end
 
       # # Reader for the association's child model object's label method

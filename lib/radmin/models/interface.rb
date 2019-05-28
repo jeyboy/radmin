@@ -147,7 +147,7 @@ module Radmin
       end
 
       def excluded?
-        Radmin::excluded_models.include?(@model_name)
+        Radmin::Config.excluded_models.include?(@model_name)
       end
 
       def model

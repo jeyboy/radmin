@@ -42,6 +42,10 @@ module Radmin
         # label
       end
 
+      register_property :instance_label_method do
+        :to_s
+      end
+
       register_property :additional_info do
         nil
       end
@@ -83,7 +87,6 @@ module Radmin
       register_property :formatted_value do
         value
 
-        # (o = value) && o.send(associated_model_config.object_label_method)
         # bindings[:object].send(name).presence || ' - '
       end
 
@@ -297,8 +300,6 @@ module Radmin
       # Reader for field's value
       def value
         bindings[:object].safe_send(name)
-
-        # bindings[:object].safe_send(name)
       rescue NoMethodError => e
         raise e.exception <<-EOM.gsub(/^\s{10}/, '')
           #{e.message}

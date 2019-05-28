@@ -7,20 +7,16 @@ module Radmin
         class BelongsTo < Radmin::Fields::Association
           Radmin::Fields::Types.register(self)
 
-          # register_property :formatted_value do
-          #   (o = value) && o.send(associated_model_config.object_label_method)
-          # end
-          #
+          register_property :formatted_value do
+            (o = value) && o.send(associated_label_name)
+          end
+
           # register_property :sortable do
           #   @sortable ||= abstract_model.adapter_supports_joins? && associated_model_config.abstract_model.properties.collect(&:name).include?(associated_model_config.object_label_method) ? associated_model_config.object_label_method : {abstract_model.table_name => name}
           # end
           #
           # register_property :searchable do
           #   @searchable ||= associated_model_config.abstract_model.properties.collect(&:name).include?(associated_model_config.object_label_method) ? [associated_model_config.object_label_method, {abstract_model.model => name}] : {abstract_model.model => name}
-          # end
-          #
-          # register_property :partial do
-          #   nested_form ? :form_nested_one : :form_filtering_select
           # end
           #
           # register_property :inline_add do

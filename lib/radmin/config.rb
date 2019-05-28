@@ -50,9 +50,9 @@ module Radmin
       # Fields to be hidden in show, create and update views
       attr_accessor :default_hidden_fields
 
-      # # Configuration option to specify which method names will be searched for
-      # # to be used as a label for object records. This defaults to [:name, :title]
-      # attr_accessor :label_methods
+      # Configuration option to specify which method names will be searched for
+      # to be used as a label for object records. This defaults to [:to_s]
+      attr_accessor :label_methods
 
       # Default items per page value used if a model level option has not
       # been configured
@@ -114,19 +114,26 @@ module Radmin
       end
 
 
-      # def default_hidden_fields=(fields)
-      #   if fields.is_a?(Array)
-      #     @default_hidden_fields = {}
-      #     @default_hidden_fields[:edit] = fields
-      #     @default_hidden_fields[:show] = fields
-      #   else
-      #     @default_hidden_fields = fields
-      #   end
-      # end
-
-      def default_hidden_fields=(hidden_fields)
-        @default_hidden_fields = hidden_fields.stringify_keys
+      def default_hidden_fields=(fields)
+        if fields.is_a?(Array)
+          @default_hidden_fields = {}
+          @default_hidden_fields[:index] = fields
+          @default_hidden_fields[:edit] = fields
+          @default_hidden_fields[:show] = fields
+        else
+          @default_hidden_fields = fields.stringify_keys
+        end
       end
+
+
+      def label_methods=(methods)
+        if methods.is_a?(Array)
+          @label_methods = { nil => methods }
+        else
+          @label_methods = { nil => :to_s }.merge(methods)
+        end
+      end
+
 
       def default_search_operator=(operator)
         operator = operator.to_s
@@ -301,7 +308,10 @@ module Radmin
         @excluded_models = []
         @included_models = []
         # @total_columns_width = 697
-        # @label_methods = [:name, :title]
+        #
+        @label_methods = {
+          nil => :to_s
+        }
 
         @show_gravatar = true
         @parent_controller = '::ActionController::Base'
