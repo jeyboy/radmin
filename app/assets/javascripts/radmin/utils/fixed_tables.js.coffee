@@ -1,17 +1,36 @@
 #= require 'jquery-data-tables.min'
 #= require 'jquery-data-tables-fixed-columns.min'
 #= require 'jquery-data-tables-fixed-header.min'
+#= require 'jquery-data-tables-keys.min'
+#= require 'jquery-data-tables-responsive.min'
+#= require 'jquery-data-tables-row-group.min'
+#= require 'jquery-data-tables-select.min'
+#= require 'jquery-data-tables-scroller.min'
 #= require 'jquery-data-tables-bootstrap4.min'
 
 $('.data-fixed-table').DataTable(
-    scrollY:        true,
-    scrollX:        true,
-    scrollCollapse: true,
-    paging:         false,
-    fixedHeader: true,
+    scroller:       true
+    scrollY:        true
+    scrollX:        true
+    scrollCollapse: true
+
+    keys:           true
+
+    select:         true
+#    rowGroup:       true
+    responsive:     true
+    scroller:       true
+
+    paging:         false
+    fixedHeader:
+      header: true
+#      headerOffset: 100
+      footer: true
+#      footerOffset: 100
+
 #    keys: true,
 #    responsive: true,
     fixedColumns:
-      leftColumns: 1,
+      leftColumns: 1
       rightColumns: 1
 )
