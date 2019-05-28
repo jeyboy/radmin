@@ -18,7 +18,10 @@ module Radmin
       app.config.assets.precompile += %w(
         radmin/radmin.js
         radmin/radmin.css
+        radmin/utils/inputs.js
         radmin/utils/filters.js
+        radmin/utils/custom_filters.js
+        radmin/utils/fixed_tables.js
       )
     end
 
