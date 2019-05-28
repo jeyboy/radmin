@@ -14,18 +14,18 @@ $('.data-fixed-table').DataTable(
     scrollX:        true
     scrollCollapse: true
 
-    keys:           true
+#    keys:           true
 
-    select:         true
+#    select:         true
 #    rowGroup:       true
-    responsive:     true
-    scroller:       true
-
+#    responsive:     true
+#    scroller:       true
+    searching:      false
     paging:         false
     fixedHeader:
       header: true
 #      headerOffset: 100
-      footer: true
+      footer: false
 #      footerOffset: 100
 
 #    keys: true,
