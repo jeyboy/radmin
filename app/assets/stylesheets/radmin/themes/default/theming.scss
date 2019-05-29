@@ -50,7 +50,10 @@ button {
 hr.menu_breaker {
   margin: 6px 0;
   border: 2px outset #ffffff;
-  width: 100%;
+
+  ul & {
+    width: 100%;
+  }
 }
 
 .dropdown-item:hover {
