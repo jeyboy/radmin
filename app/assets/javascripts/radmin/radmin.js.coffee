@@ -16,5 +16,5 @@
 
 #= require 'radmin/custom'
 
-$(document).ready ->
-  $('[data-toggle="tooltip"]').tooltip()
+#$(document).ready ->
+#  $('[data-toggle="tooltip"]').tooltip()

@@ -1,3 +1,9 @@
+table.stripped {
+  tr:nth-child(even){
+    background: #d9edf7;
+  }
+}
+
 button {
   @extend .btn;
 }
@@ -290,26 +296,26 @@ hr.menu_breaker {
   @extend .pr-2;
 }
 
-// TOOLTIP
-
-.bs-tooltip-top .arrow:before {
-  border-top-color: $tooltip-bg!important;
-}
-
-.bs-tooltip-right .arrow:before {
-  border-right-color: $tooltip-bg!important;
-}
-
-.bs-tooltip-bottom .arrow:before {
-  border-bottom-color: $tooltip-bg!important;
-}
-
-.bs-tooltip-left .arrow:before {
-  border-left-color: $tooltip-bg!important;
-}
-
-.tooltip-inner {
-  //color: #000000;
-  font-weight: bold;
-  background-color: $tooltip-bg;
-}
+//// TOOLTIP
+//
+//.bs-tooltip-top .arrow:before {
+//  border-top-color: $tooltip-bg!important;
+//}
+//
+//.bs-tooltip-right .arrow:before {
+//  border-right-color: $tooltip-bg!important;
+//}
+//
+//.bs-tooltip-bottom .arrow:before {
+//  border-bottom-color: $tooltip-bg!important;
+//}
+//
+//.bs-tooltip-left .arrow:before {
+//  border-left-color: $tooltip-bg!important;
+//}
+//
+//.tooltip-inner {
+//  //color: #000000;
+//  font-weight: bold;
+//  background-color: $tooltip-bg;
+//}
