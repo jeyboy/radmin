@@ -123,6 +123,12 @@ module Radmin
       def is_association?
         true
       end
+
+      def label_hash_caller(label)
+        mtd = label[associated_abstract_model.to_s.underscore.singularize]
+
+        label_caller(mtd)
+      end
     end
   end
 end

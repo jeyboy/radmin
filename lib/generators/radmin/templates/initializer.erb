@@ -40,6 +40,14 @@ Radmin.config do |config|
 
   #config.excluded_models = ['SomeClass1', 'SomeClass2', ...]
 
+  # Configuration option to specify label methods for models
+  # Keys should be singularize version of names
+  #   config.label_methods = {
+  #     nil => :attributes,
+  #     user: {index: :full_name, nil => {admin: :to_s}},
+  #     video: ->(obj) { obj.style }
+  #   }
+
   config.actions do
     dashboard                     # mandatory
     index                         # mandatory

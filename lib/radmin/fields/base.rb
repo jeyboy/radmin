@@ -43,7 +43,41 @@ module Radmin
       end
 
       register_property :instance_label_method do
-        :to_s
+        @instance_label_method ||= begin
+          mtds = Radmin::Config::label_methods
+
+          res =
+            if Radmin::Config::search_label_method_for_attribute && mtds.present?
+              arg_name = (properties[:name].presence || name).singularize
+
+              if (section_mtds = (mtds[@section.key] || mtds[arg_name]))
+                value_name_resolver(section_mtds)
+              else
+                if mtds[nil].is_a?(Hash)
+                  value_name_resolver(mtds[nil][@section.key] || mtds[nil][arg_name])
+                else
+                  mtds
+                end
+              end
+            end
+
+          if res
+            @label_resolver =
+              case res.class.to_s
+                when 'Proc'
+                  method(:label_proc_caller)
+                when 'Array'
+                  method(:label_array_caller)
+                when 'Hash'
+                  method(:label_hash_caller)
+                else
+                  method(:label_caller)
+              end
+          end
+
+          @label_resolver ||= method(:label_caller)
+          res || (properties[:name].present? ? nil : name)
+        end
       end
 
       register_property :additional_info do
@@ -299,16 +333,8 @@ module Radmin
 
       # Reader for field's value
       def value
-        bindings[:object].safe_send(name)
-      rescue NoMethodError => e
-        raise e.exception <<-EOM.gsub(/^\s{10}/, '')
-          #{e.message}
-          If you want to use a Radmin virtual field(= a field without corresponding instance method),
-          you should declare 'formatted_value' in the field definition.
-            field :#{name} do
-              formatted_value{ bindings[:object].call_some_method }
-            end
-        EOM
+        inst_mtd = instance_label_method
+        @label_resolver.call(inst_mtd)
       end
 
       def filterable?
@@ -356,8 +382,55 @@ module Radmin
         false
       end
 
-      # private
-      #
+      private
+
+      def label_caller(label)
+        bindings[:object].safe_send(label)
+      rescue NoMethodError => e
+        raise e.exception <<-EOM.gsub(/^\s{10}/, '')
+          #{e.message}
+          If you want to use a Radmin virtual field(= a field without corresponding instance method),
+          you should declare 'formatted_value' in the field definition.
+            field :#{name} do
+              formatted_value{ bindings[:object].call_some_method }
+            end
+        EOM
+      end
+
+      def label_array_caller(labels)
+        @label_resolver = method(:label_caller)
+        index = 0
+
+        begin
+          bindings[:object].safe_send((@instance_label_method = labels[index]))
+        rescue NoMethodError => e
+          index += 1
+
+          if index < labels.length
+            retry
+          else
+            @instance_label_method = name
+            return
+          end
+        end
+      end
+
+      def label_hash_caller(label)
+        raise 'Only relations is supported'
+      end
+
+      def label_proc_caller(label)
+        label.call(bindings[:object])
+      end
+
+      def value_name_resolver(arg)
+        if arg.is_a?(Hash)
+          arg[name.singularize] || arg[nil]
+        else
+          arg
+        end
+      end
+
       # def filterable_conversion(filterable_val, res)
       #   case filterable_val.class.name
       #     when 'Array'

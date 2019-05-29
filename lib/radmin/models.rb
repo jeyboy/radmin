@@ -49,7 +49,11 @@ module Radmin
             .uniq.sort.each_with_object({}) do |mn, res|
               next if excl_mdls.has_key?(mn)
 
-              mc = class_obj(mn) # || mn.constantize
+              mc = class_obj(mn) || begin
+                res_klass = class_obj(mn.demodulize) # || mn.constantize
+                res_klass && excl_mdls.has_key?(res_klass.to_s) ? nil : res_klass
+              end
+
               res[mc] = true if mc && res[mc].nil?
             end.keys
 

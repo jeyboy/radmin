@@ -54,6 +54,13 @@ module Radmin
       # to be used as a label for object records. This defaults to [:to_s]
       attr_accessor :label_methods
 
+      # Configuration option to specify logic regarding regular attribute output.
+      # If false always will output raw attribute value for regular attribute
+      # otherwise will try to take value from alias for attribute if it will be set.
+      # The logic regarding associations will not changed
+      # This defaults to false
+      attr_accessor :search_label_method_for_attribute
+
       # Default items per page value used if a model level option has not
       # been configured
       attr_accessor :default_items_per_page
@@ -129,8 +136,10 @@ module Radmin
       def label_methods=(methods)
         if methods.is_a?(Array)
           @label_methods = { nil => methods }
+        elsif methods.is_a?(Hash)
+          @label_methods = methods.with_indifferent_access
         else
-          @label_methods = { nil => :to_s }.merge(methods)
+          raise 'Invalid label methods config'
         end
       end
 
@@ -324,6 +333,7 @@ module Radmin
         @default_submit_buttons_location = { bottom: true }
 
         @attach_non_model_classes = true
+        @search_label_method_for_attribute = false
 
         @default_init_proc = ->(klass) {
           klass.send :radmin do
