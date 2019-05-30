@@ -27,7 +27,7 @@ module Radmin
       # association checks whether the child model is excluded in
       # configuration or not.
       register_property :visible? do
-        @visible ||= !associated_abstract_model&.excluded?
+        !associated_abstract_model&.excluded?
       end
 
       # # use the association name as a key, not the association key anymore!
@@ -83,6 +83,12 @@ module Radmin
           Radmin.config(properties[:klass])
       end
 
+      # Reader for the association's child model's configuration
+      def associated_klass_name
+        @associated_klass_name ||=
+          associated_abstract_model.to_s.underscore.singularize
+      end
+
       def associated_label_name
         instance_label_method.presence || associated_abstract_model.object_label_method
       end
@@ -125,9 +131,13 @@ module Radmin
       end
 
       def label_hash_caller(label)
-        mtd = label[associated_abstract_model.to_s.underscore.singularize]
+        mtd = label[associated_klass_name]
 
         label_caller(mtd)
+      end
+
+      def label_proc_caller(label)
+        label.call(bindings[:object], associated_klass_name)
       end
     end
   end

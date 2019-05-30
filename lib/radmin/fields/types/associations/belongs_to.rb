@@ -8,7 +8,11 @@ module Radmin
           Radmin::Fields::Types.register(self)
 
           register_property :formatted_value do
-            (o = value) && o.send(associated_label_name)
+            (o = value) && begin
+              @label_resolver.call(associated_label_name)
+
+              # o.send(associated_label_name)
+            end
           end
 
           # register_property :sortable do

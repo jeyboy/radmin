@@ -43,6 +43,15 @@ module Radmin
       end
 
       register_property :instance_label_method do
+        #  section_name_or_nil => { field_name_or_nil => { relation_field_name_or_nil => Array or String or Symbol or Proc } }
+        #  section_name_or_nil => { field_name_or_nil => Array or String or Symbol or Proc }
+        #  section_name_or_nil => Array or String or Symbol or Proc
+        #  field_name_or_nil => Array or String or Symbol or Proc
+        #  field_name_or_nil => { relation_field_name_or_nil => Array or String or Symbol or Proc }
+        #  field_name_or_section_name_or_nil => []
+        #  ->(obj, rel_class, section_name) {}
+
+
         @instance_label_method ||= begin
           mtds = Radmin::Config::label_methods
 
@@ -50,8 +59,11 @@ module Radmin
             if Radmin::Config::search_label_method_for_attribute && mtds.present?
               arg_name = (properties[:name].presence || name).singularize
 
-              if (section_mtds = (mtds[@section.key] || mtds[arg_name]))
-                value_name_resolver(section_mtds)
+              section_mtds = mtds[@section.key]
+
+              if section_mtds
+                arg_mtds = section_mtds[arg_name] || section_mtds[nil]
+
               else
                 if mtds[nil].is_a?(Hash)
                   value_name_resolver(mtds[nil][@section.key] || mtds[nil][arg_name])
@@ -420,15 +432,7 @@ module Radmin
       end
 
       def label_proc_caller(label)
-        label.call(bindings[:object])
-      end
-
-      def value_name_resolver(arg)
-        if arg.is_a?(Hash)
-          arg[name.singularize] || arg[nil]
-        else
-          arg
-        end
+        label.call(bindings[:object], nil)
       end
 
       # def filterable_conversion(filterable_val, res)
