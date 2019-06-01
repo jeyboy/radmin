@@ -9,7 +9,8 @@ module Radmin
 
       VALIDATION_REQUIRE_RULES = [:presence, :numericality, :attachment_presence].freeze
 
-      attr_reader :abstract_model, :name, :properties
+      attr_reader :abstract_model, :name, :properties, :section
+
 
       register_property :render do
         bindings[:view].render(partial: "radmin/main/#{partial}", locals: {field: self, form: bindings[:form]})
@@ -43,52 +44,18 @@ module Radmin
       end
 
       register_property :instance_label_method do
-        #  section_name_or_nil => { field_name_or_nil => { relation_field_name_or_nil => Array or String or Symbol or Proc } }
-        #  section_name_or_nil => { field_name_or_nil => Array or String or Symbol or Proc }
-        #  section_name_or_nil => Array or String or Symbol or Proc
-        #  field_name_or_nil => Array or String or Symbol or Proc
-        #  field_name_or_nil => { relation_field_name_or_nil => Array or String or Symbol or Proc }
-        #  field_name_or_section_name_or_nil => []
-        #  ->(obj, rel_class, section_name) {}
-
-
         @instance_label_method ||= begin
-          mtds = Radmin::Config::label_methods
-
           res =
-            if Radmin::Config::search_label_method_for_attribute && mtds.present?
-              arg_name = (properties[:name].presence || name).singularize
+            if is_association? || Radmin::Config::search_label_method_for_attribute
+              assoc_res = identify_label_arg(abstract_model.to_param) if is_association?
 
-              section_mtds = mtds[@section.key]
-
-              if section_mtds
-                arg_mtds = section_mtds[arg_name] || section_mtds[nil]
-
-              else
-                if mtds[nil].is_a?(Hash)
-                  value_name_resolver(mtds[nil][@section.key] || mtds[nil][arg_name])
-                else
-                  mtds
-                end
-              end
+              (identify_label_arg(name) unless assoc_res.is_a?(Hash)) ||
+                assoc_res
             end
 
-          if res
-            @label_resolver =
-              case res.class.to_s
-                when 'Proc'
-                  method(:label_proc_caller)
-                when 'Array'
-                  method(:label_array_caller)
-                when 'Hash'
-                  method(:label_hash_caller)
-                else
-                  method(:label_caller)
-              end
-          end
+          @label_resolver = label_arg_to_label_resover(res)
 
-          @label_resolver ||= method(:label_caller)
-          res || (properties[:name].present? ? nil : name)
+          res || name
         end
       end
 
@@ -219,8 +186,6 @@ module Radmin
       # end
 
       # Accessor for whether this is field is mandatory.
-      #
-      # @see RailsAdmin::AbstractModel.properties
       register_property :required do
         context = begin
           if bindings[:object]
@@ -293,10 +258,10 @@ module Radmin
         nil
       end
 
-      # # Allowed methods for the field in forms
-      # register_property :allowed_methods do
-      #   [name]
-      # end
+      # Allowed methods for the field in forms
+      register_property :allowed_methods do
+        [name]
+      end
 
       register_property :inline_add do
         false
@@ -339,14 +304,13 @@ module Radmin
 
       # Reader for field's type
       def type
-        @type ||=
-          self.class.name.to_s.demodulize.underscore.to_sym
+        @type ||= self.class.name.to_s.demodulize.underscore.to_sym
       end
 
       # Reader for field's value
       def value
         inst_mtd = instance_label_method
-        @label_resolver.call(inst_mtd)
+        @label_resolver.call(inst_mtd, bindings[:object])
       end
 
       def filterable?
@@ -380,14 +344,15 @@ module Radmin
 
 
       def generic_help
-        # (required ? I18n.translate('admin.form.required') : I18n.translate('admin.form.optional')) + '. '
+        (required ? I18n.translate('admin.form.required') : I18n.translate('admin.form.optional')) + '. '
       end
 
       def generic_field_help
-        # model = abstract_model.model_name.underscore
-        # model_lookup = "admin.help.#{model}.#{name}".to_sym
-        # translated = I18n.translate(model_lookup, help: generic_help, default: [generic_help])
-        # (translated.is_a?(Hash) ? translated.to_a.first[1] : translated).html_safe
+        model = abstract_model.model_name.underscore
+        model_lookup = "admin.help.#{model}.#{name}".to_sym
+
+        translated = I18n.translate(model_lookup, help: generic_help, default: [generic_help])
+        (translated.is_a?(Hash) ? translated.to_a.first[1] : translated).html_safe
       end
 
       def is_association?
@@ -396,8 +361,69 @@ module Radmin
 
       private
 
-      def label_caller(label)
-        bindings[:object].safe_send(label)
+      # PROC = ->(obj, rel_class, section_name, field) {}
+      #  section_name_or_nil => { field_name_or_nil => { relation_field_name_or_nil => Array or String or Symbol or Proc } }
+      #  section_name_or_nil => { field_name_or_nil => Array or String or Symbol or Proc }
+      #  section_name_or_nil => Array or String or Symbol or Proc
+      #  field_name_or_nil => Array or String or Symbol or Proc
+      #  field_name_or_nil => { relation_field_name_or_nil => Array or String or Symbol or Proc }
+      #  field_name_or_section_name_or_nil => Array or String or Symbol or Proc
+      #  Array or String or Symbol or Proc
+      def identify_label_arg(obj_name)
+        mtds = Radmin::Config::label_methods
+
+        return unless mtds.present?
+
+        if !mtds.respond_to?(:has_key?)
+          mtds
+        else
+          section_oriented = false
+          arg_oriented = false
+          nil_oriented = false
+
+          sub_mtds = begin
+            section_oriented = (section_mtds = mtds[section.uid]).present?
+            section_mtds
+          end.presence || begin
+            arg_oriented = (arg_mtds = mtds[obj_name]).present?
+            arg_mtds
+          end.presence || begin
+            nil_oriented = (nil_args = mtds[nil]).present?
+            nil_args
+          end
+
+          mtds = sub_mtds if sub_mtds.present?
+
+          if mtds.respond_to?(:has_key?)
+            if nil_oriented
+              mtds[obj_name]
+            else section_oriented
+              mtds[obj_name] || mtds[nil]
+            end
+          else
+            mtds
+          end
+        end
+      end
+
+      def label_arg_to_label_resover(arg)
+        case arg.class.to_s
+          when 'Proc'
+            method(:label_proc_caller)
+          when 'Array'
+            method(:label_array_caller)
+          else
+            # hash variations
+            if arg.respond_to?(:has_key?)
+              method(:label_hash_caller)
+            else
+              method(:label_caller)
+            end
+          end
+      end
+
+      def label_caller(label, obj)
+        obj.safe_send(label)
       rescue NoMethodError => e
         raise e.exception <<-EOM.gsub(/^\s{10}/, '')
           #{e.message}
@@ -409,12 +435,12 @@ module Radmin
         EOM
       end
 
-      def label_array_caller(labels)
+      def label_array_caller(labels, obj)
         @label_resolver = method(:label_caller)
         index = 0
 
         begin
-          bindings[:object].safe_send((@instance_label_method = labels[index]))
+          obj.safe_send((@instance_label_method = labels[index]))
         rescue NoMethodError => e
           index += 1
 
@@ -427,36 +453,13 @@ module Radmin
         end
       end
 
-      def label_hash_caller(label)
+      def label_hash_caller(label, obj)
         raise 'Only relations is supported'
       end
 
-      def label_proc_caller(label)
-        label.call(bindings[:object], nil)
+      def label_proc_caller(label, obj)
+        label.call(obj, name, nil, section.key, self)
       end
-
-      # def filterable_conversion(filterable_val, res)
-      #   case filterable_val.class.name
-      #     when 'Array'
-      #       filterable_val.each do |val|
-      #         filterable_conversion(val, res)
-      #       end
-      #     when 'Hash'
-      #       filterable_val.each_pair do |val, arg|
-      #         filterable_conversion(val, res)
-      #       end
-      #     when 'String'
-      #       res << { filterable_val => true }
-      #     when 'TrueClass'
-      #       res << { filterable_val => true }
-      #     else
-      #       if filterable_val.is_a?(Class)
-      #
-      #       else
-      #         raise "Unsupported filterable: #{name}: #{filterable_val}"
-      #       end
-      #   end
-      # end
     end
   end
 end

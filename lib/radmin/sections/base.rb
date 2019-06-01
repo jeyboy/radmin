@@ -42,8 +42,18 @@ module Radmin
         self.class.key
       end
 
+      def uid
+        self.class.uid
+      end
+
       def self.key
-        name.demodulize.underscore
+        @key ||=
+          name.demodulize.underscore
+      end
+
+      def self.uid
+        @uid ||=
+          "#{key}_section"
       end
     end
   end

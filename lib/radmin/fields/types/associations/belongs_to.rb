@@ -9,9 +9,7 @@ module Radmin
 
           register_property :formatted_value do
             (o = value) && begin
-              @label_resolver.call(associated_label_name)
-
-              # o.send(associated_label_name)
+              i = 0
             end
           end
 

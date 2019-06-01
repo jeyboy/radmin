@@ -41,12 +41,22 @@ Radmin.config do |config|
   #config.excluded_models = ['SomeClass1', 'SomeClass2', ...]
 
   # Configuration option to specify label methods for models
-  # Keys should be singularize version of names
-  #   config.label_methods = {
-  #     nil => :attributes,
-  #     user: {index: :full_name, nil => {admin: :to_s}},
-  #     video: ->(obj) { obj.style }
+  #  section_name_or_nil => { field_name_or_nil => { relation_field_name_or_nil => Array or String or Symbol or Proc } }
+  #  section_name_or_nil => { field_name_or_nil => Array or String or Symbol or Proc }
+  #  section_name_or_nil => Array or String or Symbol or Proc
+  #  field_name_or_nil => Array or String or Symbol or Proc
+  #  field_name_or_nil => { relation_field_name_or_nil => Array or String or Symbol or Proc }
+  #  field_name_or_section_name_or_nil => Array or String or Symbol or Proc
+  #  Array or String or Symbol or Proc
+  #
+  #  config.label_methods = {
+  #   nil => :attributes,
+  #   video: ->(obj, name, rel_class, section_name, field) { obj.style },
+  #   list_section: {
+  #     project: {client: :full_name},
+  #     user: :full_name
   #   }
+  #  }
 
   config.actions do
     dashboard                     # mandatory

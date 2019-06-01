@@ -79,14 +79,20 @@ module Radmin
 
       # Reader for the association's child model's configuration
       def associated_abstract_model
-        @associated_abstract_model ||=
-          Radmin.config(properties[:klass])
+        @associated_abstract_model || begin
+          if polymorphic?
+            i = 0
+            return Radmin.config(properties[:klass])
+          else
+            @associated_abstract_model = Radmin.config(properties[:klass])
+          end
+        end
       end
 
       # Reader for the association's child model's configuration
       def associated_klass_name
         @associated_klass_name ||=
-          associated_abstract_model.to_s.underscore.singularize
+          associated_abstract_model.to_s
       end
 
       def associated_label_name
@@ -110,7 +116,10 @@ module Radmin
 
       # Reader for the association's value unformatted
       def value
-        bindings[:object].send(properties[:name])
+        obj = bindings[:object].send(properties[:name])
+        inst_mtd = instance_label_method
+
+        @label_resolver.call(inst_mtd, obj)
       end
 
       # # has many?
@@ -130,14 +139,20 @@ module Radmin
         true
       end
 
-      def label_hash_caller(label)
-        mtd = label[associated_klass_name]
+      def label_hash_caller(label, obj)
+        mtd = label[properties[:name]].presence || label[name].presence || label[associated_klass_name]
 
-        label_caller(mtd)
+        @label_resolver = method(:label_caller)
+
+        begin
+          @label_resolver.call((@instance_label_method = mtd), obj)
+        rescue
+          @instance_label_method = :to_s
+        end
       end
 
-      def label_proc_caller(label)
-        label.call(bindings[:object], associated_klass_name)
+      def label_proc_caller(label, obj)
+        label.call(obj, name, associated_klass_name, section.key, self)
       end
     end
   end
