@@ -23,6 +23,11 @@ module Radmin
       #   end.to_sentence.html_safe
       # end
 
+
+      register_property :multiple? do
+        false
+      end
+
       # Accessor whether association is visible or not. By default
       # association checks whether the child model is excluded in
       # configuration or not.
@@ -116,10 +121,7 @@ module Radmin
 
       # Reader for the association's value unformatted
       def value
-        obj = bindings[:object].send(properties[:name])
-        inst_mtd = instance_label_method
-
-        @label_resolver.call(inst_mtd, obj)
+        bindings[:object].send(properties[:name])
       end
 
       # # has many?

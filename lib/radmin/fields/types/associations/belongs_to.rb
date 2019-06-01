@@ -8,8 +8,9 @@ module Radmin
           Radmin::Fields::Types.register(self)
 
           register_property :formatted_value do
-            (o = value) && begin
-              i = 0
+            (obj = value) && begin
+              inst_mtd = instance_label_method
+              @label_resolver.call(inst_mtd, obj)
             end
           end
 
@@ -29,20 +30,12 @@ module Radmin
           #   true
           # end
           #
-          # register_property :eager_load? do
-          #   true
-          # end
-          #
           # def selected_id
           #   bindings[:object].send(foreign_key)
           # end
           #
           # def name
           #   nested_form ? "#{name}_attributes".to_sym : association.foreign_key
-          # end
-          #
-          # def multiple?
-          #   false
           # end
         end
       end

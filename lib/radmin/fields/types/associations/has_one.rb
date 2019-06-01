@@ -7,13 +7,15 @@ module Radmin
         class HasOne < Radmin::Fields::Association
           Radmin::Fields::Types.register(self)
 
+          register_property :formatted_value do
+            (obj = value) && begin
+              inst_mtd = instance_label_method
+              @label_resolver.call(inst_mtd, obj)
+            end
+          end
+
           # register_property :partial do
           #   nested_form ? :form_nested_one : :form_filtering_select
-          # end
-          #
-          # # Accessor for field's formatted value
-          # register_property :formatted_value do
-          #   (o = value) && o.send(associated_model_config.object_label_method)
           # end
           #
           # register_property :inline_add do
@@ -34,10 +36,6 @@ module Radmin
           #
           # def name
           #   nested_form ? "#{name}_attributes".to_sym : "#{name}_id".to_sym
-          # end
-          #
-          # def multiple?
-          #   false
           # end
         end
       end

@@ -44,10 +44,6 @@ module Radmin
           #   [children_fields]
           # end
           #
-          # register_property :eager_load? do
-          #   false
-          # end
-          #
           # def associated_collection(type)
           #   return [] if type.blank?
           #   config = RailsAdmin.config(type)

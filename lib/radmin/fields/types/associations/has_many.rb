@@ -11,6 +11,17 @@ module Radmin
             nested_form ? :form_nested_many : :form_filtering_multiselect
           end
 
+          register_property :formatted_value do
+            (objs = value) && begin
+              inst_mtd = instance_label_method
+              objs.collect { |obj| @label_resolver.call(inst_mtd, obj) }.join('<br/>')
+            end
+          end
+
+          register_property :multiple? do
+            true
+          end
+
           # # orderable associated objects
           # register_property :orderable do
           #   false
