@@ -258,6 +258,12 @@ module Radmin
         nil
       end
 
+
+      register_property :children_fields do
+        []
+      end
+
+
       # Allowed methods for the field in forms
       register_property :allowed_methods do
         [name]
@@ -309,8 +315,7 @@ module Radmin
 
       # Reader for field's value
       def value
-        inst_mtd = instance_label_method
-        @label_resolver.call(inst_mtd, bindings[:object])
+        label_resolver.call(instance_label_method, bindings[:object])
       end
 
       def filterable?
@@ -357,6 +362,15 @@ module Radmin
 
       def is_association?
         false
+      end
+
+      def label_resolver
+        @label_resolver || begin
+          instance_label_method unless @instance_label_method
+          @label_resolver = label_arg_to_label_resover(@instance_label_method) unless @label_resolver
+        end
+
+        @label_resolver
       end
 
       private

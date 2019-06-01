@@ -13,8 +13,12 @@ module Radmin
 
           register_property :formatted_value do
             (objs = value) && begin
-              inst_mtd = instance_label_method
-              objs.collect { |obj| @label_resolver.call(inst_mtd, obj) }.join('<br/>')
+              objs = associated_collection_scope.call(objs)
+              if objs.blank?
+                nil
+              else
+                objs.collect { |obj| label_resolver.call(instance_label_method, obj) }.join('<br/>')
+              end
             end
           end
 

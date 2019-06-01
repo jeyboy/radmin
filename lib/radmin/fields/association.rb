@@ -23,7 +23,6 @@ module Radmin
       #   end.to_sentence.html_safe
       # end
 
-
       register_property :multiple? do
         false
       end
@@ -40,14 +39,18 @@ module Radmin
       #   (@label ||= {})[::I18n.locale] ||= abstract_model.model.human_attribute_name association.name
       # end
 
-      # # scope for possible associable records
-      # register_property :associated_collection_scope do
-      #   # bindings[:object] & bindings[:controller] available
-      #   associated_collection_scope_limit = (associated_collection_cache_all ? nil : 30)
-      #   proc do |scope|
-      #     scope.limit(associated_collection_scope_limit)
-      #   end
-      # end
+      register_property :associated_collection_scope_limit do
+        Radmin::Config::default_associated_collection_limit
+      end
+
+      # scope for possible associable records
+      register_property :associated_collection_scope do
+        # bindings[:object] & bindings[:controller] available
+
+        proc do |scope|
+          scope.limit(associated_collection_scope_limit)
+        end
+      end
 
       # # inverse relationship
       # register_property :inverse_of do
@@ -133,21 +136,19 @@ module Radmin
       #   true
       # end
       #
-      # def associated_model_limit
-      #   RailsAdmin.config.default_associated_collection_limit
-      # end
 
       def is_association?
         true
       end
 
       def label_hash_caller(label, obj)
-        mtd = label[properties[:name]].presence || label[name].presence || label[associated_klass_name]
+        mtd =
+          label[properties[:name]].presence || label[name].presence || label[associated_klass_name].presence || :to_s
 
         @label_resolver = method(:label_caller)
 
         begin
-          @label_resolver.call((@instance_label_method = mtd), obj)
+          label_resolver.call((@instance_label_method = mtd), obj)
         rescue
           @instance_label_method = :to_s
         end

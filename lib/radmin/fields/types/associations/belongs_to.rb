@@ -9,8 +9,7 @@ module Radmin
 
           register_property :formatted_value do
             (obj = value) && begin
-              inst_mtd = instance_label_method
-              @label_resolver.call(inst_mtd, obj)
+              label_resolver.call(instance_label_method, obj)
             end
           end
 

@@ -11,15 +11,17 @@ module Radmin
             :form_polymorphic_association
           end
 
+          register_property :formatted_value do
+            (obj = value) && begin
+              label_resolver.call(instance_label_method, obj)
+            end
+          end
+
           # # Accessor whether association is visible or not. By default
           # # association checks that any of the child models are included in
           # # configuration.
           # register_property :visible? do
           #   associated_model_config.any?
-          # end
-          #
-          # register_property :formatted_value do
-          #   (o = value) && o.send(RailsAdmin.config(o).object_label_method)
           # end
           #
           # register_property :sortable do

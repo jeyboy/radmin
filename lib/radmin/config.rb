@@ -61,6 +61,9 @@ module Radmin
       # This defaults to false
       attr_accessor :search_label_method_for_attribute
 
+      # Limit for relation list output
+      attr_accessor :default_associated_collection_limit
+
       # Default items per page value used if a model level option has not
       # been configured
       attr_accessor :default_items_per_page
@@ -102,9 +105,6 @@ module Radmin
       attr_accessor :default_model_collector_mode
 
 
-      # # Default association limit
-      # attr_accessor :default_associated_collection_limit
-      #
       # # Tell browsers whether to use the native HTML5 validations (novalidate form option).
       # attr_accessor :browser_validations
       #
@@ -299,7 +299,6 @@ module Radmin
 
         @compact_show_view = true
         # @browser_validations = true
-        # @yell_for_non_accessible_fields = true
         @authenticate = nil
         @authorize = nil
         @audit = nil
@@ -311,7 +310,7 @@ module Radmin
         # @default_hidden_fields[:show] = [:id, :_id, :created_at, :created_on, :deleted_at, :updated_at, :updated_on, :deleted_on]
         @default_items_per_page = 20
         @default_link_class = 'info'
-        # @default_associated_collection_limit = 100
+        @default_associated_collection_limit = 100
         @default_search_operator = '_exactly'
 
         @excluded_models = []
