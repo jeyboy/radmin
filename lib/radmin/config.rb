@@ -52,6 +52,11 @@ module Radmin
 
       # Configuration option to specify which method names will be searched for
       # to be used as a label for object records. This defaults to [:to_s]
+      # PROC_EXAMPLE = ->(obj, rel_class, section_name, field) {}
+      #  section_name_or_nil => { field_name => { relation_field_name => [String1, Symbol1, String2, ...] or String or Symbol or Proc } }
+      #  section_name_or_nil => { field_name_or_nil => [String1, Symbol1, String2, ...] or String or Symbol or Proc }
+      #  section_name_or_nil => [String1, Symbol1, String2, ...] or String or Symbol or Proc
+      #  [String1, Symbol1, String2, ...] or String or Symbol or Proc
       attr_accessor :label_methods
 
       # Configuration option to specify logic regarding regular attribute output.

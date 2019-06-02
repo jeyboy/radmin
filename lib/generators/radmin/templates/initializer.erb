@@ -41,17 +41,17 @@ Radmin.config do |config|
   #config.excluded_models = ['SomeClass1', 'SomeClass2', ...]
 
   # Configuration option to specify label methods for models
-  #  section_name_or_nil => { field_name_or_nil => { relation_field_name_or_nil => Array or String or Symbol or Proc } }
-  #  section_name_or_nil => { field_name_or_nil => Array or String or Symbol or Proc }
-  #  section_name_or_nil => Array or String or Symbol or Proc
-  #  field_name_or_nil => Array or String or Symbol or Proc
-  #  field_name_or_nil => { relation_field_name_or_nil => Array or String or Symbol or Proc }
-  #  field_name_or_section_name_or_nil => Array or String or Symbol or Proc
-  #  Array or String or Symbol or Proc
+  # PROC_EXAMPLE = ->(obj, rel_class, section_name, field) {}
+  #  section_name_or_nil => { field_name => { relation_field_name => [String1, Symbol1, String2, ...] or String or Symbol or Proc } }
+  #  section_name_or_nil => { field_name_or_nil => [String1, Symbol1, String2, ...] or String or Symbol or Proc }
+  #  section_name_or_nil => [String1, Symbol1, String2, ...] or String or Symbol or Proc
+  #  [String1, Symbol1, String2, ...] or String or Symbol or Proc
   #
   #  config.label_methods = {
-  #   nil => :attributes,
-  #   video: ->(obj, name, rel_class, section_name, field) { obj.style },
+  #   nil => {
+  #     primary_video: :title,
+  #     videos: ->(obj, name, rel_class, section_name, field) { obj.style }
+  #   },
   #   list_section: {
   #     project: {client: :full_name},
   #     user: :full_name

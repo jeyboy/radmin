@@ -47,10 +47,8 @@ module Radmin
         @instance_label_method ||= begin
           res =
             if is_association? || Radmin::Config::search_label_method_for_attribute
-              assoc_res = identify_label_arg(abstract_model.to_param) if is_association?
-
-              (identify_label_arg(name) unless assoc_res.is_a?(Hash)) ||
-                assoc_res
+              assoc_res = identify_label_arg(abstract_model.to_param, [properties[:name], name]) if is_association?
+              assoc_res ||= identify_label_arg(name)
             end
 
           @label_resolver = label_arg_to_label_resover(res)
@@ -375,15 +373,33 @@ module Radmin
 
       private
 
+      def check_label_arg(arg, obj_name, rel_names)
+        return unless arg.present?
+
+        if arg.respond_to?(:has_key?)
+          arg_oriented = arg[obj_name]
+
+          if arg_oriented.present?
+            if rel_names.blank?
+              arg_oriented
+            else
+              rel_key = rel_names.find { |k| arg_oriented.has_key?(k) }
+              arg_oriented[rel_key]
+            end
+          else
+            arg[nil].presence
+          end
+        else
+          arg
+        end
+      end
+
       # PROC = ->(obj, rel_class, section_name, field) {}
-      #  section_name_or_nil => { field_name_or_nil => { relation_field_name_or_nil => Array or String or Symbol or Proc } }
-      #  section_name_or_nil => { field_name_or_nil => Array or String or Symbol or Proc }
+      #  section_name_or_nil => { field_name => { relation_field_name => Array or String or Symbol or Proc } }
+      #  section_name_or_nil => { field_name => Array or String or Symbol or Proc }
       #  section_name_or_nil => Array or String or Symbol or Proc
-      #  field_name_or_nil => Array or String or Symbol or Proc
-      #  field_name_or_nil => { relation_field_name_or_nil => Array or String or Symbol or Proc }
-      #  field_name_or_section_name_or_nil => Array or String or Symbol or Proc
       #  Array or String or Symbol or Proc
-      def identify_label_arg(obj_name)
+      def identify_label_arg(obj_name, rel_names = nil)
         mtds = Radmin::Config::label_methods
 
         return unless mtds.present?
@@ -391,32 +407,8 @@ module Radmin
         if !mtds.respond_to?(:has_key?)
           mtds
         else
-          section_oriented = false
-          arg_oriented = false
-          nil_oriented = false
-
-          sub_mtds = begin
-            section_oriented = (section_mtds = mtds[section.uid]).present?
-            section_mtds
-          end.presence || begin
-            arg_oriented = (arg_mtds = mtds[obj_name]).present?
-            arg_mtds
-          end.presence || begin
-            nil_oriented = (nil_args = mtds[nil]).present?
-            nil_args
-          end
-
-          mtds = sub_mtds if sub_mtds.present?
-
-          if mtds.respond_to?(:has_key?)
-            if nil_oriented
-              mtds[obj_name]
-            else section_oriented
-              mtds[obj_name] || mtds[nil]
-            end
-          else
-            mtds
-          end
+          check_label_arg(mtds[section.uid], obj_name, rel_names).presence ||
+            check_label_arg(mtds[nil], obj_name, rel_names).presence
         end
       end
 

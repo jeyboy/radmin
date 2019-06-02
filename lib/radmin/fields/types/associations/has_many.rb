@@ -17,7 +17,7 @@ module Radmin
               if objs.blank?
                 nil
               else
-                objs.collect { |obj| label_resolver.call(instance_label_method, obj) }.join('<br/>')
+                objs.collect { |obj| label_resolver.call(instance_label_method, obj) }.join('<br/>').html_safe
               end
             end
           end

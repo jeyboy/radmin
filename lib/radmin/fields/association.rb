@@ -141,18 +141,18 @@ module Radmin
         true
       end
 
-      def label_hash_caller(label, obj)
-        mtd =
-          label[properties[:name]].presence || label[name].presence || label[associated_klass_name].presence || :to_s
-
-        @label_resolver = method(:label_caller)
-
-        begin
-          label_resolver.call((@instance_label_method = mtd), obj)
-        rescue
-          @instance_label_method = :to_s
-        end
-      end
+      # def label_hash_caller(label, obj)
+      #   mtd =
+      #     label[properties[:name]].presence || label[name].presence || label[associated_klass_name].presence || :to_s
+      #
+      #   @label_resolver = method(:label_caller)
+      #
+      #   begin
+      #     label_resolver.call((@instance_label_method = mtd), obj)
+      #   rescue
+      #     @instance_label_method = :to_s
+      #   end
+      # end
 
       def label_proc_caller(label, obj)
         label.call(obj, name, associated_klass_name, section.key, self)
