@@ -53,7 +53,7 @@ module Radmin
 
           @label_resolver = label_arg_to_label_resover(res)
 
-          res || name
+          res || (is_association? ? :to_s : name)
         end
       end
 
