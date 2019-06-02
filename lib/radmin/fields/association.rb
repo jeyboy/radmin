@@ -45,10 +45,27 @@ module Radmin
 
       # scope for possible associable records
       register_property :associated_collection_scope do
+        @associated_collection_scope ||=
+          identify_scope_arg(abstract_model.to_param, [properties[:name], name]) ||
+            identify_scope_arg(abstract_model.to_param) ||
+              Radmin::Config::default_scope_proc ||
+                ->(scope) { scope.send(Radmin::Config::default_scope_join_method, properties[:name]) }
+      end
+
+      # ->(scope) { scope.some_actions }
+      register_property :associated_collection_postprocessing do
+        nil
+      end
+
+      # scope for possible associable records
+      register_property :associated_collection_restrictions do
         # bindings[:object] & bindings[:controller] available
 
         proc do |scope|
-          scope.limit(associated_collection_scope_limit)
+          scope = scope.merge(associated_collection_scope) if associated_collection_scope
+          scope = scope.limit(associated_collection_scope_limit)
+          scope = associated_collection_postprocessing.call(scope) if associated_collection_postprocessing.is_a?(Proc)
+          scope
         end
       end
 
@@ -154,8 +171,21 @@ module Radmin
       #   end
       # end
 
+      protected
+
       def label_proc_caller(label, obj)
         label.call(obj, name, associated_klass_name, section.key, self)
+      end
+
+      def identify_scope_arg(obj_name, rel_names = nil)
+        mtds = Radmin::Config::scopes
+
+        return unless mtds.present?
+
+        if mtds.respond_to?(:has_key?)
+          check_label_arg(mtds[section.uid], obj_name, rel_names).presence ||
+              check_label_arg(mtds[nil], obj_name, rel_names).presence
+        end
       end
     end
   end

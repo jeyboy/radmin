@@ -13,7 +13,7 @@ module Radmin
 
           register_property :formatted_value do
             (objs = value) && begin
-              objs = associated_collection_scope.call(objs)
+              objs = associated_collection_restrictions.call(objs)
               if objs.blank?
                 nil
               else

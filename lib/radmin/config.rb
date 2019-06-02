@@ -3,7 +3,7 @@ require 'radmin/models'
 
 module Radmin
   class Config
-    DEFAULT_PROC = proc {}
+    DEFAULT_PROC = ->(args = nil) {}
     DEFAULT_FILTER_SCHEMA = :or_and
     DEFAULT_SEARCH_SCHEMA = :or
 
@@ -29,6 +29,13 @@ module Radmin
 
       # class names which stops chain of parents
       attr_accessor :model_class_blockers
+
+      # Any possible methods used in models for join of tables:
+      # :includes, :joins and etc.
+      attr_accessor :default_scope_join_method
+      # Default scope will used for relations.
+      # If will be set to nil then auto scope will used for eager loading of a relation
+      attr_accessor :default_scope_proc
 
       attr_accessor :default_search_operator
 
@@ -58,6 +65,8 @@ module Radmin
       #  section_name_or_nil => [String1, Symbol1, String2, ...] or String or Symbol or Proc
       #  [String1, Symbol1, String2, ...] or String or Symbol or Proc
       attr_accessor :label_methods
+
+      attr_accessor :scopes
 
       # Configuration option to specify logic regarding regular attribute output.
       # If false always will output raw attribute value for regular attribute
@@ -139,13 +148,26 @@ module Radmin
 
 
       def label_methods=(methods)
-        if methods.is_a?(Array)
-          @label_methods = { nil => methods }
-        elsif methods.is_a?(Hash)
-          @label_methods = methods.with_indifferent_access
-        else
-          raise 'Invalid label methods config'
-        end
+        @label_methods =
+          if methods.is_a?(Array)
+            { nil => methods }
+          elsif methods.is_a?(Hash)
+            methods.with_indifferent_access
+          else
+            raise 'Invalid label methods config'
+          end
+      end
+
+
+      def scopes=(methods)
+        @scopes =
+          if methods.is_a?(Array)
+            { nil => methods }
+          elsif methods.is_a?(Hash)
+            methods.with_indifferent_access
+          else
+            raise 'Invalid label methods config'
+          end
       end
 
 
@@ -317,6 +339,8 @@ module Radmin
         @default_link_class = 'info'
         @default_associated_collection_limit = 100
         @default_search_operator = '_exactly'
+        @default_scope_proc = -> { all }
+        @default_scope_join_method = :joins
 
         @excluded_models = []
         @included_models = []
@@ -325,6 +349,8 @@ module Radmin
         @label_methods = {
           nil => :to_s
         }
+
+        @scopes = {}
 
         @show_gravatar = true
         @parent_controller = '::ActionController::Base'

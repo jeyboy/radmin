@@ -371,7 +371,7 @@ module Radmin
         @label_resolver
       end
 
-      private
+      protected
 
       def check_label_arg(arg, obj_name, rel_names)
         return unless arg.present?
@@ -383,6 +383,8 @@ module Radmin
             if rel_names.blank?
               arg_oriented
             else
+              return unless arg_oriented.respond_to?(:has_key?)
+
               rel_key = rel_names.find { |k| arg_oriented.has_key?(k) }
               arg_oriented[rel_key]
             end
@@ -393,6 +395,8 @@ module Radmin
           arg
         end
       end
+
+      private
 
       # PROC = ->(obj, rel_class, section_name, field) {}
       #  section_name_or_nil => { field_name => { relation_field_name => Array or String or Symbol or Proc } }
