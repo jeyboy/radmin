@@ -8,14 +8,14 @@ module Radmin
 
     def generate(options = {})
       without_field_error_proc_added_div do
-        action_param = options[:action].presence || @template.controller.params[:action]
-        target_model = options[:current_model].presence || @template.current_model
+        @action_param = (options[:action].presence || @template.controller.params[:action]).to_sym
+        @target_model = options[:current_model].presence || @template.current_model
 
         options.reverse_merge!(
-          action: action_param,
-          current_model: target_model,
+          action: @action_param,
+          current_model: @target_model,
           nested_in: false,
-          buttons_location: target_model.send(action_param).submit_buttons_location
+          buttons_location: @target_model.send(@action_param).submit_buttons_location
         )
 
         groups = visible_groups(options[:current_model], generator_action(options[:action], options[:nested_in]))
@@ -33,6 +33,8 @@ module Radmin
 
     def fieldset_for(fieldset, nested_in)
       fieldset.with_bindings(
+        action: @action_param,
+        abstract_model: @target_model,
         form: self,
         object: @object,
         view: @template,

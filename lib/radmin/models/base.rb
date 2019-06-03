@@ -49,10 +49,6 @@ module Radmin
         model.primary_key
       end
 
-      def scoped
-        model
-      end
-
       def find(id)
         model.find_by(primary_key => id)
       end

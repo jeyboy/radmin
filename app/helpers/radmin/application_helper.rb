@@ -11,6 +11,7 @@ module Radmin
 
     def bindings
       @bindings ||= {
+        action: @current_action.action_name,
         abstract_model: current_model,
         object: @object,
         objects: @objects,
