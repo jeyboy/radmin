@@ -174,7 +174,7 @@ module Radmin
       protected
 
       def label_proc_caller(label, obj)
-        label.call(obj, name, associated_klass_name, section.key, self)
+        label.call(obj, name, associated_klass_name, current_action, self)
       end
 
       def identify_scope_arg(obj_name, rel_names = nil)
@@ -183,7 +183,7 @@ module Radmin
         return unless mtds.present?
 
         if mtds.respond_to?(:has_key?)
-          check_label_arg(mtds[section.uid], obj_name, rel_names).presence ||
+          check_label_arg(mtds[current_action], obj_name, rel_names).presence ||
               check_label_arg(mtds[nil], obj_name, rel_names).presence
         end
       end

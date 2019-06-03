@@ -38,22 +38,16 @@ module Radmin
         self
       end
 
+      def current_action
+        abstract_model.current_action
+      end
+
       def key
         self.class.key
       end
 
-      def uid
-        self.class.uid
-      end
-
       def self.key
-        @key ||=
-          name.demodulize.underscore
-      end
-
-      def self.uid
-        @uid ||=
-          "#{key}_section"
+        @key ||= name.demodulize.underscore
       end
     end
   end

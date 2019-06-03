@@ -224,7 +224,7 @@ module Radmin
       register_property :visible do
         predefined_hiddens = (Radmin::Config.default_hidden_fields || {})
 
-        section_predefined = predefined_hiddens[@section.key]
+        section_predefined = predefined_hiddens[current_action]
         basic_predefined = predefined_hiddens['base']
         default_predefined = predefined_hiddens[nil]
 
@@ -300,6 +300,10 @@ module Radmin
       def with_bindings(args)
         @section.with_bindings(args)
         self
+      end
+
+      def current_action
+        @section.current_action
       end
 
       def foreign_key
@@ -411,7 +415,7 @@ module Radmin
         if !mtds.respond_to?(:has_key?)
           mtds
         else
-          check_label_arg(mtds[section.uid], obj_name, rel_names).presence ||
+          check_label_arg(mtds[current_action], obj_name, rel_names).presence ||
             check_label_arg(mtds[nil], obj_name, rel_names).presence
         end
       end
@@ -468,7 +472,7 @@ module Radmin
       end
 
       def label_proc_caller(label, obj)
-        label.call(obj, name, nil, section.key, self)
+        label.call(obj, name, nil, current_action, self)
       end
     end
   end

@@ -25,6 +25,11 @@ module Radmin
         @bindings = (@bindings || {}).merge(args)
         self
       end
+
+      def current_action
+        raise 'No action' unless bindings[:action].present?
+        "#{bindings[:action]}_act"
+      end
     end
   end
 end
