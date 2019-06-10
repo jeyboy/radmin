@@ -12,7 +12,7 @@
 
   description = current_model.description
 
-  properties = current_model.list.with_bindings(controller: self.controller, view: self, object: current_model.model.new).visible_fields
+  properties = current_model.list.with_bindings({**bindings, object: current_model.model.new}).visible_fields
   checkboxes = current_model.list.show_checkboxes
 
   bulk_actions = checkboxes ? actions(:bulkable, current_model) : []
