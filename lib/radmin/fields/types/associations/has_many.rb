@@ -14,10 +14,10 @@ module Radmin
           register_property :formatted_value do
             (objs = value) && begin
               objs = associated_collection_restrictions.call(objs)
-              if objs.blank?
-                nil
-              else
+              if objs.exists?
                 objs.collect { |obj| label_resolver.call(instance_label_method, obj) }.join('<br/>').html_safe
+              else
+                nil
               end
             end
           end

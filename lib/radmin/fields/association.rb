@@ -45,11 +45,16 @@ module Radmin
 
       # scope for possible associable records
       register_property :associated_collection_scope do
-        @associated_collection_scope ||=
-          identify_scope_arg(abstract_model.to_param, [properties[:name], name]) ||
-            identify_scope_arg(abstract_model.to_param) ||
-              Radmin::Config::default_scope_proc ||
-                ->(scope) { scope.send(Radmin::Config::default_scope_join_method, properties[:name]) }
+        @associated_collection_scope ||= begin
+          rel_names = [properties[:name]]
+          rel_names << name if name != rel_names[0]
+
+          identify_scope_arg(abstract_model.to_param, rel_names) ||
+            identify_scope_arg(rel_names[0]) ||
+              (rel_names.length > 1 ? identify_scope_arg(rel_names[1]) : false) ||
+                Radmin::Config::default_scope_proc ||
+                  ->(scope) { scope.send(Radmin::Config::default_scope_join_method, properties[:name]) }
+        end
       end
 
       # ->(scope) { scope.some_actions }
@@ -184,7 +189,7 @@ module Radmin
 
         if mtds.respond_to?(:has_key?)
           check_label_arg(mtds[current_action], obj_name, rel_names).presence ||
-              check_label_arg(mtds[nil], obj_name, rel_names).presence
+            check_label_arg(mtds[nil], obj_name, rel_names).presence
         end
       end
     end
