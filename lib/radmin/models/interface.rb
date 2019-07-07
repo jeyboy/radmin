@@ -1,5 +1,7 @@
 require 'radmin/utils/configurable'
 require 'radmin/utils/bindable'
+require 'radmin/utils/scopeable'
+require 'radmin/utils/identicable'
 require 'radmin/sections'
 require 'radmin/config'
 
@@ -8,13 +10,21 @@ module Radmin
     class Interface
       include Radmin::Utils::Configurable
       include Radmin::Utils::Bindable
+      include Radmin::Utils::Identicable
+      include Radmin::Utils::Scopeable
       include Radmin::Sections
 
       attr_reader :model_name
 
       #default scope for model
       register_property :scoped do
-        model
+        @scoped ||= begin
+          scoping = identify_scope_arg(to_param)
+
+          if scoping
+            model.merge(scoping)
+          end || model
+        end
       end
 
       register_property :filter_schema do

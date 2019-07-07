@@ -1,11 +1,13 @@
 require 'radmin/utils/configurable'
 require 'radmin/utils/bindable'
+require 'radmin/utils/identicable'
 # require 'radmin/utils/groupable'
 
 module Radmin
   module Fields
     class Base
       include Radmin::Utils::Configurable
+      include Radmin::Utils::Identicable
 
       VALIDATION_REQUIRE_RULES = [:presence, :numericality, :attachment_presence].freeze
 
@@ -375,31 +377,6 @@ module Radmin
         @label_resolver
       end
 
-      protected
-
-      def check_label_arg(arg, obj_name, rel_names)
-        return unless arg.present?
-
-        if arg.respond_to?(:has_key?)
-          arg_oriented = arg[obj_name]
-
-          if arg_oriented.present?
-            if rel_names.blank?
-              arg_oriented
-            else
-              return unless arg_oriented.respond_to?(:has_key?)
-
-              rel_key = rel_names.find { |k| arg_oriented.has_key?(k) }
-              arg_oriented[rel_key]
-            end
-          else
-            arg[nil].presence
-          end
-        else
-          arg
-        end
-      end
-
       private
 
       # PROC = ->(obj, rel_class, section_name, field) {}
@@ -415,8 +392,8 @@ module Radmin
         if !mtds.respond_to?(:has_key?)
           mtds
         else
-          check_label_arg(mtds[current_action], obj_name, rel_names).presence ||
-            check_label_arg(mtds[nil], obj_name, rel_names).presence
+          identify_entry(mtds[current_action], obj_name, rel_names).presence ||
+            identify_entry(mtds[nil], obj_name, rel_names).presence
         end
       end
 

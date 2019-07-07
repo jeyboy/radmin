@@ -1,9 +1,12 @@
 require 'radmin/config'
 require 'radmin/fields/base'
+require 'radmin/utils/scopeable'
 
 module Radmin
   module Fields
     class Association < Radmin::Fields::Base
+      include Radmin::Utils::Scopeable
+
       def self.inherited(klass)
         super(klass)
       end
@@ -182,16 +185,16 @@ module Radmin
         label.call(obj, name, associated_klass_name, current_action, self)
       end
 
-      def identify_scope_arg(obj_name, rel_names = nil)
-        mtds = Radmin::Config::scopes
-
-        return unless mtds.present?
-
-        if mtds.respond_to?(:has_key?)
-          check_label_arg(mtds[current_action], obj_name, rel_names).presence ||
-            check_label_arg(mtds[nil], obj_name, rel_names).presence
-        end
-      end
+      # def identify_scope_arg(obj_name, rel_names = nil)
+      #   mtds = Radmin::Config::scopes
+      #
+      #   return unless mtds.present?
+      #
+      #   if mtds.respond_to?(:has_key?)
+      #     identify_entry(mtds[current_action], obj_name, rel_names).presence ||
+      #       identify_entry(mtds[nil], obj_name, rel_names).presence
+      #   end
+      # end
     end
   end
 end
