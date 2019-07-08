@@ -16,8 +16,8 @@ module Radmin
           @current_action.with_bindings(bindings)
           fail(ActionNotAllowed) unless current_action || current_action.enabled?
           @authorization_adapter.try(:authorize, current_action.action_name, current_model, @object)
-          @page_name = wording_for(:title)
           @current_model.with_bindings(bindings)
+          @page_name = wording_for(:title)
           instance_eval &current_action.controller
         end
       EOS

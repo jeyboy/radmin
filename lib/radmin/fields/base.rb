@@ -389,12 +389,8 @@ module Radmin
 
         return unless mtds.present?
 
-        if !mtds.respond_to?(:has_key?)
-          mtds
-        else
-          identify_entry(mtds[current_action], obj_name, rel_names).presence ||
-            identify_entry(mtds[nil], obj_name, rel_names).presence
-        end
+        identify_entry(mtds[current_action], obj_name, rel_names).presence ||
+          identify_entry(mtds[nil], obj_name, rel_names).presence
       end
 
       def label_arg_to_label_resover(arg)

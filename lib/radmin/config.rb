@@ -64,6 +64,8 @@ module Radmin
       #  section_name_or_nil => { field_name_or_nil => [String1, Symbol1, String2, ...] or String or Symbol or Proc }
       #  section_name_or_nil => [String1, Symbol1, String2, ...] or String or Symbol or Proc
       #  [String1, Symbol1, String2, ...] or String or Symbol or Proc
+      #
+      # For object's label method need to use key 'self:'. Should be String or Symbol
       attr_accessor :label_methods
 
       attr_accessor :scopes
@@ -409,8 +411,6 @@ module Radmin
 
         @default_init_proc = ->(klass) {
           klass.send :radmin do
-            object_label_method :to_s
-
             list do
               include_all_fields
             end
