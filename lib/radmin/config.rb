@@ -92,6 +92,10 @@ module Radmin
       # hide blank fields in show view if true
       attr_accessor :compact_show_view
 
+
+      # Configuration option to specify which fields you want to exclude.
+      attr_accessor :excluded_fields
+
       # Configuration option to specify which models you want to exclude.
       attr_accessor :excluded_models
 
@@ -153,10 +157,8 @@ module Radmin
         @label_methods =
           if methods.is_a?(Array)
             { nil => methods }
-          elsif methods.respond_to?(:has_key?) && methods.respond_to?(:[])
-            if methods.respond_to?(:with_indifferent_access)
-              methods.with_indifferent_access
-            end || methods
+          elsif is_hashable?(methods)
+            improve_hashable(methods)
           else
             raise 'Invalid label methods config'
           end
@@ -167,23 +169,45 @@ module Radmin
         @scopes =
           if methods.is_a?(Array)
             { nil => methods }
-          elsif methods.respond_to?(:has_key?) && methods.respond_to?(:[])
-            if methods.respond_to?(:with_indifferent_access)
-              methods.with_indifferent_access
-            end || methods
+          elsif is_hashable?(methods)
+            improve_hashable(methods)
           else
             raise 'Invalid scopes config'
           end
       end
 
+
       def field_types=(types)
         @field_types =
-          if types.respond_to?(:has_key?) && types.respond_to?(:[])
-            if types.respond_to?(:with_indifferent_access)
-              types.with_indifferent_access
-            end || types
+          if is_hashable?(types)
+            improve_hashable(types)
           else
             raise 'Invalid field types config'
+          end
+      end
+
+
+      def excluded_fields=(ex_fields)
+        @excluded_fields =
+          if ex_fields.is_a?(Array)
+            { nil => methods }
+          elsif is_hashable?(ex_fields)
+            ex_fields.each_pair do |k, v|
+              case v.class.name
+                when 'Array'
+                  ex_fields[k] = Hash[v.zip([true] * v.length)]
+                when 'Hash'
+                  ;
+                when 'String', 'Symbol'
+                  ex_fields[k] = { v => true }
+                else
+                  raise "Invalid excluded field config for entry: #{k}"
+              end
+            end
+
+            improve_hashable(ex_fields)
+          else
+            raise 'Invalid excluded fields config'
           end
       end
 
@@ -348,10 +372,11 @@ module Radmin
         @audit = nil
         @current_user = nil
 
-        # @default_hidden_fields = {}
-        # @default_hidden_fields[:base] = [:_type]
-        # @default_hidden_fields[:edit] = [:id, :_id, :created_at, :created_on, :deleted_at, :updated_at, :updated_on, :deleted_on]
-        # @default_hidden_fields[:show] = [:id, :_id, :created_at, :created_on, :deleted_at, :updated_at, :updated_on, :deleted_on]
+        @default_hidden_fields = {}
+        @default_hidden_fields[:base] = [:_type]
+        @default_hidden_fields[:edit] = [:id, :_id, :created_at, :created_on, :deleted_at, :updated_at, :updated_on, :deleted_on]
+        @default_hidden_fields[:show] = [:id, :_id, :created_at, :created_on, :deleted_at, :updated_at, :updated_on, :deleted_on]
+
         @default_items_per_page = 20
         @default_link_class = 'info'
         @default_associated_collection_limit = 100
@@ -547,6 +572,18 @@ module Radmin
       #   configuration = RailsAdmin::CONFIGURATION_ADAPTERS[extension].new
       #   yield(configuration) if block_given?
       # end
+
+      private
+
+      def is_hashable?(obj)
+        obj.respond_to?(:has_key?) && obj.respond_to?(:[])
+      end
+
+      def improve_hashable(obj)
+        if obj.respond_to?(:with_indifferent_access)
+          obj.with_indifferent_access
+        end || obj
+      end
     end
 
     reset

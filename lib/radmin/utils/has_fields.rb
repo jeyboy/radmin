@@ -14,9 +14,14 @@ module Radmin
 
       def field(name, type = nil, &block)
         name = name.to_s
+        mdl_name = abstract_model.to_param
+
+        return if
+          Radmin::Config::excluded_fields[mdl_name]&.[](name) ||
+            Radmin::Config::excluded_fields[nil]&.[](name)
 
         type ||=
-          Radmin::Config::field_types&.[](abstract_model.to_param)&.[](name) ||
+          Radmin::Config::field_types&.[](mdl_name)&.[](name) ||
           begin
             rel_info = abstract_model.relations_info[name]
 
