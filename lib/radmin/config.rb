@@ -68,6 +68,8 @@ module Radmin
 
       attr_accessor :scopes
 
+      attr_accessor :field_types
+
       # Configuration option to specify logic regarding regular attribute output.
       # If false always will output raw attribute value for regular attribute
       # otherwise will try to take value from alias for attribute if it will be set.
@@ -151,8 +153,10 @@ module Radmin
         @label_methods =
           if methods.is_a?(Array)
             { nil => methods }
-          elsif methods.is_a?(Hash)
-            methods.with_indifferent_access
+          elsif methods.respond_to?(:has_key?) && methods.respond_to?(:[])
+            if methods.respond_to?(:with_indifferent_access)
+              methods.with_indifferent_access
+            end || methods
           else
             raise 'Invalid label methods config'
           end
@@ -163,10 +167,23 @@ module Radmin
         @scopes =
           if methods.is_a?(Array)
             { nil => methods }
-          elsif methods.is_a?(Hash)
-            methods.with_indifferent_access
+          elsif methods.respond_to?(:has_key?) && methods.respond_to?(:[])
+            if methods.respond_to?(:with_indifferent_access)
+              methods.with_indifferent_access
+            end || methods
           else
-            raise 'Invalid label methods config'
+            raise 'Invalid scopes config'
+          end
+      end
+
+      def field_types=(types)
+        @field_types =
+          if methods.respond_to?(:has_key?) && methods.respond_to?(:[])
+            if methods.respond_to?(:with_indifferent_access)
+              methods.with_indifferent_access
+            end || methods
+          else
+            raise 'Invalid field types config'
           end
       end
 

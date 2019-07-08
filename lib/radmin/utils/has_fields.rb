@@ -15,32 +15,34 @@ module Radmin
       def field(name, type = nil, &block)
         name = name.to_s
 
-        type ||= begin
-          rel_info = abstract_model.relations_info[name]
+        type ||=
+          Radmin::Config::field_types&.[](abstract_model.to_param)&.[](name) ||
+          begin
+            rel_info = abstract_model.relations_info[name]
 
-          if rel_info
-            rel_klass = rel_info.polymorphic? ? nil : rel_info.klass
+            if rel_info
+              rel_klass = rel_info.polymorphic? ? nil : rel_info.klass
 
-            abstract_model.properties[name] = {
-              klass: rel_klass,
-              primary_key: rel_klass&.primary_key,
-              foreign_key: rel_info.foreign_key,
-              reflection_type: rel_info.macro.to_sym,
-              name: rel_info.name,
-              is_polymorphic: rel_info.polymorphic?
-            }
+              abstract_model.properties[name] = {
+                klass: rel_klass,
+                primary_key: rel_klass&.primary_key,
+                foreign_key: rel_info.foreign_key,
+                reflection_type: rel_info.macro.to_sym,
+                name: rel_info.name,
+                is_polymorphic: rel_info.polymorphic?
+              }
 
-            rel_info.macro.to_sym
-          else
-            column_info = abstract_model.columns_info[name]
+              rel_info.macro.to_sym
+            else
+              column_info = abstract_model.columns_info[name]
 
-            if !column_info && !abstract_model.model.respond_to?(name)
-              raise "Unknown attribute '#{name}' in model '#{abstract_model.model}'"
+              if !column_info && !abstract_model.model.respond_to?(name)
+                raise "Unknown attribute '#{name}' in model '#{abstract_model.model}'"
+              end
+
+              column_info && column_info.type || :string
             end
-
-            column_info && column_info.type || :string
           end
-        end
 
         
         if _fields[name]
