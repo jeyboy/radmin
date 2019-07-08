@@ -18,4 +18,4 @@ module Radmin
   end
 end
 
-require 'radmin/fields/types/all'
+Dir["#{__dir__}/types/**/*.rb"].each { |f| require f }

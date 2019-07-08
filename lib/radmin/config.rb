@@ -178,10 +178,10 @@ module Radmin
 
       def field_types=(types)
         @field_types =
-          if methods.respond_to?(:has_key?) && methods.respond_to?(:[])
-            if methods.respond_to?(:with_indifferent_access)
-              methods.with_indifferent_access
-            end || methods
+          if types.respond_to?(:has_key?) && types.respond_to?(:[])
+            if types.respond_to?(:with_indifferent_access)
+              types.with_indifferent_access
+            end || types
           else
             raise 'Invalid field types config'
           end
