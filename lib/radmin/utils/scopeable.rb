@@ -12,10 +12,8 @@ module Radmin
 
         return unless mtds.present?
 
-        if mtds.respond_to?(:has_key?)
-          identify_entry(mtds[current_action], obj_name, rel_names).presence ||
-            identify_entry(mtds[nil], obj_name, rel_names).presence
-        end
+        identify_entry(mtds[current_action], obj_name, rel_names).presence ||
+          identify_entry(mtds[nil].presence || mtds[:nil], obj_name, rel_names).presence
       end
     end
   end

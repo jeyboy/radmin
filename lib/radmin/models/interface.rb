@@ -91,7 +91,7 @@ module Radmin
         if mtds.present?
           res =
             identify_entry(mtds[current_action], to_param, [:self]).presence ||
-              identify_entry(mtds[nil], to_param, [:self]).presence
+              identify_entry(mtds[nil].presence || mtds[:nil], to_param, [:self]).presence
 
           nil if res.is_a?(Proc) #INFO We can't use here Proc at this time
         end || :to_s

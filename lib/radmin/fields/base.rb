@@ -224,28 +224,34 @@ module Radmin
       end
 
       register_property :visible do
-        predefined_hiddens = (Radmin::Config.default_hidden_fields || {})
+        predefined_hiddens = Radmin::Config.default_hidden_fields
 
-        section_predefined = predefined_hiddens[current_action]
-        basic_predefined = predefined_hiddens['base']
-        default_predefined = predefined_hiddens[nil]
+        return true if predefined_hiddens.blank?
 
-        if (section_predefined || default_predefined || basic_predefined)
-          if section_predefined
-            !(section_predefined.include?(name) || basic_predefined&.include?(name))
-          else
-            !(basic_predefined&.include?(name) || default_predefined&.include?(name))
-          end
+        res =
+          identify_entry(predefined_hiddens[current_action], abstract_model.to_param, [name]).presence ||
+            identify_entry(predefined_hiddens[nil].presence || predefined_hiddens[:nil], abstract_model.to_param, [name]).presence
+
+        if res.is_a?(Proc)
+          #INFO We can't use here Proc at this time
+          raise "Can't use Proc for visibility identification: #{name}"
         else
-          true
+          !res
         end
 
-        # returned = true
-        # (RailsAdmin.config.default_hidden_fields || {}).each do |section, fields|
-        #   next unless self.section.is_a?("RailsAdmin::Config::Sections::#{section.to_s.camelize}".constantize)
-        #   returned = false if fields.include?(name)
+        # section_predefined = predefined_hiddens[current_action]
+        # basic_predefined = predefined_hiddens['base']
+        # default_predefined = predefined_hiddens[nil]
+        #
+        # if (section_predefined || default_predefined || basic_predefined)
+        #   if section_predefined
+        #     !(section_predefined.include?(name) || basic_predefined&.include?(name))
+        #   else
+        #     !(basic_predefined&.include?(name) || default_predefined&.include?(name))
+        #   end
+        # else
+        #   true
         # end
-        # returned
       end
 
 
@@ -390,7 +396,7 @@ module Radmin
         return unless mtds.present?
 
         identify_entry(mtds[current_action], obj_name, rel_names).presence ||
-          identify_entry(mtds[nil], obj_name, rel_names).presence
+          identify_entry(mtds[nil].presence || mtds[:nil], obj_name, rel_names).presence
       end
 
       def label_arg_to_label_resover(arg)

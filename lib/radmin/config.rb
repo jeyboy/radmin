@@ -144,14 +144,14 @@ module Radmin
 
 
       def default_hidden_fields=(fields)
-        if fields.is_a?(Array)
-          @default_hidden_fields = {}
-          @default_hidden_fields[:index] = fields
-          @default_hidden_fields[:edit] = fields
-          @default_hidden_fields[:show] = fields
-        else
-          @default_hidden_fields = fields.stringify_keys
-        end
+        @default_hidden_fields =
+          if fields.is_a?(Array)
+            { nil => fields }
+          elsif is_hashable?(fields)
+            improve_hashable(fields, improve_keys: true)
+          else
+            raise 'Invalid default hidden fields= config'
+          end
       end
 
 
@@ -194,20 +194,7 @@ module Radmin
           if ex_fields.is_a?(Array)
             { nil => methods }
           elsif is_hashable?(ex_fields)
-            ex_fields.each_pair do |k, v|
-              case v.class.name
-                when 'Array'
-                  ex_fields[k] = Hash[v.zip([true] * v.length)]
-                when 'Hash'
-                  ;
-                when 'String', 'Symbol'
-                  ex_fields[k] = { v => true }
-                else
-                  raise "Invalid excluded field config for entry: #{k}"
-              end
-            end
-
-            improve_hashable(ex_fields)
+            improve_hashable(ex_fields, improve_keys: true)
           else
             raise 'Invalid excluded fields config'
           end
@@ -579,8 +566,26 @@ module Radmin
         obj.respond_to?(:has_key?) && obj.respond_to?(:[])
       end
 
-      def improve_hashable(obj)
-        if obj.respond_to?(:with_indifferent_access)
+      def improve_hashable(obj, improve_keys: false, improve_obj: true)
+        if improve_keys
+          obj.each_pair do |k, v|
+            case v.class.name
+              when 'Array'
+                obj[k] = Hash[v.zip([true] * v.length)]
+              when 'String', 'Symbol'
+                obj[k] = { v => true }
+              else
+                if is_hashable?(v)
+                  obj[k] =
+                    improve_hashable(v, improve_keys: true, improve_obj: false)
+                else
+                  raise "Invalid config for entry: #{k}"
+                end
+              end
+          end
+        end
+
+        if improve_obj && obj.respond_to?(:with_indifferent_access)
           obj.with_indifferent_access
         end || obj
       end
