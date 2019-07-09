@@ -224,34 +224,7 @@ module Radmin
       end
 
       register_property :visible do
-        predefined_hiddens = Radmin::Config.default_hidden_fields
-
-        return true if predefined_hiddens.blank?
-
-        res =
-          identify_entry(predefined_hiddens[current_action], abstract_model.to_param, [name]).presence ||
-            identify_entry(predefined_hiddens[nil].presence || predefined_hiddens[:nil], abstract_model.to_param, [name]).presence
-
-        if res.is_a?(Proc)
-          #INFO We can't use here Proc at this time
-          raise "Can't use Proc for visibility identification: #{name}"
-        else
-          !res
-        end
-
-        # section_predefined = predefined_hiddens[current_action]
-        # basic_predefined = predefined_hiddens['base']
-        # default_predefined = predefined_hiddens[nil]
-        #
-        # if (section_predefined || default_predefined || basic_predefined)
-        #   if section_predefined
-        #     !(section_predefined.include?(name) || basic_predefined&.include?(name))
-        #   else
-        #     !(basic_predefined&.include?(name) || default_predefined&.include?(name))
-        #   end
-        # else
-        #   true
-        # end
+        is_visible?(abstract_model.to_param, [name])
       end
 
 
@@ -381,6 +354,23 @@ module Radmin
         end
 
         @label_resolver
+      end
+
+      def is_visible?(mdl_name, field_names)
+        predefined_hiddens = Radmin::Config.default_hidden_fields
+
+        return true if predefined_hiddens.blank?
+
+        res =
+            identify_entry(predefined_hiddens[current_action], mdl_name, field_names).presence ||
+                identify_entry(predefined_hiddens[nil].presence || predefined_hiddens[:nil], mdl_name, field_names).presence
+
+        if res.is_a?(Proc)
+          #INFO We can't use here Proc at this time
+          raise "Can't use Proc for visibility identification: #{mdl_name}##{field_name}"
+        else
+          !res
+        end
       end
 
       private

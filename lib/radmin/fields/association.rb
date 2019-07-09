@@ -34,7 +34,8 @@ module Radmin
       # association checks whether the child model is excluded in
       # configuration or not.
       register_property :visible? do
-        !associated_abstract_model&.excluded?
+        is_visible?(abstract_model.to_param, [name, properties[:name]]) &&
+          !associated_abstract_model&.excluded?
       end
 
       # # use the association name as a key, not the association key anymore!
