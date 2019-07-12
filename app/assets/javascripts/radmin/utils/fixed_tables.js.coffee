@@ -25,4 +25,7 @@
 #    rightColumns: 1
 #)
 
-$('.data-fixed-table').jtable()
+$('.data-fixed-table').jtable({
+  fixedLeftColumns: 1,
+  fixedRightColumns: 1
+})
