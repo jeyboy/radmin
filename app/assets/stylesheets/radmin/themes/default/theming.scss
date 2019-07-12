@@ -1,4 +1,8 @@
 table.stripped {
+  tr:nth-child(odd){
+    background: #ffffff;
+  }
+
   tr:nth-child(even){
     background: #d9edf7;
   }
@@ -119,11 +123,14 @@ hr.menu_breaker {
   }
 }
 
+
 .radmin.table {
   thead {
     @extend .thead-dark;
   }
 }
+
+
 
 #new {
   padding-top: .5rem;
