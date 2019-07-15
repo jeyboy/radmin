@@ -69,16 +69,11 @@
 
             wrapperAttrs: {},
             wrapperCSS: {},
-            panelCSS: {},
+            panelCSS: {}
         }, options);
 
         settings.fixedLeftColumns = Number(settings.fixedLeftColumns);
         settings.fixedRightColumns = Number(settings.fixedRightColumns);
-
-        if (!settings.fixedHeader && !settings.fixedFooter &&
-                settings.fixedLeftColumns <= 0 && settings.fixedRightColumns <= 0) {
-            return this;
-        }
 
         var createWrapper = function(attrs, css_attrs, main_class) {
             attrs['class'] = attrs['class'] ? (attrs['class'] + ' ' + main_class)  : main_class;
@@ -102,7 +97,7 @@
 
             $wrapper.append($panel_wrapper);
             return [$table_head, $table_body];
-        }
+        };
 
         var moveData = function(tr, $left_dest, $right_dest) {
             var target_height = tr.offsetHeight;
@@ -111,23 +106,26 @@
             tr.style = "height: " + target_height + "px";
 
             if ($left_dest) {
-                var counter = settings.fixedLeftColumns;
+                var counter = fixedLeftColumns;
                 var $dest_tr = $('<tr style="height:' + target_height + 'px"/>').appendTo($left_dest);
 
                 while(counter--) {
-                    $dest_tr.append(tr.removeChild(children[counter]));
+                    $dest_tr.prepend(tr.removeChild(children[counter]));
                 }
             }
 
             if ($right_dest) {
-                var counter = settings.fixedRightColumns;
+                var counter = fixedRightColumns;
                 var $dest_tr = $('<tr style="height:' + target_height + 'px"/>').appendTo($right_dest);
 
                 while(counter--) {
                     $dest_tr.append(tr.removeChild(children[children.length - 1 - counter]));
                 }
             }
-        }
+        };
+
+        var fixedLeftColumns;
+        var fixedRightColumns;
 
         return this.each(function() {
             if (this.tagName.toLowerCase() !== 'table') {
@@ -135,32 +133,51 @@
             }
 
             var $el = $(this);
+
+            var dataLeft = $el.data('fix-left');
+            fixedLeftColumns = dataLeft ? Number(dataLeft) : settings.fixedLeftColumns;
+
+            var dataRight = $el.data('fix-right');
+            fixedRightColumns = dataRight ? Number(dataRight) : settings.fixedRightColumns;
+
             var columns_count =
                 $el.find('thead tr th').length ||
                 $el.find('tbody tr:first td').length;
 
-            if (columns_count == 0 || (settings.fixedLeftColumns + settings.fixedRightColumns >= columns_count - 1)) {
+            if (columns_count === 0 || (fixedLeftColumns + fixedRightColumns >= columns_count - 1)) {
                 return;
             }
 
-            var has_left = !!settings.fixedLeftColumns;
-            var has_right = !!settings.fixedRightColumns;
+            if (!settings.fixedHeader && !settings.fixedFooter &&
+                fixedLeftColumns <= 0 && fixedRightColumns <= 0) {
+                return this;
+            }
+
+            console.log(fixedLeftColumns);
+            console.log(fixedRightColumns);
+
+            var has_left = !!fixedLeftColumns;
+            var has_right = !!fixedRightColumns;
 
             var $wrapper = createWrapper(settings.wrapperAttrs, settings.wrapperCSS, 'jtable');
-            var $center_panel = createWrapper({class: 'jtable-center'}, settings.panelCSS);
+            var $center_panel = createWrapper({class: 'jtable-center'}, settings.panelCSS, 'jtable-panel');
 
             var table_props = {
                 style: $el.prop('style'),
                 class: $el.prop('class')
             };
 
-            var [$left_table_head, $left_table_body] =
-                has_left ? createSidePanel($wrapper,'jtable-left', table_props) : [undefined, undefined];
+            var values = has_left ? createSidePanel($wrapper,'jtable-left', table_props) : [undefined, undefined];
+            var $left_table_head = values[0];
+            var $left_table_body = values[1];
+
 
             $wrapper.append($center_panel);
 
-            var [$right_table_head, $right_table_body] =
-                has_right ? createSidePanel($wrapper, 'jtable-right', table_props) : [undefined, undefined];
+            values = has_right ? createSidePanel($wrapper, 'jtable-right', table_props) : [undefined, undefined];
+            var $right_table_head = values[0];
+            var $right_table_body = values[1];
+
 
             // if (settings.fixedHeader) {
             //

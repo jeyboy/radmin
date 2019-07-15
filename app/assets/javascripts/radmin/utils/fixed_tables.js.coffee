@@ -26,6 +26,6 @@
 #)
 
 $('.data-fixed-table').jtable({
-  fixedLeftColumns: 1,
-  fixedRightColumns: 1
+  fixedLeftColumns: 2,
+  fixedRightColumns: 2
 })
