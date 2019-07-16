@@ -56,8 +56,6 @@
 // wrapper.append( "..." );
 
 
-
-
 (function($) {
     $.fn.jtable = function(options) {
 
@@ -153,13 +151,12 @@
                 return this;
             }
 
-            console.log(fixedLeftColumns);
-            console.log(fixedRightColumns);
 
             var has_left = !!fixedLeftColumns;
             var has_right = !!fixedRightColumns;
 
             var $wrapper = createWrapper(settings.wrapperAttrs, settings.wrapperCSS, 'jtable');
+
             var $center_panel = createWrapper({class: 'jtable-center'}, settings.panelCSS, 'jtable-panel');
 
             var table_props = {
@@ -199,6 +196,29 @@
 
             $wrapper.insertAfter($el);
             $center_panel.append($el);
+
+
+            // console.log($el[0])
+            // $wrapper.find(('.jtable-center table'))[0].addEventListener("scroll", function(e) {
+            //     console.log(e.offsetX);
+            // });
+
+
+            // $el.on('click', function(e) {
+            //     console.log(e.offsetX);
+            // });
+
+            var $target_scroll = $wrapper.find('.jtable-center');
+            var scroll_obj = $target_scroll[0];
+
+            $target_scroll.on('scroll', function(e) {
+                // scroll_obj.scrollLeft = val for scroll manually
+
+                // $target_scroll.scrollLeft() // scroll pos
+                // $target_scroll[0].offsetWidth // client size of elem
+                // $target_scroll[0].scrollWidth
+                console.log(scroll_obj.scrollLeft, scroll_obj.offsetWidth, scroll_obj.scrollWidth);
+            });
         });
     };
 }(jQuery));

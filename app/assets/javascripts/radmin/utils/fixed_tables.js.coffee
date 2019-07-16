@@ -25,7 +25,10 @@
 #    rightColumns: 1
 #)
 
-$('.data-fixed-table').jtable({
-  fixedLeftColumns: 2,
-  fixedRightColumns: 2
-})
+$('.data-fixed-table')
+  .jtable()
+#  .scrollbar({
+#    "autoScrollSize": false,
+#    "scrollx": $('.external-scroll_x'),
+#  #  "scrolly": $('.external-scroll_y')
+#  });
