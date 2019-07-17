@@ -27,8 +27,3 @@
 
 $('.data-fixed-table')
   .jtable()
-#  .scrollbar({
-#    "autoScrollSize": false,
-#    "scrollx": $('.external-scroll_x'),
-#  #  "scrolly": $('.external-scroll_y')
-#  });

@@ -1,13 +1,16 @@
 .jtable {
-  display: flex;
 
-  .jtable-panel {
-    flex-grow: 1;
-  }
+  .jtable-block {
+    display: flex;
 
-  .jtable-center {
-    flex-grow: 9999;
-    overflow-x: scroll;
+    .jtable-panel {
+      flex-grow: 1;
+    }
+
+    .jtable-center {
+      flex-grow: 9999;
+      overflow-x: scroll;
+    }
   }
 
   table {
