@@ -25,5 +25,7 @@
 #    rightColumns: 1
 #)
 
-$('.data-fixed-table')
-  .jtable()
+$(document).ready( ->
+  $('.data-fixed-table')
+    .jtable()
+);
