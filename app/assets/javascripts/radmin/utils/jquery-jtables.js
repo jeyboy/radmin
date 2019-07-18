@@ -163,8 +163,12 @@
 
             var $wrapper = createWrapper(settings.wrapperAttrs, settings.wrapperCSS, 'jtable');
             var $headerWrapper =
-                createWrapper(settings.headerAttrs, settings.headerCSS, 'jtable-head')
+                createWrapper(settings.headerAttrs, settings.headerCSS, 'jtable-head jlocked')
                     .appendTo($wrapper);
+
+            // $headerWrapper.hide();
+
+
             var $tableWrapper =
                 createWrapper(settings.tableAttrs, settings.tableCSS, 'jtable-block')
                     .appendTo($wrapper);
@@ -204,14 +208,17 @@
                     var $headTableHead = $("<thead />").appendTo($headTable);
                     var tHead = $(this).find('table thead')[0];
                     var tHeadTr = tHead.children[0];
+                    var tHeadTrDup = tHeadTr.cloneNode(true);
+
                     var tHeadTrChildren = tHeadTr.children;
+                    var tHeadTrDupChildren = tHeadTrDup.children;
                     var counter = tHeadTrChildren.length;
 
                     while(counter--) {
-                        tHeadTrChildren[counter].style = "min-width: " + tHeadTrChildren[counter].offsetWidth + "px";
+                        tHeadTrDupChildren[counter].style = "min-width: " + tHeadTrChildren[counter].offsetWidth + "px";
                     }
 
-                    $headTableHead.append(tHead.removeChild(tHeadTr));
+                    $headTableHead.append(tHeadTrDup);
                 });
             }
 
@@ -221,9 +228,15 @@
                 var anchor_bottom = anchor_top + $wrapper[0].scrollHeight;
 
                 if (scroll > anchor_top && scroll < anchor_bottom) {
-                    $headerWrapper.addClass('jlocked');
+                    if (!$headerWrapper.hasClass('sticky')) {
+                        $headerWrapper.show().addClass('sticky');
+                        $tableWrapper.find('thead').hide();
+                    }
                 } else {
-                    $headerWrapper.removeClass('jlocked');
+                    if ($headerWrapper.hasClass('sticky')) {
+                        $headerWrapper.hide().removeClass('sticky');
+                        $tableWrapper.find('thead').show();
+                    }
                 }
             }
 
