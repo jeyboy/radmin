@@ -13,6 +13,11 @@
   }
 
   .jtable-block {
+    thead.hidden {
+      display: none;
+    }
+
+
     .jtable-center {
       overflow-x: scroll;
     }

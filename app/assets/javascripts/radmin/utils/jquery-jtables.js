@@ -214,8 +214,15 @@
                     var tHeadTrDupChildren = tHeadTrDup.children;
                     var counter = tHeadTrChildren.length;
 
+                    var $tBody = $(this).find('table tbody');
+                    var $fakeTr = $('<tr class="fake"/>').appendTo($tBody);
+
+
                     while(counter--) {
-                        tHeadTrDupChildren[counter].style = "min-width: " + tHeadTrChildren[counter].offsetWidth + "px";
+                        var targetWidth = tHeadTrChildren[counter].offsetWidth;
+
+                        tHeadTrDupChildren[counter].style = "min-width: " + targetWidth + "px";
+                        $fakeTr.prepend("<td style='min-width: " + targetWidth + "px'></td>")
                     }
 
                     $headTableHead.append(tHeadTrDup);
@@ -230,18 +237,19 @@
                 if (scroll > anchor_top && scroll < anchor_bottom) {
                     if (!$headerWrapper.hasClass('sticky')) {
                         $headerWrapper.show().addClass('sticky');
-                        $tableWrapper.find('thead').hide();
+                        $tableWrapper.find('thead').addClass('hidden'); //.css({visibility: 'hidden', height: '1px', 'line-height': '1px'}); //hide();
                     }
                 } else {
                     if ($headerWrapper.hasClass('sticky')) {
                         $headerWrapper.hide().removeClass('sticky');
-                        $tableWrapper.find('thead').show();
+                        $tableWrapper.find('thead').removeClass('hidden');//.css({visibility: 'visible', height: 'auto', 'line-height': '1px'}); //.show();
                     }
                 }
             }
 
 
             $(window).scroll(moveScroll);
+            moveScroll();
 
             // var $target_scroll = $tableWrapper.find('.jtable-center');
             // var scroll_obj = $target_scroll[0];
