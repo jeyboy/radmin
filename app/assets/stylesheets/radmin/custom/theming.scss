@@ -1,6 +1,5 @@
 .jtable {
-
-  .jtable-block {
+  .jtable-head, .jtable-block {
     display: flex;
 
     .jtable-panel {
@@ -8,9 +7,21 @@
     }
 
     .jtable-center {
+      overflow-x: hidden;
       flex-grow: 9999;
+    }
+  }
+
+  .jtable-block {
+    .jtable-center {
       overflow-x: scroll;
     }
+  }
+
+  .jtable-head.jlocked {
+    position: -webkit-sticky;
+    position: sticky;
+    top: -1px;
   }
 
   table {

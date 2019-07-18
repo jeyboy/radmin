@@ -57,7 +57,6 @@
 
 (function($) {
     $.fn.jtable = function(options) {
-
         var settings = $.extend(false, {
             fixedHeader: false,
             fixedLeftColumns: 0,
@@ -75,6 +74,13 @@
         settings.fixedLeftColumns = Number(settings.fixedLeftColumns);
         settings.fixedRightColumns = Number(settings.fixedRightColumns);
 
+        var fixedLeftColumns;
+        var fixedRightColumns;
+        var fixedHeader;
+        var leftPanelClass = 'jtable-left';
+        var centerPanelClass = 'jtable-center';
+        var rightPanelClass = 'jtable-right';
+
         var createWrapper = function(attrs, css_attrs, main_class) {
             attrs['class'] = attrs['class'] ? (attrs['class'] + ' ' + main_class)  : main_class;
 
@@ -85,22 +91,18 @@
 
         var createSidePanel = function($wrapper, panel_class, props, create_body) {
             var $table = $("<table />").prop(props);
+            var $table_body;
 
-            var $table_head = $("<thead />");
-            $table_head.appendTo($table);
-
+            var $table_head = $("<thead />").appendTo($table);
             if (create_body) {
-                var $table_body = $("<tbody />");
-                $table_body.appendTo($table);
+                $table_body = $("<tbody />").appendTo($table);
             }
 
             var $panel_wrapper = createWrapper({class: panel_class}, settings.panelCSS, 'jtable-panel');
-            $table.appendTo($panel_wrapper);
+            $wrapper.append($panel_wrapper.append($table));
 
-            $wrapper.append($panel_wrapper);
             return [$table_head, $table_body];
         };
-
 
         var moveSideData = function(tr, $dest, target_height, iter, offset) {
             var $dest_tr = $('<tr style="height:' + target_height + 'px"/>').appendTo($dest);
@@ -125,10 +127,6 @@
             }
         };
 
-        var fixedLeftColumns;
-        var fixedRightColumns;
-        var fixedHeader;
-
         return this.each(function() {
             if (this.tagName.toLowerCase() !== 'table') {
                 return;
@@ -149,64 +147,43 @@
                 $el.find('thead tr th').length ||
                 $el.find('tbody tr:first td').length;
 
+            // join and fix me
             if (columns_count === 0 || (fixedLeftColumns + fixedRightColumns >= columns_count - 1)) {
                 return;
             }
 
             if (!fixedHeader && fixedLeftColumns <= 0 && fixedRightColumns <= 0) {
-                return this;
+                return;
             }
+            ////////////////
 
 
             var has_left = !!fixedLeftColumns;
             var has_right = !!fixedRightColumns;
 
             var $wrapper = createWrapper(settings.wrapperAttrs, settings.wrapperCSS, 'jtable');
-            var $headerWrapper = createWrapper(settings.headerAttrs, settings.headerCSS, 'jtable-head');
-            var $tableWrapper = createWrapper(settings.tableAttrs, settings.tableCSS, 'jtable-block');
+            var $headerWrapper =
+                createWrapper(settings.headerAttrs, settings.headerCSS, 'jtable-head')
+                    .appendTo($wrapper);
+            var $tableWrapper =
+                createWrapper(settings.tableAttrs, settings.tableCSS, 'jtable-block')
+                    .appendTo($wrapper);
 
-            $wrapper.append($headerWrapper);
-            $wrapper.append($tableWrapper);
+            var table_props = { style: $el.prop('style'), class: $el.prop('class') };
 
-
-            var table_props = {
-                style: $el.prop('style'),
-                class: $el.prop('class')
-            };
-
-            var values = has_left ? createSidePanel($tableWrapper,'jtable-left', table_props, true) : [undefined, undefined];
+            var values = has_left ? createSidePanel($tableWrapper,leftPanelClass, table_props, true) : [undefined, undefined];
             var $left_table_head = values[0];
             var $left_table_body = values[1];
 
-            var $center_panel = createWrapper({class: 'jtable-center'}, settings.panelCSS, 'jtable-panel');
+            var $center_panel = createWrapper({class: centerPanelClass}, settings.panelCSS, 'jtable-panel');
             $tableWrapper.append($center_panel);
 
-            values = has_right ? createSidePanel($tableWrapper, 'jtable-right', table_props, true) : [undefined, undefined];
+            values = has_right ? createSidePanel($tableWrapper, rightPanelClass, table_props, true) : [undefined, undefined];
             var $right_table_head = values[0];
             var $right_table_body = values[1];
 
 
             var head_tr = $el.find('thead tr')[0];
-
-            // if (fixedHeader) {
-            //     var $table = $("<table />").prop(table_props);
-            //
-            //     var $table_head = $("<thead />");
-            //     $table_head.appendTo($table);
-            //     $table.appendTo($headerWrapper);
-            //
-            //     var dupHeadTr = head_tr.cloneNode(true);
-            //
-            //     var children = head_tr.children;
-            //     var dupChildren = dupHeadTr.children;
-            //     var counter = children.length;
-            //     while(counter--) {
-            //         dupChildren[counter].style = "min-width: " + children[counter].offsetWidth + "px";
-            //     }
-            //
-            //     $table_head.append(dupHeadTr);
-            // }
-
             moveData(head_tr, $left_table_head, $right_table_head);
 
 
@@ -218,6 +195,40 @@
             $wrapper.insertAfter($el);
             $center_panel.append($el);
 
+            if (fixedHeader) {
+                var $panels = $wrapper.find('.jtable-panel');
+
+                $panels.each(function() {
+                    var $headPanel = $(this.cloneNode()).appendTo($headerWrapper);
+                    var $headTable = $("<table />").prop(table_props).appendTo($headPanel);
+                    var $headTableHead = $("<thead />").appendTo($headTable);
+                    var tHead = $(this).find('table thead')[0];
+                    var tHeadTr = tHead.children[0];
+                    var tHeadTrChildren = tHeadTr.children;
+                    var counter = tHeadTrChildren.length;
+
+                    while(counter--) {
+                        tHeadTrChildren[counter].style = "min-width: " + tHeadTrChildren[counter].offsetWidth + "px";
+                    }
+
+                    $headTableHead.append(tHead.removeChild(tHeadTr));
+                });
+            }
+
+            function moveScroll() {
+                var scroll = this.scrollY;
+                var anchor_top = $wrapper.offset().top;
+                var anchor_bottom = anchor_top + $wrapper[0].scrollHeight;
+
+                if (scroll > anchor_top && scroll < anchor_bottom) {
+                    $headerWrapper.addClass('jlocked');
+                } else {
+                    $headerWrapper.removeClass('jlocked');
+                }
+            }
+
+
+            $(window).scroll(moveScroll);
 
             // var $target_scroll = $tableWrapper.find('.jtable-center');
             // var scroll_obj = $target_scroll[0];
@@ -227,7 +238,7 @@
             //
             //     // $target_scroll.scrollLeft() // scroll pos
             //     // $target_scroll[0].offsetWidth // client size of elem
-            //     // $target_scroll[0].scrollWidth
+            //     // $target_scroll[0].scrollWidth // full size of elem
             //     console.log(scroll_obj.scrollLeft, scroll_obj.offsetWidth, scroll_obj.scrollWidth);
             // });
         });
