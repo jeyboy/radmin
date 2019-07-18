@@ -132,7 +132,7 @@
           %strong= description
 
 
-      %table.radmin.table.table-sm.data-fixed-table.stripped{data: {fix_left: 2, fix_right: 2, fix_header: 'true'}}
+      %table.radmin.table.table-sm.data-fixed-table.stripped{data: {fix_left: 1, fix_right: 1, fix_header: 'true'}}
         %thead
           %tr
             - if checkboxes
@@ -206,25 +206,6 @@
     = t("admin.misc.no_results")
 
   = yield :after_pagination
-
-%p 1
-%p 1
-%p 1
-%p 1
-%p 1
-%p 1
-%p 1
-%p 1
-%p 1
-%p 1
-%p 1
-%p 1
-%p 1
-%p 1
-%p 1
-%p 1
-%p 1
-%p 1
 
 = content_for :javascripts do
   = javascript_include_tag 'radmin/utils/filters'

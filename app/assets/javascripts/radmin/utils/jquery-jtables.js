@@ -166,7 +166,7 @@
                 createWrapper(settings.headerAttrs, settings.headerCSS, 'jtable-head jlocked')
                     .appendTo($wrapper);
 
-            // $headerWrapper.hide();
+            $headerWrapper.hide();
 
 
             var $tableWrapper =
@@ -251,17 +251,21 @@
             $(window).scroll(moveScroll);
             moveScroll();
 
-            // var $target_scroll = $tableWrapper.find('.jtable-center');
-            // var scroll_obj = $target_scroll[0];
-            //
-            // $target_scroll.on('scroll', function(e) {
-            //     // scroll_obj.scrollLeft = val for scroll manually
-            //
-            //     // $target_scroll.scrollLeft() // scroll pos
-            //     // $target_scroll[0].offsetWidth // client size of elem
-            //     // $target_scroll[0].scrollWidth // full size of elem
-            //     console.log(scroll_obj.scrollLeft, scroll_obj.offsetWidth, scroll_obj.scrollWidth);
-            // });
+            var $target_scroll = $tableWrapper.find('.jtable-center');
+            var scroll_obj = $target_scroll[0];
+            var $headScrollTable = $headerWrapper.find('.jtable-center');
+
+            $target_scroll.on('scroll', function(e) {
+                $headScrollTable.scrollLeft(scroll_obj.scrollLeft);
+
+
+                // scroll_obj.scrollLeft = val for scroll manually
+
+                // $target_scroll.scrollLeft() // scroll pos
+                // $target_scroll[0].offsetWidth // client size of elem
+                // $target_scroll[0].scrollWidth // full size of elem
+                // console.log(scroll_obj.scrollLeft, scroll_obj.offsetWidth, scroll_obj.scrollWidth);
+            });
         });
     };
 }(jQuery));
