@@ -89,6 +89,22 @@
                 .css(css_attrs);
         };
 
+        // function getStyle(oElm, strCssRule){
+        //     var strValue = "";
+        //
+        //     if(document.defaultView && document.defaultView.getComputedStyle){
+        //         strValue = document.defaultView.getComputedStyle(oElm, "").getPropertyValue(strCssRule);
+        //     }
+        //     else if(oElm.currentStyle){
+        //         strCssRule = strCssRule.replace(/\-(\w)/g, function (strMatch, p1){
+        //             return p1.toUpperCase();
+        //         });
+        //         strValue = oElm.currentStyle[strCssRule];
+        //     }
+        //
+        //     return strValue;
+        // }
+
         var createSidePanel = function($wrapper, panel_class, props, create_body) {
             var $table = $("<table />").prop(props);
             var $table_body;
@@ -219,7 +235,10 @@
 
 
                     while(counter--) {
-                        var targetWidth = tHeadTrChildren[counter].offsetWidth;
+                        var targetWidth =
+                            tHeadTrChildren[counter].scrollWidth;// +
+                            // parseFloat(getStyle(tHeadTrChildren[counter], 'padding-left')) +
+                            // parseFloat(getStyle(tHeadTrChildren[counter], 'padding-right'));
 
                         tHeadTrDupChildren[counter].style = "min-width: " + targetWidth + "px";
                         $fakeTr.prepend("<td style='min-width: " + targetWidth + "px'></td>")
@@ -229,6 +248,11 @@
                 });
             }
 
+            var $headScrollTable = $headerWrapper.find('.jtable-center');
+            var $bodyScrollTable = $tableWrapper.find('.jtable-center');
+            var $target_scroll = $tableWrapper.find('.jtable-center');
+            var scroll_obj = $target_scroll[0];
+
             function moveScroll() {
                 var scroll = this.scrollY;
                 var anchor_top = $wrapper.offset().top;
@@ -237,12 +261,18 @@
                 if (scroll > anchor_top && scroll < anchor_bottom) {
                     if (!$headerWrapper.hasClass('sticky')) {
                         $headerWrapper.show().addClass('sticky');
-                        $tableWrapper.find('thead').addClass('hidden'); //.css({visibility: 'hidden', height: '1px', 'line-height': '1px'}); //hide();
+                        $tableWrapper.find('thead').addClass('hidden');
+
+                        $headScrollTable.scrollLeft(scroll_obj.scrollLeft);
+                        $bodyScrollTable.scrollLeft(scroll_obj.scrollLeft);
                     }
                 } else {
                     if ($headerWrapper.hasClass('sticky')) {
                         $headerWrapper.hide().removeClass('sticky');
-                        $tableWrapper.find('thead').removeClass('hidden');//.css({visibility: 'visible', height: 'auto', 'line-height': '1px'}); //.show();
+                        $tableWrapper.find('thead').removeClass('hidden');
+
+                        $headScrollTable.scrollLeft(scroll_obj.scrollLeft);
+                        $bodyScrollTable.scrollLeft(scroll_obj.scrollLeft);
                     }
                 }
             }
@@ -251,13 +281,8 @@
             $(window).scroll(moveScroll);
             moveScroll();
 
-            var $target_scroll = $tableWrapper.find('.jtable-center');
-            var scroll_obj = $target_scroll[0];
-            var $headScrollTable = $headerWrapper.find('.jtable-center');
-
             $target_scroll.on('scroll', function(e) {
                 $headScrollTable.scrollLeft(scroll_obj.scrollLeft);
-
 
                 // scroll_obj.scrollLeft = val for scroll manually
 
